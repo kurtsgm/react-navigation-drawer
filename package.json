@@ -39,7 +39,7 @@
     "moment": "2.13.0",
     "native-base": "2.3.5",
     "react": "16.0.0",
-    "react-native": "0.51.0",
+    "react-native": "0.52.0",
     "react-navigation": "1.5.2",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2"

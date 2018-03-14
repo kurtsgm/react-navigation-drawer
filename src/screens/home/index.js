@@ -8,6 +8,8 @@ import * as AppActions from '../../redux/actions/AppAction'
 
 import styles from "./styles";
 
+import Expo from "expo";
+const { manifest } = Expo.Constants;
 
 
 const launchscreenBg = require("../../../assets/launchscreen-bg.png");
@@ -25,10 +27,15 @@ class Home extends Component {
   }
   login(){
     const { navigate } = this.props.navigation;
-    console.log(this.props.auth_token)
     if(this.state.username && this.state.password){
-      console.log(__DEV__)
-      let url = __DEV__  ? "http://192.168.1.109:3000/oauth/token" : ""
+      let host
+      if(__DEV__){
+        host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
+      }else{
+        host = "TODO"
+      }
+
+      let url = host + `/oauth/token`
       fetch(url, {
         method: 'POST',
         headers: {
@@ -41,13 +48,12 @@ class Home extends Component {
           grant_type: 'password'
           }
         )
-      }).then(function(response) {
+      }).then((response)=>{
         return response.json();
       }).then((data)=>{
-        debugger
         if(data.access_token){
           this.props.setToken(data.access_token)
-          navigate('Welcome')            
+          // navigate('Welcome')            
         }else{
           this.setState({login_failed: true})
         }

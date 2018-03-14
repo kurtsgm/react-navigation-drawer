@@ -196,14 +196,18 @@ class SideBar extends Component {
 
   route(route){
     if(route == 'Logout'){
-      // this.props.setToken(null)
+      this.props.setToken(null)
+      this.props.navigation.navigate("Home")      
     }else{
       this.props.navigation.navigate(route)
     }
   }
+  componentWillUpdate(){
+    if(this.props.auth_token == null){
+      this.props.navigation.navigate("Home")      
+    }
+  }
   render() {
-    console.log(this.props.auth_token)
-    console.log('yoyoyo')
     return (
       <Container>
         <Content
@@ -256,4 +260,4 @@ class SideBar extends Component {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(AppActions, dispatch);
 }
-export default connect(()=>{return {}}, mapDispatchToProps)(SideBar);
+export default connect((state)=>{return {auth_token: state.auth_token}}, mapDispatchToProps)(SideBar);
