@@ -27,6 +27,7 @@ class Home extends Component {
     const { navigate } = this.props.navigation;
     console.log(this.props.auth_token)
     if(this.state.username && this.state.password){
+      console.log(__DEV__)
       let url = __DEV__  ? "http://192.168.1.109:3000/oauth/token" : ""
       fetch(url, {
         method: 'POST',
@@ -43,6 +44,7 @@ class Home extends Component {
       }).then(function(response) {
         return response.json();
       }).then((data)=>{
+        debugger
         if(data.access_token){
           this.props.setToken(data.access_token)
           navigate('Welcome')            
