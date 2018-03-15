@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Image } from "react-native";
 import * as AppActions from '../../redux/actions/AppAction'
+
+import { Image } from "react-native";
 import {
   Content,
   Text,

@@ -1,12 +1,7 @@
 import React from "react";
 import Setup from "./src/boot/setup";
-
 import {Provider} from 'react-redux'
-import { createStore } from 'redux';
-import AppReducer from './src/redux/reducers/AppReducer'
- 
-const store = createStore(AppReducer)
-
+import {store} from "./src/redux/stores/store"
 
 export default class App extends React.Component {
   render() {

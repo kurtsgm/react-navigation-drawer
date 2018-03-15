@@ -8,9 +8,7 @@ import * as AppActions from '../../redux/actions/AppAction'
 
 import styles from "./styles";
 
-import Expo from "expo";
-const { manifest } = Expo.Constants;
-
+import {apiFetch,API_OAUTH} from "../../api"
 
 const launchscreenBg = require("../../../assets/launchscreen-bg.png");
 const launchscreenLogo = require("../../../assets/logo-kitchen-sink.png");
@@ -28,32 +26,14 @@ class Home extends Component {
   login(){
     const { navigate } = this.props.navigation;
     if(this.state.username && this.state.password){
-      let host
-      if(__DEV__){
-        host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
-      }else{
-        host = "TODO"
-      }
-
-      let url = host + `/oauth/token`
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: this.state.username,
-          password: this.state.password,
-          grant_type: 'password'
-          }
-        )
-      }).then((response)=>{
-        return response.json();
+      apiFetch(API_OAUTH, {
+        username: this.state.username,
+        password: this.state.password,
+        grant_type: 'password'
       }).then((data)=>{
         if(data.access_token){
           this.props.setToken(data.access_token)
-          // navigate('Welcome')            
+          navigate('Welcome')            
         }else{
           this.setState({login_failed: true})
         }
@@ -74,13 +54,13 @@ class Home extends Component {
             </View>
             <View>
               <Form>
-                <Item fixedLabel>
-                  <Label>Username</Label>
-                  <Input onChangeText={(text) => this.setState({username: text})}/>
+                <Item fixedLabel >
+                  <Label style={styles.text}>帳號</Label>
+                  <Input style={styles.text} onChangeText={(text) => this.setState({username: text})}/>
                 </Item>
-                <Item fixedLabel last>
-                  <Label>Password</Label>
-                  <Input secureTextEntry onChangeText={(text) => this.setState({password: text})}/>
+                <Item fixedLabel>
+                  <Label style={styles.text}>密碼</Label>
+                  <Input style={styles.text} secureTextEntry onChangeText={(text) => this.setState({password: text})}/>
                 </Item>
                 <Label style={styles.center_container}>
                   <Text style={[styles.warning_text,styles.center]}>
