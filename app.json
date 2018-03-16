@@ -7,7 +7,6 @@
       "hideExponentText": true,
       "backgroundImage": "./assets/splashscreen.png"
     },
-    "orientation": "portrait",
     "primaryColor": "#cccccc",
     "packagerOpts": {
       "assetExts": [
