@@ -2,6 +2,12 @@ import React from "react";
 import { Root } from "native-base";
 import { StackNavigator, DrawerNavigator } from "react-navigation";
 
+
+
+import Home from "./screens/home/";
+import Receipt from './screens/receipt'
+import ShowReceipt from './screens/receipt/show'
+
 import Header from "./screens/Header/";
 import Header1 from "./screens/Header/1";
 import Header2 from "./screens/Header/2";
@@ -74,7 +80,7 @@ import AdvSegment from "./screens/segment/segmentTab";
 import SimpleDeck from "./screens/deckswiper/simple";
 import AdvancedDeck from "./screens/deckswiper/advanced";
 
-import Home from "./screens/home/";
+
 import Welcome from "./screens/welcome/";
 import Anatomy from "./screens/anatomy/";
 import Footer from "./screens/footer/";
@@ -108,6 +114,8 @@ import Actionsheet from "./screens/actionsheet";
 const Drawer = DrawerNavigator(
   {
     Home: { screen: Home },
+    Receipt: {screen: Receipt},
+    ShowReceipt: {screen: ShowReceipt},
     Welcome: { screen: Welcome},
     Anatomy: { screen: Anatomy },
     Header: { screen: Header },

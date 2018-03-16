@@ -4,10 +4,9 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ImageBackground, View, StatusBar } from "react-native";
 import { H1,Container, Button, H3, Text ,Form, Item, Label ,Input ,Content } from "native-base";
-import * as AppActions from '../../redux/actions/AppAction'
-
 import styles from "./styles";
 
+import * as AppActions from '../../redux/actions/AppAction'
 import {apiFetch,API_OAUTH} from "../../api"
 
 const launchscreenBg = require("../../../assets/launchscreen-bg.png");
@@ -22,6 +21,9 @@ class Home extends Component {
       login_failed: false,
     }
     this.login = this.login.bind(this)
+    if(__DEV__){
+      this.fast_login = this.fast_login.bind(this)
+    }
   }
   login(){
     const { navigate } = this.props.navigation;
@@ -39,6 +41,25 @@ class Home extends Component {
         }
       });
     }
+  }
+
+  fast_login(){
+    if(__DEV__){
+      const { navigate } = this.props.navigation;
+      apiFetch(API_OAUTH, {
+        username: 'a',
+        password: 'qwertyui',
+        grant_type: 'password'
+      }).then((data)=>{
+        if(data.access_token){
+          this.props.setToken(data.access_token)
+          navigate('Welcome')            
+        }else{
+          this.setState({login_failed: true})
+        }
+      });
+    }
+
   }
 
   render() {
@@ -75,6 +96,16 @@ class Home extends Component {
               >
               <Text>Login</Text>
               </Button>
+              {
+                __DEV__ ? 
+                <Button
+                style={{ backgroundColor: "#6FAF98", alignSelf: "center" }}
+                onPress={ this.fast_login }
+              >
+              <Text>快速Login(測試用)</Text>
+              </Button>: null
+              }
+
             </View>
           </Content>
         </ImageBackground>

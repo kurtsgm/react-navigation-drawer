@@ -14,14 +14,9 @@ import {
   Body
 } from "native-base";
 
-import styles from "./styles";
-import {apiFetch,GET_RECEIPTS} from "../../api"
+
 class Anatomy extends Component {  
   render() {
-    apiFetch(GET_RECEIPTS,{test:123}).then((data)=>{
-      console.log(data)
-    })
-
     return (
       <Container style={styles.container}>
         <Header>
