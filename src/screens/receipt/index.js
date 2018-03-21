@@ -33,7 +33,7 @@ class Receipt extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(GET_RECEIPTS, { test: 123 }).then((_data) => {
+    apiFetch(GET_RECEIPTS,{}).then((_data) => {
       console.log(_data)
       this.setState({ receipts: _data })
     })

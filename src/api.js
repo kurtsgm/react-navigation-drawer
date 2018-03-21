@@ -7,10 +7,12 @@ const { manifest } = Expo.Constants;
 
 export const API_OAUTH = "OAUTH"
 export const GET_RECEIPTS = "GET_RECEIPTS"
+export const RECEIVE_RECEIPT = "RECEIVE_RECEIPT"
 
 const Actions = {
   OAUTH: {path: "/oauth/token",method: "POST"},
-  GET_RECEIPTS: {path: '/api/v1/receipts',method: "GET"}
+  GET_RECEIPTS: {path: '/api/v1/receipts',method: "GET"},
+  RECEIVE_RECEIPT: {path: '/api/v1/receipts/{id}/receive', method: "POST"}
 }
 
 
@@ -22,7 +24,9 @@ export function apiFetch(action,data){
     host = "TODO"
   }
   let _action = Actions[action]
-  let url = host + _action.path
+  let path = _action.path
+  Object.keys(data).forEach(key=>{path=path.replace(`{${key}}`,data[key])})
+  let url = host + path
   let options = {
     method:  _action.method,
     headers: {
@@ -39,6 +43,7 @@ export function apiFetch(action,data){
       data
     )
   }
+  console.log(options)
   return fetch(url, options).then((response)=>{
     return response.json();
   })
