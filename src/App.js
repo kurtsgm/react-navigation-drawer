@@ -7,6 +7,7 @@ import { StackNavigator, DrawerNavigator } from "react-navigation";
 import Home from "./screens/home/";
 import Receipt from './screens/receipt'
 import ShowReceipt from './screens/receipt/show'
+import RecommendShelf from './screens/receipt/recommend' 
 
 import Header from "./screens/Header/";
 import Header1 from "./screens/Header/1";
@@ -116,6 +117,7 @@ const Drawer = DrawerNavigator(
     Home: { screen: Home },
     Receipt: {screen: Receipt},
     ShowReceipt: {screen: ShowReceipt},
+    RecommendShelf: {screen: RecommendShelf},
     Welcome: { screen: Welcome},
     Anatomy: { screen: Anatomy },
     Header: { screen: Header },
@@ -157,6 +159,10 @@ const Drawer = DrawerNavigator(
 const AppNavigator = StackNavigator(
   {
     Drawer: { screen: Drawer },
+
+    Receipt: {screen: Receipt},
+    ShowReceipt: {screen: ShowReceipt},
+    RecommendShelf: {screen: RecommendShelf},
 
     Header1: { screen: Header1 },
     Header2: { screen: Header2 },

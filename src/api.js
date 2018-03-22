@@ -8,11 +8,14 @@ const { manifest } = Expo.Constants;
 export const API_OAUTH = "OAUTH"
 export const GET_RECEIPTS = "GET_RECEIPTS"
 export const RECEIVE_RECEIPT = "RECEIVE_RECEIPT"
+export const RECOMMEND_SHELF = "RECOMMEND_SHELF"
+
 
 const Actions = {
   OAUTH: {path: "/oauth/token",method: "POST"},
   GET_RECEIPTS: {path: '/api/v1/receipts',method: "GET"},
-  RECEIVE_RECEIPT: {path: '/api/v1/receipts/{id}/receive', method: "POST"}
+  RECEIVE_RECEIPT: {path: '/api/v1/receipts/{id}/receive', method: "POST"},
+  RECOMMEND_SHELF: {path: '/api/v1/receipts/{id}/recommend', method: "POST"}
 }
 
 
