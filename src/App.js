@@ -116,8 +116,6 @@ const Drawer = DrawerNavigator(
   {
     Home: { screen: Home },
     Receipt: {screen: Receipt},
-    ShowReceipt: {screen: ShowReceipt},
-    RecommendShelf: {screen: RecommendShelf},
     Welcome: { screen: Welcome},
     Anatomy: { screen: Anatomy },
     Header: { screen: Header },
@@ -160,7 +158,6 @@ const AppNavigator = StackNavigator(
   {
     Drawer: { screen: Drawer },
 
-    Receipt: {screen: Receipt},
     ShowReceipt: {screen: ShowReceipt},
     RecommendShelf: {screen: RecommendShelf},
 

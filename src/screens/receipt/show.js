@@ -42,8 +42,6 @@ class ShowReceipt extends Component {
     }
     this.recommend = this.recommend.bind(this)
     this.reload = this.reload.bind(this)
-    console.log('NEW')
-    console.log(this.props.navigation)
   }
   reload() {
     console.log(this.props.navigation)
@@ -76,9 +74,9 @@ class ShowReceipt extends Component {
           <Left>
             <Button
               transparent
-              onPress={() => this.props.navigation.goBack()}
+              onPress={() =>this.props.navigation.goBack()}
             >
-              <Icon name="arrow-back" />
+            <Icon name="arrow-back" />
             </Button>
           </Left>
           <Body>

@@ -55,7 +55,7 @@ class RecommendShelf extends Component {
           <Left>
             <Button
               transparent
-              onPress={() => this.props.navigation.navigate("ShowReceipt")}
+              onPress={() => this.props.navigation.goBack()}
             >
               <Icon name="arrow-back" />
             </Button>
