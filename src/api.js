@@ -9,20 +9,23 @@ export const API_OAUTH = "OAUTH"
 export const GET_RECEIPTS = "GET_RECEIPTS"
 export const RECEIVE_RECEIPT = "RECEIVE_RECEIPT"
 export const RECOMMEND_SHELF = "RECOMMEND_SHELF"
-
+export const GET_SHELVES = "GET_SHELVES"
+export const GET_RECEIPT = "GET_RECEIPT"
 
 const Actions = {
   OAUTH: {path: "/oauth/token",method: "POST"},
   GET_RECEIPTS: {path: '/api/v1/receipts',method: "GET"},
+  GET_RECEIPT: {path: '/api/v1/receipts/{id}', method: "GET"},
   RECEIVE_RECEIPT: {path: '/api/v1/receipts/{id}/receive', method: "POST"},
-  RECOMMEND_SHELF: {path: '/api/v1/receipts/{id}/recommend', method: "POST"}
+  RECOMMEND_SHELF: {path: '/api/v1/receipts/{id}/recommend', method: "POST"},
+  GET_SHELVES: {path: '/api/v1/shelves/', method: "GET"}
 }
 
 
 export function apiFetch(action,data){      
   let host
   if(__DEV__){
-    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
+    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000/")
   }else{
     host = "TODO"
   }
@@ -38,7 +41,8 @@ export function apiFetch(action,data){
       'Authorization': 'Bearer '+store.getState().auth_token
     }
   }
-  if (_action.method == "GET"){
+  console.log(action)
+  if (_action.method == "GET" && data){
     params= "?"+Object.entries(data).map(item=>item[0]+"="+item[1]).join("&")
     url+=params
   }else{
@@ -46,7 +50,7 @@ export function apiFetch(action,data){
       data
     )
   }
-  console.log(options)
+  console.log(url)
   return fetch(url, options).then((response)=>{
     return response.json();
   })

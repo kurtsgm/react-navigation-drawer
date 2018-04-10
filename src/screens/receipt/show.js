@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Alert } from 'react-native';
 import {
   Container,
   Header,
@@ -17,7 +18,7 @@ import {
 
 
 import { Grid, Col } from "react-native-easy-grid";
-import { apiFetch, RECEIVE_RECEIPT, RECOMMEND_SHELF } from "../../api"
+import { apiFetch,GET_RECEIPT, RECEIVE_RECEIPT, RECOMMEND_SHELF } from "../../api"
 import styles from "./styles";
 
 
@@ -42,10 +43,34 @@ class ShowReceipt extends Component {
     }
     this.recommend = this.recommend.bind(this)
     this.reload = this.reload.bind(this)
+    this.onReceived = this.onReceived.bind(this)
   }
   reload() {
-    console.log(this.props.navigation)
+    apiFetch(GET_RECEIPT, {
+      id: this.state.receipt_id,
+    }).then((data) => {
+      this.setState({
+        receipt_id: data.id,
+        receipt_title: data.barcode,
+        items: data.items.map((item) => {
+          return {
+            ready_to_receive: 0,
+            id: item.id,
+            product_name: item.product_name,
+            product_type_name: item.product_type_name,
+            received_count: item.received_count,
+            box_count: item.box_count
+          }
+        })
+      })
+    });
   }
+  onReceived(){
+    Alert.alert("系統訊息","已成功入庫")
+    console.log("received")
+    this.reload()
+  }
+
   recommend() {
     items = this.state.items.map((item) => {
       if (item.ready_to_receive > 0) {
@@ -57,10 +82,13 @@ class ShowReceipt extends Component {
       items: items
     }).then((data) => {
       if (data.status == "success") {
+        console.log(data)
         this.props.navigation.navigate("RecommendShelf",
           {
             items: this.state.items.filter((item) => item.ready_to_receive > 0),
-            shelf: data.shelf
+            shelf: data.shelf,
+            shelves: data.shelves,
+            onReceived: this.onReceived
           })
       } else {
         console.log(data)

@@ -1,9 +1,9 @@
 {
   "name": "WmsIbiza",
-  "version": "2.3.5",
+  "version": "1.0.0",
   "private": true,
   "devDependencies": {
-    "babel-eslint": "7.2.3",
+    "babel-eslint": "8.2.2",
     "eslint": "4.4.1",
     "eslint-plugin-flowtype": "2.35.0",
     "eslint-plugin-import": "2.7.0",
@@ -34,12 +34,12 @@
   },
   "dependencies": {
     "color": "1.0.3",
-    "expo": "25.0.0",
+    "expo": "26.0.0",
     "lodash": "4.13.1",
     "moment": "2.13.0",
     "native-base": "2.3.5",
-    "react": "16.2.0",
-    "react-native": "0.52.0",
+    "react": "16.3.0",
+    "react-native": "0.54.2",
     "react-navigation": "1.5.2",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2"
