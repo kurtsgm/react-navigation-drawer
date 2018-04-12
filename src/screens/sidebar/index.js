@@ -27,6 +27,12 @@ const datas = [
     bg: "#C5F442"
   },
   {
+    name: '庫存查詢',
+    route: 'VariantSearch',
+    icon: 'search',
+    bg: "#C5F442"
+  },  
+  {
     name: "Anatomy",
     route: "Anatomy",
     icon: "phone-portrait",

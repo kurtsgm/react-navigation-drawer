@@ -105,7 +105,7 @@ class RecommendShelf extends Component {
                 <Left>
                   <Left>
                     <Text>
-                      {data.product_name + " " + data.product_type_name}
+                      {data.product_name + " " + data.storage_type_name}
                     </Text>
                   </Left>
                 </Left>

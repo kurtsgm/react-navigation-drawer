@@ -35,7 +35,7 @@ class ShowReceipt extends Component {
           ready_to_receive: 0,
           id: item.id,
           product_name: item.product_name,
-          product_type_name: item.product_type_name,
+          storage_type_name: item.storage_type_name,
           received_count: item.received_count,
           box_count: item.box_count
         }
@@ -57,7 +57,7 @@ class ShowReceipt extends Component {
             ready_to_receive: 0,
             id: item.id,
             product_name: item.product_name,
-            product_type_name: item.product_type_name,
+            storage_type_name: item.storage_type_name,
             received_count: item.received_count,
             box_count: item.box_count
           }
@@ -124,7 +124,7 @@ class ShowReceipt extends Component {
                 <Col size={3}>
                   <Left>
                     <Text>
-                      {data.product_name + " " + data.product_type_name}
+                      {data.product_name + " " + data.storage_type_name}
                     </Text>
                   </Left>
                 </Col>

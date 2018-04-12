@@ -11,6 +11,7 @@ export const RECEIVE_RECEIPT = "RECEIVE_RECEIPT"
 export const RECOMMEND_SHELF = "RECOMMEND_SHELF"
 export const GET_SHELVES = "GET_SHELVES"
 export const GET_RECEIPT = "GET_RECEIPT"
+export const GET_VARIANTS = "GET_VARIANTS"
 
 const Actions = {
   OAUTH: {path: "/oauth/token",method: "POST"},
@@ -18,7 +19,8 @@ const Actions = {
   GET_RECEIPT: {path: '/api/v1/receipts/{id}', method: "GET"},
   RECEIVE_RECEIPT: {path: '/api/v1/receipts/{id}/receive', method: "POST"},
   RECOMMEND_SHELF: {path: '/api/v1/receipts/{id}/recommend', method: "POST"},
-  GET_SHELVES: {path: '/api/v1/shelves/', method: "GET"}
+  GET_SHELVES: {path: '/api/v1/shelves/', method: "GET"},
+  GET_VARIANTS: {path: '/api/v1/products/by_barcode/{barcode}', method: "GET"}
 }
 
 
@@ -41,7 +43,6 @@ export function apiFetch(action,data){
       'Authorization': 'Bearer '+store.getState().auth_token
     }
   }
-  console.log(action)
   if (_action.method == "GET" && data){
     params= "?"+Object.entries(data).map(item=>item[0]+"="+item[1]).join("&")
     url+=params
