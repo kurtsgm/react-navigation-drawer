@@ -11,5 +11,9 @@ export default {
   },
   mt15: {
     marginTop: 15
+  },
+  orange: {
+    color: "orange",
+    fontSize: 24
   }
 };

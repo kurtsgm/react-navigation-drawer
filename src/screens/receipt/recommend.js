@@ -11,11 +11,11 @@ import {
   Body,
   Right,
   List,
-  ListItem,
-  ActionSheet
+  ListItem
 } from "native-base";
 
-
+import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
+ 
 import { Grid, Col } from "react-native-easy-grid";
 import { apiFetch, RECEIVE_RECEIPT } from "../../api"
 import styles from "./styles";
@@ -53,6 +53,13 @@ class RecommendShelf extends Component {
   }
   render() {
     const { back } = this.props.navigation;
+    let shelves = this.props.navigation.state.params.shelves.map(i => {
+        let _token = i.token
+        if( i.id == this.state.shelf_id){
+          _token = <Text style={styles.orange} > {i.token} </Text>
+        }
+        return _token
+      })
     return (
       <Container style={styles.container}>
         <Header>
@@ -84,18 +91,8 @@ class RecommendShelf extends Component {
               </Left>
               <Button bordered light primary style={styles.mb15}
                 onPress={() => {
-                  let shelves = this.props.navigation.state.params.shelves.map(i => i.token)
-                  ActionSheet.show(
-                    {
-                      options: shelves,
-                      title: "重選儲位"
-                    },
-                    buttonIndex => {
-                      this.setState({
-                        shelf_id: this.props.navigation.state.params.shelves[buttonIndex].id,
-                        shelf_token: this.props.navigation.state.params.shelves[buttonIndex].token})
-                    }
-                  )
+                  this.action_sheet.show()
+
                 }}>
                 <Text>
                   {this.state.shelf_token}
@@ -124,7 +121,17 @@ class RecommendShelf extends Component {
           }}>
             <Text>確認入倉</Text>
           </Button>
-
+        <ActionSheet
+          ref={o => this.action_sheet = o}
+          title={<Text style={{color: '#000', fontSize: 18}}>請選擇儲位</Text>}
+          options={shelves}
+          onPress={(index) => {
+            this.setState({
+              shelf_id: this.props.navigation.state.params.shelves[index].id,
+              shelf_token: this.props.navigation.state.params.shelves[index].token})
+            }
+          }
+        />
         </Content>
       </Container>
     );
