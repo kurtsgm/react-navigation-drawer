@@ -28,7 +28,7 @@ const datas = [
   },
   {
     name: '庫存查詢',
-    route: 'VariantSearch',
+    route: 'ProductSearch',
     icon: 'search',
     bg: "#C5F442"
   },  

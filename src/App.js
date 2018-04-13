@@ -12,10 +12,10 @@ import ShowReceipt from './screens/receipt/show'
 import RecommendShelf from './screens/receipt/recommend' 
 
 
-// Variants
-import VariantSearch from './screens/variants/search'
-import VariantStorages from './screens/variants/storages'
-
+// Products
+import ProductSearch from './screens/products/search'
+import ProductStorages from './screens/products/storages'
+import ProductShelf from './screens/products/shelf'
 
 import Header from "./screens/Header/";
 import Header1 from "./screens/Header/1";
@@ -124,7 +124,7 @@ const Drawer = DrawerNavigator(
   {
     Home: { screen: Home },
     Receipt: {screen: Receipt},
-    VariantSearch: {screen: VariantSearch},
+    ProductSearch: {screen: ProductSearch},
     Welcome: { screen: Welcome},
     Anatomy: { screen: Anatomy },
     Header: { screen: Header },
@@ -170,7 +170,8 @@ const AppNavigator = StackNavigator(
     ShowReceipt: {screen: ShowReceipt},
     RecommendShelf: {screen: RecommendShelf},
 
-    VariantStorages: {screen: VariantStorages},
+    ProductStorages: {screen: ProductStorages},
+    ProductShelf: {screen: ProductShelf},
 
     Header1: { screen: Header1 },
     Header2: { screen: Header2 },

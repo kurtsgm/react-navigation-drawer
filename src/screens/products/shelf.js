@@ -16,36 +16,35 @@ import {
 } from "native-base";
 import styles from "./styles";
 
-class VariantStorages extends Component {
+class ProductShelf extends Component {
   constructor(props) {
     super(props)    
   }
   render() {
-    let rows = []
-    const { params: storages } = this.props.navigation.state;
-    console.log(storages)
-    rows = storages.map((storage) => {
-      return  <ListItem key={storage.id} button onPress={() => 
-          this.props.navigation.navigate("ShowReceipt",receipt)}>
-          <Left>
-            <Text>
-            </Text>
-          </Left>
-          <Right>
-            <Icon name="arrow-forward" style={{ color: "#999" }} />
-          </Right>
-        </ListItem>
+    const { params: shelve_storages } = this.props.navigation.state;
+    let rows = shelve_storages.map((shelve_storage,index)=>{
+      return <ListItem key={index}>
+        <Left>
+          <Text>
+            {shelve_storage.shelf.token}
+          </Text>
+        </Left>
+        <Right>
+          <Text>
+            {shelve_storage.pcs}
+          </Text>
+        </Right>
+      </ListItem>
     })
-
     return (
       <Container style={styles.container}>
         <Header>
           <Left>
             <Button
               transparent
-              onPress={() => this.props.navigation.navigate("DrawerOpen")}
+              onPress={() => this.props.navigation.goBack()}
             >
-              <Icon name="menu" />
+              <Icon name="arrow-back" />
             </Button>
           </Left>
           <Body>
@@ -55,7 +54,7 @@ class VariantStorages extends Component {
 
         <Content>
           {
-            storages.length > 0 ?
+            rows.length > 0 ?
               <List>
                 {rows}
               </List> : null
@@ -66,4 +65,4 @@ class VariantStorages extends Component {
   }
 }
 
-export default VariantStorages;
+export default ProductShelf;

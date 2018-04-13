@@ -17,9 +17,10 @@ import {
   Text
 } from "native-base";
 import styles from "./styles";
-import { apiFetch, GET_VARIANTS } from "../../api"
+import { apiFetch, GET_PRODUCTS } from "../../api"
+import ProductStorages from './storages'
 
-class VariantSearch extends Component {
+class ProductSearch extends Component {
   constructor() {
     super()
     this.state = {
@@ -30,7 +31,7 @@ class VariantSearch extends Component {
     let rows = []
     rows = this.state.products.map(product => {
       return <ListItem key={product.id} button onPress={() =>
-        this.props.navigation.navigate("VariantStorages",product.storages)
+        this.props.navigation.navigate("ProductStorages",product.storages)
       }>
         <Left>
           <Text>
@@ -58,7 +59,7 @@ class VariantSearch extends Component {
             <Input placeholder="Search" placeholder="請輸入或者掃描條碼" autoFocus={true} onEndEditing={
               (event) => {
                 let barcode = event.nativeEvent.text
-                apiFetch(GET_VARIANTS, { barcode: barcode }).then(data => {
+                apiFetch(GET_PRODUCTS, { barcode: barcode }).then(data => {
                   console.log(data)
                   this.setState({ products: data })
                 })
@@ -79,4 +80,4 @@ class VariantSearch extends Component {
   }
 }
 
-export default VariantSearch;
+export default ProductSearch;

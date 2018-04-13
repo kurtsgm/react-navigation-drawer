@@ -14,6 +14,7 @@ import {
   Body
 } from "native-base";
 
+import styles from "./styles"
 
 class Anatomy extends Component {  
   render() {
