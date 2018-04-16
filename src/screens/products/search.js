@@ -59,10 +59,14 @@ class ProductSearch extends Component {
             <Input placeholder="Search" placeholder="請輸入或者掃描條碼" autoFocus={true} onEndEditing={
               (event) => {
                 let barcode = event.nativeEvent.text
-                apiFetch(GET_PRODUCTS, { barcode: barcode }).then(data => {
-                  console.log(data)
-                  this.setState({ products: data })
-                })
+                if(barcode){
+                  apiFetch(GET_PRODUCTS, { barcode: barcode }).then(data => {
+                    console.log(data)
+                    this.setState({ products: data })
+                  })  
+                }else{
+                  this.setState({ products: [] })
+                }
               }
             } />
           </Item>

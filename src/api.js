@@ -12,6 +12,7 @@ export const RECOMMEND_SHELF = "RECOMMEND_SHELF"
 export const GET_SHELVES = "GET_SHELVES"
 export const GET_RECEIPT = "GET_RECEIPT"
 export const GET_PRODUCTS = "GET_PRODUCTS"
+export const GET_SHELF_INFO = "GET_SHELF_INFO"
 
 const Actions = {
   OAUTH: {path: "/oauth/token",method: "POST"},
@@ -20,20 +21,26 @@ const Actions = {
   RECEIVE_RECEIPT: {path: '/api/v1/receipts/{id}/receive', method: "POST"},
   RECOMMEND_SHELF: {path: '/api/v1/receipts/{id}/recommend', method: "POST"},
   GET_SHELVES: {path: '/api/v1/shelves/', method: "GET"},
-  GET_PRODUCTS: {path: '/api/v1/products/by_barcode/{barcode}', method: "GET"}
+  GET_PRODUCTS: {path: '/api/v1/products/{barcode}', method: "GET"},
+  GET_SHELF_INFO: {path: '/api/v1/shelves/{token}', method: "GET"}
 }
 
 
 export function apiFetch(action,data){      
   let host
   if(__DEV__){
-    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000/")
+    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
   }else{
     host = "TODO"
   }
   let _action = Actions[action]
   let path = _action.path
-  Object.keys(data).forEach(key=>{path=path.replace(`{${key}}`,data[key])})
+  Object.keys(data).forEach(key=>{
+    if(path.match(`{${key}}`)){
+      path=path.replace(`{${key}}`,data[key])
+      delete data[key]
+    }
+  })
   let url = host + path
   let options = {
     method:  _action.method,
