@@ -268,3 +268,5 @@ export default () =>
   <Root>
     <AppNavigator />
   </Root>;
+
+console.disableYellowBox = true;

@@ -16,7 +16,9 @@ import {
   ListItem,
   Text
 } from "native-base";
-import styles from "./styles";
+
+import {Keyboard} from 'react-native'
+import styles from "./styles"
 import { apiFetch, GET_PRODUCTS } from "../../api"
 import ProductStorages from './storages'
 
@@ -50,7 +52,10 @@ class ProductSearch extends Component {
           <Button
           
             transparent
-            onPress={() => this.props.navigation.navigate("DrawerOpen")}
+            onPress={() => {
+              Keyboard.dismiss()
+              this.props.navigation.navigate("DrawerOpen")}
+            }
           >
             <Icon name="menu" />
           </Button>

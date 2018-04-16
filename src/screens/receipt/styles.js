@@ -1,6 +1,7 @@
 export default {
   container: {
-    backgroundColor: "#FFF"
+    backgroundColor: "#FFF",
+    flex: 1
   },
   text: {
     alignSelf: "center",
@@ -15,5 +16,8 @@ export default {
   orange: {
     color: "orange",
     fontSize: 24
+  },
+  footer: {
+    bottom: 0
   }
 };

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert } from 'react-native';
+import { Alert,View } from 'react-native';
 import {
   Container,
   Header,
@@ -13,7 +13,8 @@ import {
   Right,
   List,
   ListItem,
-  ActionSheet
+  ActionSheet,
+  Footer
 } from "native-base";
 
 
@@ -98,25 +99,24 @@ class ShowReceipt extends Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Header>
-          <Left>
-            <Button
-              transparent
-              onPress={() =>this.props.navigation.goBack()}
-            >
-            <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>{this.state.receipt_title}</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name="refresh" onPress={() => this.reload()} />
-            </Button>
-          </Right>
-        </Header>
-
+          <Header>
+            <Left>
+              <Button
+                transparent
+                onPress={() =>this.props.navigation.goBack()}
+              >
+              <Icon name="arrow-back" />
+              </Button>
+            </Left>
+            <Body>
+              <Title>{this.state.receipt_title}</Title>
+            </Body>
+            <Right>
+              <Button transparent>
+                <Icon name="refresh" onPress={() => this.reload()} />
+              </Button>
+            </Right>
+          </Header>
         <Content>
           <List>
             {this.state.items.map(data => {
@@ -166,13 +166,14 @@ class ShowReceipt extends Component {
             })
             }
           </List>
-          <Button primary block style={styles.mb15} onPress={() => {
-            this.recommend()
-          }}>
-            <Text>建議儲位</Text>
-          </Button>
-
         </Content>
+        <View style={styles.footer}>
+            <Button primary full style={styles.mb15} onPress={() => {
+              this.recommend()
+            }}>
+              <Text>建議儲位</Text>
+            </Button>            
+        </View>
       </Container>
     );
   }

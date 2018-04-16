@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { View } from 'react-native';
 import {
   Container,
   Header,
@@ -116,11 +117,6 @@ class RecommendShelf extends Component {
             })
             }
           </List>
-          <Button primary block style={styles.mb15} onPress={() => {
-            this.receive()
-          }}>
-            <Text>確認入倉</Text>
-          </Button>
         <ActionSheet
           ref={o => this.action_sheet = o}
           title={<Text style={{color: '#000', fontSize: 18}}>請選擇儲位</Text>}
@@ -133,6 +129,13 @@ class RecommendShelf extends Component {
           }
         />
         </Content>
+        <View style={styles.footer}>
+          <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
+            this.receive()
+          }}>
+            <Text>確認入倉</Text>
+          </Button>
+        </View>
       </Container>
     );
   }
