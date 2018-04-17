@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert,View } from 'react-native';
+import { Alert, View } from 'react-native';
 import {
   Container,
   Header,
@@ -19,7 +19,7 @@ import {
 
 
 import { Grid, Col } from "react-native-easy-grid";
-import { apiFetch,GET_RECEIPT, RECEIVE_RECEIPT, RECOMMEND_SHELF } from "../../api"
+import { apiFetch, GET_RECEIPT, RECEIVE_RECEIPT, RECOMMEND_SHELF } from "../../api"
 import styles from "./styles";
 
 
@@ -38,7 +38,8 @@ class ShowReceipt extends Component {
           product_name: item.product_name,
           storage_type_name: item.storage_type_name,
           received_count: item.received_count,
-          box_count: item.box_count
+          box_count: item.box_count,
+          pcs_per_box: item.pcs_per_box
         }
       })
     }
@@ -60,14 +61,15 @@ class ShowReceipt extends Component {
             product_name: item.product_name,
             storage_type_name: item.storage_type_name,
             received_count: item.received_count,
-            box_count: item.box_count
+            box_count: item.box_count,
+            pcs_per_box: item.pcs_per_box
           }
         })
       })
     });
   }
-  onReceived(){
-    Alert.alert("系統訊息","已成功入庫")
+  onReceived() {
+    Alert.alert("系統訊息", "已成功入庫")
     console.log("received")
     this.reload()
   }
@@ -99,80 +101,80 @@ class ShowReceipt extends Component {
   render() {
     return (
       <Container style={styles.container}>
-          <Header>
-            <Left>
-              <Button
-                transparent
-                onPress={() =>this.props.navigation.goBack()}
-              >
+        <Header>
+          <Left>
+            <Button
+              transparent
+              onPress={() => this.props.navigation.goBack()}
+            >
               <Icon name="arrow-back" />
-              </Button>
-            </Left>
-            <Body>
-              <Title>{this.state.receipt_title}</Title>
-            </Body>
-            <Right>
-              <Button transparent>
-                <Icon name="refresh" onPress={() => this.reload()} />
-              </Button>
-            </Right>
-          </Header>
+            </Button>
+          </Left>
+          <Body>
+            <Title>{this.state.receipt_title}</Title>
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="refresh" onPress={() => this.reload()} />
+            </Button>
+          </Right>
+        </Header>
         <Content>
           <List>
             {this.state.items.map(data => {
               return <ListItem key={data.id}>
-                <Col size={3}>
-                  <Left>
-                    <Text>
-                      {data.product_name + " " + data.storage_type_name}
+                <Grid>
+                  <Col size={4} style={styles.vertical_center} >
+                    <Text style={styles.storage_title} >
+                      {data.product_name + " " + data.storage_type_name + " [" + data.pcs_per_box + "入]"}
                     </Text>
-                  </Left>
-                </Col>
-                <Col size={1}>
-                  <Text>
-                    {data.received_count + "/" + data.box_count}
-                  </Text>
-                </Col>
-                <Col size={1}>
-                  {data.received_count == data.box_count ?
-                    null
-                    :
-                    <Button onPress={() => {
-                      let quantities = [...Array(data.box_count - data.received_count + 1).keys()].map(i => i.toString())
-                      ActionSheet.show(
-                        {
-                          options: quantities,
-                          title: "點收數量"
-                        },
-                        buttonIndex => {
-                          items = this.state.items
-                          for (item of items) {
-                            if (item.id == data.id) {
-                              item.ready_to_receive = buttonIndex
-                              break
+                  </Col>
+                  <Col size={2} style={styles.vertical_center} >
+                    <Text>
+                      {data.received_count + "/" + data.box_count}
+                    </Text>
+                  </Col>
+                  <Col size={2} style={styles.vertical_center} >
+                    {data.received_count == data.box_count ?
+                      null
+                      :
+                      <Button bordered light block primary onPress={() => {
+                        let quantities = [...Array(data.box_count - data.received_count + 1).keys()].map(i => i.toString())
+                        ActionSheet.show(
+                          {
+                            options: quantities,
+                            title: "點收數量"
+                          },
+                          buttonIndex => {
+                            items = this.state.items
+                            for (item of items) {
+                              if (item.id == data.id) {
+                                item.ready_to_receive = buttonIndex
+                                break
+                              }
                             }
+                            this.setState({ items: items })
                           }
-                          this.setState({ items: items })
-                        }
-                      )
-                    }}>
-                      {data.ready_to_receive > 0 ?
-                        <Text>{data.ready_to_receive}</Text> :
-                        <Icon name="checkmark" />}
-                    </Button>
-                  }
-                </Col>
+                        )
+                      }}>
+                        {data.ready_to_receive > 0 ?
+                          <Text>{data.ready_to_receive}</Text> :
+                          <Icon name="checkmark" />}
+                      </Button>
+                    }
+                  </Col>
+                </Grid>
               </ListItem>
             })
             }
           </List>
         </Content>
         <View style={styles.footer}>
-            <Button primary full style={styles.mb15} onPress={() => {
-              this.recommend()
-            }}>
-              <Text>建議儲位</Text>
-            </Button>            
+          <Button primary full style={styles.mb15} onPress={() => {
+            this.recommend()
+          }}>
+            <Text>建議儲位</Text>
+          </Button>
         </View>
       </Container>
     );

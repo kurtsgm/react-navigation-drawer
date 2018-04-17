@@ -17,6 +17,12 @@ import ProductSearch from './screens/products/search'
 import ProductStorages from './screens/products/storages'
 import ProductShelf from './screens/products/shelf'
 
+
+// Shelfs
+
+import ShelfSearch from './screens/shelves/search'
+import ShelfShow from './screens/shelves/show'
+
 import Header from "./screens/Header/";
 import Header1 from "./screens/Header/1";
 import Header2 from "./screens/Header/2";
@@ -125,6 +131,7 @@ const Drawer = DrawerNavigator(
     Home: { screen: Home },
     Receipt: {screen: Receipt},
     ProductSearch: {screen: ProductSearch},
+    ShelfSearch: {screen: ShelfSearch},
     Welcome: { screen: Welcome},
     Anatomy: { screen: Anatomy },
     Header: { screen: Header },
@@ -172,6 +179,9 @@ const AppNavigator = StackNavigator(
 
     ProductStorages: {screen: ProductStorages},
     ProductShelf: {screen: ProductShelf},
+
+
+    ShelfShow: {screen: ShelfShow},
 
     Header1: { screen: Header1 },
     Header2: { screen: Header2 },

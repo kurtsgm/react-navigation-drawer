@@ -1,11 +1,17 @@
 export default {
   container: {
     backgroundColor: "#FFF",
-    flex: 1
+    flex: 1,
   },
   text: {
     alignSelf: "center",
     marginBottom: 7
+  },
+  storage_title:{
+    alignSelf: "auto",
+  },
+  vertical_center:{
+    justifyContent: 'center'
   },
   mb: {
     marginBottom: 15

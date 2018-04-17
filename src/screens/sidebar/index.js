@@ -33,6 +33,13 @@ const datas = [
     bg: "#C5F442"
   },  
   {
+    name: '儲位查詢',
+    route: 'ShelfSearch',
+    icon: 'md-albums',
+    bg: "#C5F442"
+  },  
+
+  {
     name: "Anatomy",
     route: "Anatomy",
     icon: "phone-portrait",
