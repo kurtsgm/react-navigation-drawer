@@ -11,6 +11,10 @@ import Receipt from './screens/receipt'
 import ShowReceipt from './screens/receipt/show'
 import RecommendShelf from './screens/receipt/recommend' 
 
+// PickingLists
+import PickingLists from './screens/picking_list'
+import ShowPickingList from './screens/picking_list/show'
+
 
 // Products
 import ProductSearch from './screens/products/search'
@@ -130,6 +134,7 @@ const Drawer = DrawerNavigator(
   {
     Home: { screen: Home },
     Receipt: {screen: Receipt},
+    PickingLists: {screen:PickingLists},
     ProductSearch: {screen: ProductSearch},
     ShelfSearch: {screen: ShelfSearch},
     Welcome: { screen: Welcome},
@@ -176,6 +181,8 @@ const AppNavigator = StackNavigator(
 
     ShowReceipt: {screen: ShowReceipt},
     RecommendShelf: {screen: RecommendShelf},
+
+    ShowPickingList: {screen: ShowPickingList},
 
     ProductStorages: {screen: ProductStorages},
     ProductShelf: {screen: ProductShelf},

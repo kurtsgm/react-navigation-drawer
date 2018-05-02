@@ -13,6 +13,7 @@ export const GET_SHELVES = "GET_SHELVES"
 export const GET_RECEIPT = "GET_RECEIPT"
 export const GET_PRODUCTS = "GET_PRODUCTS"
 export const GET_SHELF_INFO = "GET_SHELF_INFO"
+export const GET_PICKING_LISTS = 'GET_PICKING_LISTS'
 
 const Actions = {
   OAUTH: {path: "/oauth/token",method: "POST"},
@@ -22,7 +23,9 @@ const Actions = {
   RECOMMEND_SHELF: {path: '/api/v1/receipts/{id}/recommend', method: "POST"},
   GET_SHELVES: {path: '/api/v1/shelves/', method: "GET"},
   GET_PRODUCTS: {path: '/api/v1/products/{barcode}', method: "GET"},
-  GET_SHELF_INFO: {path: '/api/v1/shelves/{token}', method: "GET"}
+  GET_SHELF_INFO: {path: '/api/v1/shelves/{token}', method: "GET"},
+  GET_PICKING_LISTS: {path: '/api/v1/picking_lists/', method: "GET"},
+
 }
 
 

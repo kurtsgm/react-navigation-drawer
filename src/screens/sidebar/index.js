@@ -27,6 +27,13 @@ const datas = [
     bg: "#C5F442"
   },
   {
+    name: '揀貨作業',
+    route: 'PickingLists',
+    icon: 'clipboard',
+    bg: "#C5F442"
+  },
+
+  {
     name: '庫存查詢',
     route: 'ProductSearch',
     icon: 'search',
