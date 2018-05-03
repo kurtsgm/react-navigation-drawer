@@ -19,12 +19,28 @@ import {
 } from "native-base";
 
 import styles from "./styles"
-import { apiFetch } from "../../api"
+import { apiFetch,GET_SHELVES } from "../../api"
+
 
 class ShelfMerge extends Component {
   constructor() {
     super()
+    this.state = {
+      shelves: []
+    }
+    this.reload = this.reload.bind(this)
   }
+
+  componentWillMount() {
+    this.reload()
+  }
+  reload(){
+    apiFetch(GET_SHELVES).then(data => {
+      this.setState({ shelves: data })
+      console.log(data)
+    })
+  }
+
   render() {
     let rows = []
     return (

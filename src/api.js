@@ -29,7 +29,7 @@ const Actions = {
 }
 
 
-export function apiFetch(action,data){      
+export function apiFetch(action,data={}){      
   let host
   if(__DEV__){
     host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
