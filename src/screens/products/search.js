@@ -69,7 +69,6 @@ class ProductSearch extends Component {
                 let barcode = event.nativeEvent.text
                 if(barcode){
                   apiFetch(GET_PRODUCTS, { barcode: barcode }).then(data => {
-                    console.log(data)
                     this.setState({ products: data,barcode:'' })
                   })  
                 }else{

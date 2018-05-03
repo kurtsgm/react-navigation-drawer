@@ -26,6 +26,7 @@ import ProductShelf from './screens/products/shelf'
 
 import ShelfSearch from './screens/shelves/search'
 import ShelfShow from './screens/shelves/show'
+import ShelfMerge from './screens/shelves/merge'
 
 import Header from "./screens/Header/";
 import Header1 from "./screens/Header/1";
@@ -137,6 +138,7 @@ const Drawer = DrawerNavigator(
     PickingLists: {screen:PickingLists},
     ProductSearch: {screen: ProductSearch},
     ShelfSearch: {screen: ShelfSearch},
+    ShelfMerge: {screen: ShelfMerge},
     Welcome: { screen: Welcome},
     Anatomy: { screen: Anatomy },
     Header: { screen: Header },

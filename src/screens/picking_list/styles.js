@@ -25,5 +25,8 @@ export default {
   },
   footer: {
     bottom: 0
+  },
+  red:{
+    color: 'red'
   }
 };

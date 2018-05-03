@@ -45,6 +45,13 @@ const datas = [
     icon: 'md-albums',
     bg: "#C5F442"
   },  
+  {
+    name: '儲位移動',
+    route: 'ShelfMerge',
+    icon: 'ios-log-in',
+    bg: "#C5F442"
+
+  },
 
   {
     name: "Anatomy",

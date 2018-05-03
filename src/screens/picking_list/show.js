@@ -21,7 +21,7 @@ import {
 
 
 import { Grid, Col } from "react-native-easy-grid";
-import { apiFetch} from "../../api"
+import { apiFetch } from "../../api"
 import styles from "./styles";
 
 const MODE_PICK_ALL = "集結"
@@ -31,32 +31,33 @@ class ShowPickingList extends Component {
   constructor(props) {
     super(props)
     const { params } = this.props.navigation.state;
-    this.state = {
+    this.state = Object.assign(ShowPickingList.arrange_items([], params.items),{
       picking_list: params,
-      items: ShowPickingList.arrange_items([],params.items),
       mode: MODE_PICK_ALL
-    }
+    })
+    this.item_generator = this.item_generator.bind(this)
     this.changeQuantity = this.changeQuantity.bind(this)
   }
 
-  static arrange_items(items,original_items){
+  static arrange_items(items, original_items) {
     let results = []
-    for(element of original_items) {
+    let shortage = []
+    for (let element of original_items) {
       let quantity = element.quantity
-      for(shelf of element.shelves){
-        if(quantity > 0 && shelf.pcs > 0 ){
+      for (let shelf of element.shelves) {
+        if (quantity > 0 && shelf.pcs > 0) {
           let found_item = null
           let ready_to_pick = Math.min(shelf.pcs, quantity)
-          for(exisiting_item of items){
-            if(shelf.storage_shelf_id == exisiting_item.storage_shelf_id){
+          for (let exisiting_item of items) {
+            if (shelf.storage_shelf_id == exisiting_item.storage_shelf_id) {
               found_item = exisiting_item
-              if(!found_item.manual_set){
+              if (!found_item.manual_set) {
                 found_item.ready_to_pick = ready_to_pick
               }
               break
             }
           }
-          if(!found_item){
+          if (!found_item) {
             found_item = {
               ready_to_pick: ready_to_pick,
               current_shelf: shelf.token,
@@ -65,38 +66,140 @@ class ShowPickingList extends Component {
               product_name: element.product_name,
               product_type_name: element.product_type_name,
               product_storage_id: element.product_storage_id,
-              manual_set: false}
+              manual_set: false
+            }
           }
           results.push(found_item)
           quantity -= found_item.ready_to_pick
         }
       }
+      if (quantity != 0) {
+        shortage.push({
+          product_name: element.product_name,
+          product_type_name: element.product_type_name,
+          product_storage_id: element.product_storage_id,
+          quantity: quantity
+        })
+      }
     }
-    console.log(results)
-    return results
+    return {
+      items: results,
+      shortage: shortage
+    }
   }
 
-  changeQuantity(storage_shelf_id,quantity){
+  changeQuantity(storage_shelf_id, quantity) {
     let items = this.state.items
     let target = null
     let total_quantity = 0
-    for(item of items){
-      if(item.storage_shelf_id == storage_shelf_id){
+    for (let item of items) {
+      if (item.storage_shelf_id == storage_shelf_id) {
         target = item
       }
     }
-    total_quantity = this.state.picking_list.items.reduce((value,i)=>{
-      return i.product_storage_id == target.product_storage_id ? value+i.quantity : value
-    },0)
-    target.ready_to_pick = Math.min(quantity,total_quantity)
+    total_quantity = this.state.picking_list.items.reduce((value, i) => {
+      return i.product_storage_id == target.product_storage_id ? value + i.quantity : value
+    }, 0)
+    target.ready_to_pick = Math.min(quantity, total_quantity)
     target.manual_set = true
 
-    this.setState({items:ShowPickingList.arrange_items(this.state.items,this.state.picking_list.items)})
+    this.setState(ShowPickingList.arrange_items(this.state.items, this.state.picking_list.items))
     return target.ready_to_pick
+  }
+
+  *item_generator(data_array){
+    for(let data of data_array){
+      yield(
+        <ListItem key={data.storage_shelf_id} product_storage_id={data.product_storage_id}>
+        <Grid>
+          <Col size={4} style={styles.vertical_center} >
+            <Text style={styles.storage_title} >
+              {data.product_name}
+            </Text>
+          </Col>
+          <Col size={2} style={styles.vertical_center} >
+            <Text>
+              {data.current_shelf}
+            </Text>
+          </Col>
+          <Col size={2} style={styles.vertical_center} >
+            <Input keyboardType='numeric'
+              value={data.ready_to_pick}
+              onChangeText={
+                (text) => {
+                  let items = this.state.items
+                  for (let item of items) {
+                    if (item.storage_shelf_id == data.storage_shelf_id) {
+                      item.ready_to_pick = text
+                      break
+                    }
+                  }
+                  this.setState(items)
+                }
+              }
+              onEndEditing={(event) => {
+                let value = this.changeQuantity(data.storage_shelf_id, event.nativeEvent.text)
+                event.nativeEvent.text = value
+              }} value={`${data.ready_to_pick}`} returnKeyType="done" />
+          </Col>
+          <Col size={2} style={styles.vertical_center} >
+            <Button primary>
+              <Text>確認</Text>
+            </Button>
+          </Col>
+        </Grid>
+      </ListItem>
+      )
+    }
   }
 
   render() {
     let picking_list = this.state.picking_list
+    let list_items = []
+    let prev_product_storage_id
+    let current_product_storage_id
+    let item_g = this.item_generator(this.state.items.sort((a, b) => a.product_storage_id - b.product_storage_id))
+    let done = false
+    while(!done){
+      let next = item_g.next()
+      let _item = next.value
+      done = next.done
+      if(_item){
+        current_product_storage_id = _item.props.product_storage_id
+      }
+
+      if(done || prev_product_storage_id && current_product_storage_id != prev_product_storage_id ){
+        for (let shortage of this.state.shortage) {
+          if (shortage.product_storage_id === prev_product_storage_id) {
+            list_items.push(
+              <ListItem key={`shortage-${shortage.product_storage_id}`}>
+                <Grid>
+                  <Col size={4} style={styles.vertical_center} >
+                    <Text style={styles.storage_title} >
+                      {shortage.product_name}
+                    </Text>
+                  </Col>
+                  <Col size={2} style={styles.vertical_center} >
+                    <Text style={styles.red}>
+                      {shortage.quantity > 0 ? '欠缺' : '過多'} 
+                      {shortage.quantity}
+                    </Text>
+                  </Col>
+                </Grid>
+              </ListItem>
+            )
+            break
+          }
+        }
+      }
+      if(_item){
+        list_items.push(_item)
+      }
+
+      prev_product_storage_id = current_product_storage_id
+    }
+
+
     return (
       <Container style={styles.container}>
         <Header>
@@ -113,43 +216,16 @@ class ShowPickingList extends Component {
           </Body>
           <Right>
             <Button bordered primary small>
-            <Text>
-            {this.state.mode}
-            </Text>
+              <Text>
+                {this.state.mode}
+              </Text>
             </Button>
           </Right>
         </Header>
         <Content>
           <List>
-            {this.state.items.map((data,index )=> {
-              console.log(data.ready_to_pick)
-              return <ListItem key={data.storage_shelf_id}>
-                <Grid>
-                  <Col size={4} style={styles.vertical_center} >
-                    <Text style={styles.storage_title} >
-                      {data.product_name}
-                    </Text>
-                  </Col>
-                  <Col size={2} style={styles.vertical_center} >
-                  <Text>
-                    {data.current_shelf} / {data.storage_shelf_id}
-                  </Text>
-                  </Col>
-                  <Col size={2} style={styles.vertical_center} >
-                  <Input keyboardType='numeric' onEndEditing={(event)=>{
-                    let value = this.changeQuantity(data.storage_shelf_id,event.nativeEvent.text)
-                    event.nativeEvent.text = value
-                    console.log(event.nativeEvent.text)
-                  }} value={`${data.ready_to_pick }`} returnKeyType="done"/>
-                  </Col>
-                  <Col size={2} style={styles.vertical_center} >
-                    <Button primary>
-                      <Text>確認</Text>
-                    </Button>
-                  </Col>
-                </Grid>
-              </ListItem>
-            })
+            {
+              list_items
             }
           </List>
         </Content>
