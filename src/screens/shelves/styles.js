@@ -15,5 +15,18 @@ export default {
   blue: {
     color: "blue"
     
+  },
+  orange: {
+    color: "orange",
+  },
+  highlight:{
+    fontSize: 28
+  },
+  center:{
+    justifyContent: 'center',
+    alignSelf: "center",
+  },
+  footer: {
+    bottom: 0
   }
 };
