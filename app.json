@@ -1,6 +1,9 @@
 {
   "expo": {
     "sdkVersion": "26.0.0",
+    "android":{
+      "package": "com.ibiza.sdj"
+    },
     "icon": "./assets/icon.png",
     "slug": "nativebasekitchensink",
     "loading": {
