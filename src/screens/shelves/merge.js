@@ -117,7 +117,7 @@ class ShelfMerge extends Component {
           </Left>
           <Body>
             <Title>
-              合併儲位
+              合併／移動儲位
             </Title>
           </Body>
           <Right></Right>
