@@ -18,6 +18,7 @@ import {
 } from "native-base";
 import styles from "./styles";
 
+
 class ShelfShow extends Component {
   constructor(props) {
     super(props)
@@ -38,10 +39,16 @@ class ShelfShow extends Component {
             </Button>
           </Left>
           <Body>
-            <Title>
-              廠商名稱：{shelf.shop_name}
-            </Title>
+            <Text>
+            {shelf.token}
+            </Text>
           </Body>
+          <Right>
+            <Title>
+              {shelf.shop_name}
+            </Title>
+
+          </Right>
         </Header>
 
         <Content>
@@ -52,7 +59,7 @@ class ShelfShow extends Component {
                   shelf.storages.map(storage => {
 
                     return <ListItem key={storage.id} button onPress={() => {
-                      // this.props.navigation.navigate("ProductShelf",storage.shelf_storages)
+                      this.props.navigation.navigate("ShelfProduct",storage)
                     }
                     }>
                       <Left>

@@ -51,7 +51,7 @@ class ShelfMerge extends Component {
   }
   reload() {
     apiFetch(GET_SHELVES).then(data => {
-      this.setState({ shelves: data })
+      this.setState(Object.assign(init_state,{ shelves: data }))
     })
   }
 
@@ -97,7 +97,7 @@ class ShelfMerge extends Component {
       shelf_storages: this.state.products.filter(p=>p.checked).map(p=>p.id)
     }).then(data => {
       if(data.status == "success"){
-        this.setState(init_state)
+        this.reload()
         Alert.alert("系統訊息", "已成功轉移")
       }else{
         Alert.alert("系統訊息", `錯誤，${data.message}`)

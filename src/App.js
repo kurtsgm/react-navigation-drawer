@@ -27,6 +27,7 @@ import ProductShelf from './screens/products/shelf'
 import ShelfSearch from './screens/shelves/search'
 import ShelfShow from './screens/shelves/show'
 import ShelfMerge from './screens/shelves/merge'
+import ShelfProduct from './screens/shelves/product'
 
 import Header from "./screens/Header/";
 import Header1 from "./screens/Header/1";
@@ -191,6 +192,7 @@ const AppNavigator = StackNavigator(
 
 
     ShelfShow: {screen: ShelfShow},
+    ShelfProduct: {screen: ShelfProduct},
 
     Header1: { screen: Header1 },
     Header2: { screen: Header2 },
