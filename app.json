@@ -5,7 +5,7 @@
       "package": "com.ibiza.sdj"
     },
     "icon": "./assets/icon.png",
-    "slug": "nativebasekitchensink",
+    "slug": "ibiza_sdj",
     "loading": {
       "hideExponentText": true,
       "backgroundImage": "./assets/splashscreen.png"
