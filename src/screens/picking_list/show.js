@@ -25,7 +25,7 @@ import {
 
 
 import { Grid, Col } from "react-native-easy-grid";
-import { apiFetch } from "../../api"
+import { apiFetch, CONFIRM_PICKING } from "../../api"
 import styles from "./styles";
 
 
@@ -35,11 +35,12 @@ class ShowPickingList extends Component {
     const { params } = this.props.navigation.state;
 
     let orders = {}
+    console.log(params.orders)
     for (let order of params.orders) {
       for (let product of order.products) {
         for (let storage of product.storages) {
-          orders[storage.id] = orders[storage.id] || []
-          orders[storage.id].push({
+          orders[storage.product_storage_id] = orders[storage.product_storage_id] || []
+          orders[storage.product_storage_id].push({
             picking_index: order.picking_index,
             quantity: storage.quantity
           })
@@ -61,7 +62,7 @@ class ShowPickingList extends Component {
     let results = []
     let shortage = []
     for (let element of original_items) {
-      let quantity = element.quantity
+      let quantity = element.quantity - element.picked_quantity
       for (let shelf of element.shelves) {
         if (quantity > 0 && shelf.pcs > 0) {
           let found_item = null
@@ -78,12 +79,13 @@ class ShowPickingList extends Component {
           if (!found_item) {
             found_item = {
               ready_to_pick: ready_to_pick,
-              current_shelf: shelf.token,
+              item_id: element.id,
+              shelf_token: shelf.token,
               storage_shelf_id: shelf.storage_shelf_id,
               shelves: element.shelves,
-              product_name: element.product_name,
               product_type_name: element.product_type_name,
               product_storage_id: element.product_storage_id,
+              done: false,
               manual_set: false
             }
           }
@@ -104,6 +106,16 @@ class ShowPickingList extends Component {
       items: results,
       shortage: shortage
     }
+  }
+  confirm_pick(item_id, shelf_token, quantity) {
+    apiFetch(CONFIRM_PICKING, {
+      id: this.state.picking_list.id,
+      shelf_token: shelf_token,
+      item_id: item_id,
+      quantity: quantity
+    }).then(data => {
+      console.log(data)
+    })
   }
 
   changeMode() {
@@ -136,7 +148,7 @@ class ShowPickingList extends Component {
           <Grid>
             <Col size={4} style={styles.vertical_center} >
               <Text>
-                {data.current_shelf}
+                {data.shelf_token}
               </Text>
             </Col>
             <Col size={4} style={styles.vertical_center} >
@@ -161,7 +173,9 @@ class ShowPickingList extends Component {
                 }} value={`${data.ready_to_pick}`} returnKeyType="done" />
             </Col>
             <Col size={2} style={styles.vertical_center} >
-              <Button primary>
+              <Button primary onPress={() => {
+                this.confirm_pick(data.item_id, data.shelf_token, data.ready_to_pick)
+              }}>
                 <Text>確認</Text>
               </Button>
             </Col>
@@ -173,93 +187,123 @@ class ShowPickingList extends Component {
 
   render() {
     let picking_list = this.state.picking_list
-    let list_items = []
-    let prev_product_storage_id
-    let current_product_storage_id
     let item_g = this.item_generator(this.state.items.sort((a, b) => a.product_storage_id - b.product_storage_id))
     let done = false
-    console.log(this.state.storage_orders)
+    let list_items = []
+    let sectors = this.state.picking_list.items.map(item => {
+      return {
+        product_storage_id: item.product_storage_id,
+        picked_quantity: item.picked_quantity,
+        product_name: item.product_name,
+        product_expiration_date: item.product_expiration_date,
+        quantity: item.quantity,
+        items: [],
+        shortage: null,
+        orders: null
+      }
+    })
+
     while (!done) {
       let next = item_g.next()
       let _item = next.value
+      let sector = sectors[0]
       done = next.done
-      if (_item) {
-        current_product_storage_id = _item.props.product_storage_id
+      if (!_item) {
+        break
       }
-
-
-      if (done || prev_product_storage_id && current_product_storage_id != prev_product_storage_id) {
-        for (let shortage of this.state.shortage) {
-          if (shortage.product_storage_id === prev_product_storage_id) {
-            list_items.push(
-              <ListItem key={`shortage-${shortage.product_storage_id}`}>
-                <Col size={4} style={styles.vertical_center} >
-                  <Text style={styles.red}>
-
-                    {shortage.quantity > 0 ? '欠缺' : '過多'}
-                  </Text>
-                </Col>
-                <Col size={4} style={styles.vertical_center} >
-                  <Text style={styles.red}>
-                    {shortage.quantity}
-                  </Text>
-                </Col>
-                <Col size={2} style={styles.vertical_center} >
-                </Col>
-
-              </ListItem>
-            )
+      if (sector.product_storage_id != _item.props.product_storage_id) {
+        for (let s of sectors) {
+          if (s.product_storage_id == _item.props.product_storage_id) {
+            sector = s
+            s.items.push(_item)
             break
           }
         }
-        if (this.state.show_order) {
-          list_items.push(<Content padder>
-            <Card style={styles.mb} key={`card-${prev_product_storage_id}`}>
-              <CardItem header bordered>
-                <Text>訂單序號 - 商品數</Text>
-              </CardItem>
-              {
-                this.state.storage_orders[prev_product_storage_id].map((order) => {
-                  return <CardItem key={`${prev_product_storage_id}-orders-${order.picking_index}`}>
-                    <Badge
-                      style={{
-                        borderRadius: 3,
-                        height: 25,
-                        width: 72,
-                        backgroundColor: "black"
-                      }}
-                      textStyle={{ color: "white" }}
-                    >
-                      <Text>{order.picking_index}</Text>
-                    </Badge>
+      }
+    }
+    for(sector of sectors){
+      for (let shortage of this.state.shortage) {
+        if (shortage.product_storage_id === sector.product_storage_id) {
+          sector.shortage =
+            <ListItem key={`shortage-${shortage.product_storage_id}`}>
+              <Col size={4} style={styles.vertical_center} >
+                <Text style={styles.red}>
 
-                    <Text> - x {order.quantity} </Text>
-
-                  </CardItem>
-
-                })
-              }
-            </Card>
-          </Content>)
+                  {shortage.quantity > 0 ? '欠缺' : '過多'}
+                </Text>
+              </Col>
+              <Col size={4} style={styles.vertical_center} >
+                <Text style={styles.red}>
+                  {shortage.quantity}
+                </Text>
+              </Col>
+              <Col size={2} style={styles.vertical_center} >
+              </Col>
+            </ListItem>
+          break
         }
       }
-      if (_item && current_product_storage_id != prev_product_storage_id) {
-        list_items.push(<ListItem itemDivider key={`divider-${current_product_storage_id}`}>
-          <Text>{_item.props.product_name}</Text>
-        </ListItem>
-        )
-      }
+      sector.orders = <Content padder key={`card-${sector.product_storage_id}`} >
+        <Card style={styles.mb}>
+          <CardItem header bordered>
+            <Text>訂單序號 - 商品數</Text>
+          </CardItem>
+          {
+            this.state.storage_orders[sector.product_storage_id].map((order) => {
+              return <CardItem key={`${sector.product_storage_id}-orders-${order.picking_index}`}>
+                <Badge
+                  style={{
+                    borderRadius: 3,
+                    height: 25,
+                    width: 72,
+                    backgroundColor: "black"
+                  }}
+                  textStyle={{ color: "white" }}
+                >
+                  <Text>{order.picking_index}</Text>
+                </Badge>
 
-      if (_item) {
+                <Text> - x {order.quantity} </Text>
+
+              </CardItem>
+
+            })
+          }
+        </Card>
+      </Content>
+    }
+
+
+    for (let _sector of sectors) {
+      list_items.push(
+        <ListItem itemDivider key={`divider-${_sector.product_storage_id}`}>
+          <Body>
+          <Text>{_sector.product_name}</Text>
+          </Body>
+          <Right>
+            <Text>
+              已揀
+              {_sector.picked_quantity}
+              /
+              {_sector.quantity}
+            </Text>
+          </Right>
+        </ListItem>
+      )
+      for (_item of _sector.items) {
         list_items.push(_item)
       }
-
-      prev_product_storage_id = current_product_storage_id
+      if(_sector.shortage){
+        list_items.push(_sector.shortage)
+      }
+      if(_sector.orders && this.state.show_order){
+        list_items.push(_sector.orders)        
+      }
     }
 
 
     return (
-      <Container style={styles.container}>
+      <Container style={styles.container} >
         <Header>
           <Left>
             <Button

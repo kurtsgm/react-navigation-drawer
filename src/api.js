@@ -15,6 +15,7 @@ export const GET_PRODUCTS = "GET_PRODUCTS"
 export const GET_SHELF_INFO = "GET_SHELF_INFO"
 export const GET_PICKING_LISTS = 'GET_PICKING_LISTS'
 export const MERGE_SHELVES = 'MERGE_SHELVES'
+export const CONFIRM_PICKING = 'CONFIRM_PICKING'
 
 
 const Actions = {
@@ -27,6 +28,7 @@ const Actions = {
   GET_PRODUCTS: {path: '/api/v1/products/{barcode}', method: "GET"},
   GET_SHELF_INFO: {path: '/api/v1/shelves/{token}', method: "GET"},
   GET_PICKING_LISTS: {path: '/api/v1/picking_lists/', method: "GET"},
+  CONFIRM_PICKING: {path: '/api/v1/picking_lists/{id}/pick', method: "POST"},
   MERGE_SHELVES: {path:'/api/v1/shelves/merge', method: "POST"},
 
 }
