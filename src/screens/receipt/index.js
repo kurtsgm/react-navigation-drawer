@@ -28,15 +28,27 @@ class Receipt extends Component {
       receipts: []
     }
     this.reload = this.reload.bind(this)
+    this.onReceiptUpdate = this.onReceiptUpdate.bind(this)
   }
   componentWillMount() {
     this.reload()
   }
   reload() {
     apiFetch(GET_RECEIPTS,{}).then((_data) => {
-      console.log(_data)
       this.setState({ receipts: _data })
     })
+  }
+  
+  onReceiptUpdate(receipt){
+    let receipts = this.state.receipts
+    for(let _r of receipts){
+      if(_r.id == receipt.id){
+        _r.items = receipt.items
+        this.setState({receipts:receipts})
+        return
+      }
+    }
+
   }
 
   render() {
@@ -54,7 +66,7 @@ class Receipt extends Component {
       }
       rows.push(
         <ListItem key={receipt.barcode} button onPress={() => 
-          this.props.navigation.navigate("ShowReceipt",receipt)}>
+          this.props.navigation.navigate("ShowReceipt",{receipt:receipt,onReceiptUpdate:this.onReceiptUpdate})}>
           <Left>
             <Text>
               {receipt.shop_name + " " + receipt.barcode}

@@ -1,7 +1,7 @@
 import React from "react";
 import { Root } from "native-base";
 import { StackNavigator, DrawerNavigator } from "react-navigation";
-
+import {StatusBar} from 'react-native'
 
 
 import Home from "./screens/home/";
@@ -287,6 +287,7 @@ const AppNavigator = StackNavigator(
 
 export default () =>
   <Root>
+    <StatusBar hidden={true} />
     <AppNavigator />
   </Root>;
 

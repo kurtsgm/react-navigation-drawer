@@ -225,7 +225,7 @@ class ShelfMerge extends Component {
               this.merge()
             }}>
               <Text>確認移入</Text>
-            </Button> : ''
+            </Button> : null
            }
         </View>
       </Container>

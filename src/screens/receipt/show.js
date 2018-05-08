@@ -27,11 +27,11 @@ import styles from "./styles";
 class ShowReceipt extends Component {
   constructor(props) {
     super(props)
-    const { params } = this.props.navigation.state;
+    const { receipt } = this.props.navigation.state.params;
     this.state = {
-      receipt_id: params.id,
-      receipt_title: params.barcode,
-      items: params.items.map((item) => {
+      receipt_id: receipt.id,
+      receipt_title: receipt.barcode,
+      items: receipt.items.map((item) => {
         return {
           ready_to_receive: 0,
           id: item.id,
@@ -41,7 +41,7 @@ class ShowReceipt extends Component {
           box_count: item.box_count,
           pcs_per_box: item.pcs_per_box
         }
-      })
+      }),
     }
     this.recommend = this.recommend.bind(this)
     this.reload = this.reload.bind(this)
@@ -66,6 +66,7 @@ class ShowReceipt extends Component {
           }
         })
       })
+      this.props.navigation.state.params.onReceiptUpdate(data)
     });
   }
   onReceived() {
@@ -139,7 +140,8 @@ class ShowReceipt extends Component {
                       null
                       :
                       <Button bordered light block primary onPress={() => {
-                        let quantities = [...Array(data.box_count - data.received_count + 1).keys()].map(i => i.toString())
+                        let quantities = [...Array(data.box_count - data.received_count + 1)].map((v,index) => index.toString())
+                        console.log(quantities)
                         ActionSheet.show(
                           {
                             options: quantities,

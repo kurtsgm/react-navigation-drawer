@@ -69,6 +69,7 @@ export function apiFetch(action,data={}){
     )
   }
   console.log(url)
+  console.log(data)
   return fetch(url, options).then((response)=>{
     return response.json();
   })

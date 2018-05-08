@@ -33,9 +33,9 @@ class ShelfProduct extends Component {
 
   adjust(){
     apiFetch(ADJUST_SHELF_QUANTITY,{
-      id: this.state.shelf_storage_id,
+      shelf_storage_id: this.state.shelf_storage_id,
       token: this.state.shelf_token,
-      pcs: this.state.pcs
+      quantity: this.state.pcs
     }).then(data=>{
       this.props.navigation.state.params.reload()
       this.props.navigation.goBack()
@@ -135,7 +135,7 @@ class ShelfProduct extends Component {
               this.adjust()
             }}>
               <Text>確認修改</Text>
-            </Button> : ''
+            </Button> : null
            }
         </View>
       </Container>
