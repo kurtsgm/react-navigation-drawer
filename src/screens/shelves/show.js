@@ -18,15 +18,26 @@ import {
 } from "native-base";
 import styles from "./styles";
 
+import { apiFetch, GET_SHELF_INFO } from "../../api"
 
 class ShelfShow extends Component {
   constructor(props) {
     super(props)
+    const { params: shelf } = this.props.navigation.state;
+    this.state = {
+      shelf: shelf
+    }
+    this.reload = this.reload.bind(this)
+  }
+
+
+  reload(){
+
+    apiFetch(GET_SHELF_INFO, { token: this.state.shelf.token }).then(data => {
+      this.setState({shelf:data})
+    })  
   }
   render() {
-    const { params: shelf } = this.props.navigation.state;
-
-    console.log(shelf)
     return (
       <Container style={styles.container}>
         <Header>
@@ -40,12 +51,12 @@ class ShelfShow extends Component {
           </Left>
           <Body>
             <Text>
-            {shelf.token}
+            {this.state.shelf.token}
             </Text>
           </Body>
           <Right>
             <Title>
-              {shelf.shop_name}
+              {this.state.shelf.shop_name}
             </Title>
 
           </Right>
@@ -53,15 +64,14 @@ class ShelfShow extends Component {
 
         <Content>
           {
-            shelf.storages.length > 0 ?
+            this.state.shelf.storages.length > 0 ?
               <List>
                 {
-                  shelf.storages.map(storage => {
+                  this.state.shelf.storages.map(storage => {
 
                     return <ListItem key={storage.id} button onPress={() => {
-                      this.props.navigation.navigate("ShelfProduct",storage)
-                    }
-                    }>
+                      this.props.navigation.navigate("ShelfProduct",{storage: storage, reload: this.reload,shelf_token:this.state.shelf.token})                    
+                    }}>
                       <Left>
                         <Text>
                           {

@@ -18,23 +18,31 @@ import {
   Item
 } from "native-base";
 import styles from "./styles";
-
+import { apiFetch, ADJUST_SHELF_QUANTITY } from "../../api"
 class ShelfProduct extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      pcs: this.props.navigation.state.params.pcs,
+      pcs: this.props.navigation.state.params.storage.pcs,
+      shelf_storage_id: this.props.navigation.state.params.storage.id,
+      shelf_token: this.props.navigation.state.params.shelf_token,
       dirty: false
     }
     this.adjust = this.adjust.bind(this)
   }
 
   adjust(){
-
+    apiFetch(ADJUST_SHELF_QUANTITY,{
+      id: this.state.shelf_storage_id,
+      token: this.state.shelf_token,
+      pcs: this.state.pcs
+    }).then(data=>{
+      this.props.navigation.state.params.reload()
+      this.props.navigation.goBack()
+    })
   }
   render() {
-    const { params: storage } = this.props.navigation.state;
-    console.log(this.state)
+    const { storage } = this.props.navigation.state.params;
     return (
       <Container style={styles.container}>
         <Header>

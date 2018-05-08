@@ -13,6 +13,8 @@ export const GET_SHELVES = "GET_SHELVES"
 export const GET_RECEIPT = "GET_RECEIPT"
 export const GET_PRODUCTS = "GET_PRODUCTS"
 export const GET_SHELF_INFO = "GET_SHELF_INFO"
+export const ADJUST_SHELF_QUANTITY = "ADJUST_SHELF_QUANTITY"
+
 export const GET_PICKING_LISTS = 'GET_PICKING_LISTS'
 export const MERGE_SHELVES = 'MERGE_SHELVES'
 export const CONFIRM_PICKING = 'CONFIRM_PICKING'
@@ -30,14 +32,14 @@ const Actions = {
   GET_PICKING_LISTS: {path: '/api/v1/picking_lists/', method: "GET"},
   CONFIRM_PICKING: {path: '/api/v1/picking_lists/{id}/pick', method: "POST"},
   MERGE_SHELVES: {path:'/api/v1/shelves/merge', method: "POST"},
-
+  ADJUST_SHELF_QUANTITY: {path: '/api/v1/shelves/{token}/adjust',method: "POST"} 
 }
 
 
 export function apiFetch(action,data={}){      
   let host
   if(__DEV__){
-    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
+    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000/")
   }else{
     host = "TODO"
   }
