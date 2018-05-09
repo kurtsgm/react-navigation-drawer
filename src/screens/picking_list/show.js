@@ -35,7 +35,6 @@ class ShowPickingList extends Component {
     const { params } = this.props.navigation.state;
 
     let orders = {}
-    console.log(params.orders)
     for (let order of params.orders) {
       for (let product of order.products) {
         for (let storage of product.storages) {
@@ -47,6 +46,7 @@ class ShowPickingList extends Component {
         }
       }
     }
+    console.log(params.items)
     this.state = Object.assign(ShowPickingList.arrange_items([], params.items), {
       picking_list: params,
       show_order: false,
@@ -85,6 +85,7 @@ class ShowPickingList extends Component {
               shelves: element.shelves,
               product_type_name: element.product_type_name,
               product_storage_id: element.product_storage_id,
+              pcs: shelf.pcs,
               done: false,
               manual_set: false
             }
@@ -114,7 +115,17 @@ class ShowPickingList extends Component {
       item_id: item_id,
       quantity: quantity
     },data => {
+      let items = this.state.items
+      for(let item of this.state.items){
+        if(item.shelf_token==shelf_token && item.item_id == item_id){
+          item.done = true
+          break
+        }
+      }
+
       console.log(data)
+
+      this.setState({items:items,picking_list: data.picking_list})
     })
   }
 
@@ -126,6 +137,7 @@ class ShowPickingList extends Component {
     let items = this.state.items
     let target = null
     let total_quantity = 0
+    let others_quantity = 0
     for (let item of items) {
       if (item.storage_shelf_id == storage_shelf_id) {
         target = item
@@ -134,7 +146,14 @@ class ShowPickingList extends Component {
     total_quantity = this.state.picking_list.items.reduce((value, i) => {
       return i.product_storage_id == target.product_storage_id ? value + i.quantity : value
     }, 0)
-    target.ready_to_pick = Math.min(quantity, total_quantity)
+    others_quantity = this.state.items.reduce((value, i) => {
+      return i.product_storage_id == target.product_storage_id && i.storage_shelf_id != target.storage_shelf_id ? value + i.ready_to_pick : value
+    }, 0)
+    console.log(total_quantity)
+    console.log(others_quantity)
+    console.log(this.state.items)
+
+    target.ready_to_pick = Math.min(quantity, total_quantity - others_quantity ,target.pcs)
     target.manual_set = true
 
     this.setState(ShowPickingList.arrange_items(this.state.items, this.state.picking_list.items))
@@ -152,32 +171,38 @@ class ShowPickingList extends Component {
               </Text>
             </Col>
             <Col size={4} style={styles.vertical_center} >
-              <Input keyboardType='numeric'
-                value={data.ready_to_pick}
-                textAlign={'center'}
-                onChangeText={
-                  (text) => {
-                    let items = this.state.items
-                    for (let item of items) {
-                      if (item.storage_shelf_id == data.storage_shelf_id) {
-                        item.ready_to_pick = text
-                        break
-                      }
-                    }
-                    this.setState(items)
-                  }
-                }
-                onEndEditing={(event) => {
-                  let value = this.changeQuantity(data.storage_shelf_id, event.nativeEvent.text)
-                  event.nativeEvent.text = value
-                }} value={`${data.ready_to_pick}`} returnKeyType="done" />
+            { data.done ? <Text style={{"color":"green"}}>{data.ready_to_pick}</Text> :
+                            <Input keyboardType='numeric'
+                            value={data.ready_to_pick}
+                            textAlign={'center'}
+                            onChangeText={
+                              (text) => {
+                                let items = this.state.items
+                                for (let item of items) {
+                                  if (item.storage_shelf_id == data.storage_shelf_id) {
+                                    item.ready_to_pick = text
+                                    break
+                                  }
+                                }
+                                this.setState(items)
+                              }
+                            }
+                            onEndEditing={(event) => {
+                              let value = this.changeQuantity(data.storage_shelf_id, event.nativeEvent.text)
+                              event.nativeEvent.text = value
+                            }} value={`${data.ready_to_pick}`} returnKeyType="done" />
+
+            }
+
             </Col>
             <Col size={2} style={styles.vertical_center} >
-              <Button primary onPress={() => {
-                this.confirm_pick(data.item_id, data.shelf_token, data.ready_to_pick)
-              }}>
-                <Text>確認</Text>
-              </Button>
+            { data.done ? null :
+                <Button primary onPress={() => {
+                  this.confirm_pick(data.item_id, data.shelf_token, data.ready_to_pick)
+                }}>
+                  <Text>確認</Text>
+                </Button>
+            }
             </Col>
           </Grid>
         </ListItem>
@@ -206,22 +231,18 @@ class ShowPickingList extends Component {
     while (!done) {
       let next = item_g.next()
       let _item = next.value
-      let sector = sectors[0]
       done = next.done
       if (!_item) {
         break
       }
-      if (sector.product_storage_id != _item.props.product_storage_id) {
-        for (let s of sectors) {
-          if (s.product_storage_id == _item.props.product_storage_id) {
-            sector = s
-            s.items.push(_item)
-            break
-          }
+      for (let s of sectors) {
+        if (s.product_storage_id == _item.props.product_storage_id) {
+          s.items.push(_item)
+          break
         }
       }
     }
-    for(sector of sectors){
+    for(let sector of sectors){
       for (let shortage of this.state.shortage) {
         if (shortage.product_storage_id === sector.product_storage_id) {
           sector.shortage =
@@ -290,7 +311,7 @@ class ShowPickingList extends Component {
           </Right>
         </ListItem>
       )
-      for (_item of _sector.items) {
+      for (let _item of _sector.items) {
         list_items.push(_item)
       }
       if(_sector.shortage){
