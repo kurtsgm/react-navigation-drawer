@@ -12,7 +12,7 @@ export default {
     flex: 1,
     marginTop: deviceHeight / 10,
     marginBottom: 30,
-    alignItems:'center' 
+    alignItems:'center'
   },
   logo: {
     position: "absolute",
@@ -22,7 +22,7 @@ export default {
     height: 50
   },
   text: {
-    color: "#FFF",
+    color: "black",
     bottom: 6,
     marginTop: 5
   },

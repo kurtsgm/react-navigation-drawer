@@ -50,7 +50,7 @@ class ProductSearch extends Component {
         <Header searchBar rounded>
         <Left>
           <Button
-          
+
             transparent
             onPress={() => {
               Keyboard.dismiss()
@@ -61,16 +61,16 @@ class ProductSearch extends Component {
           </Button>
         </Left>
           <Item>
-            <Input placeholder="Search" placeholder="請輸入或者掃描條碼" autoFocus={true} 
-            value={this.state.barcode} 
+            <Input placeholder="Search" placeholder="請輸入或者掃描條碼" autoFocus={true}
+            value={this.state.barcode}
             onChangeText={(text) => this.setState({ barcode: text })}
             onEndEditing={
               (event) => {
                 let barcode = event.nativeEvent.text
                 if(barcode){
-                  apiFetch(GET_PRODUCTS, { barcode: barcode }).then(data => {
+                  apiFetch(GET_PRODUCTS, { barcode: barcode },data => {
                     this.setState({ products: data,barcode:'' })
-                  })  
+                  })
                 }else{
                   this.setState({ products: [] })
                 }

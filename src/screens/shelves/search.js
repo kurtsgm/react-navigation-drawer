@@ -48,14 +48,14 @@ class ShelfSearch extends Component {
           </Button>
         </Left>
           <Item>
-            <Input placeholder="Search" placeholder="請輸入或者掃描條碼" 
-              value={this.state.barcode} 
+            <Input placeholder="Search" placeholder="請輸入或者掃描條碼"
+              value={this.state.barcode}
               onChangeText={(text) => this.setState({ barcode: text.toUpperCase() })}
               autoFocus={true} onEndEditing={
               (event) => {
                 let token = event.nativeEvent.text
                 if(token){
-                  apiFetch(GET_SHELF_INFO, { token: token.toUpperCase() }).then(data => {
+                  apiFetch(GET_SHELF_INFO, { token: token.toUpperCase() },data => {
                     if(data){
                       this.props.navigation.navigate("ShelfShow",data)
                     }else{
@@ -64,7 +64,7 @@ class ShelfSearch extends Component {
                         buttonText: "OK"
                       })
                     }
-                  })  
+                  })
                 }else{
                   this.setState({ })
                 }

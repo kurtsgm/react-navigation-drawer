@@ -33,9 +33,9 @@ class ShelfShow extends Component {
 
   reload(){
 
-    apiFetch(GET_SHELF_INFO, { token: this.state.shelf.token }).then(data => {
+    apiFetch(GET_SHELF_INFO, { token: this.state.shelf.token },data => {
       this.setState({shelf:data})
-    })  
+    })
   }
   render() {
     return (
@@ -70,7 +70,7 @@ class ShelfShow extends Component {
                   this.state.shelf.storages.map(storage => {
 
                     return <ListItem key={storage.id} button onPress={() => {
-                      this.props.navigation.navigate("ShelfProduct",{storage: storage, reload: this.reload,shelf_token:this.state.shelf.token})                    
+                      this.props.navigation.navigate("ShelfProduct",{storage: storage, reload: this.reload,shelf_token:this.state.shelf.token})
                     }}>
                       <Left>
                         <Text>

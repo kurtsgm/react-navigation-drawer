@@ -36,7 +36,7 @@ class ShelfProduct extends Component {
       shelf_storage_id: this.state.shelf_storage_id,
       token: this.state.shelf_token,
       quantity: this.state.pcs
-    }).then(data=>{
+    },data=>{
       this.props.navigation.state.params.reload()
       this.props.navigation.goBack()
     })
@@ -56,7 +56,7 @@ class ShelfProduct extends Component {
           </Left>
           <Body>
             <Text>
-              {storage.product_storage.product.name}            
+              {storage.product_storage.product.name}
             </Text>
           </Body>
           <Right>
@@ -111,19 +111,19 @@ class ShelfProduct extends Component {
               </Left>
               <Right>
               <Item success >
-              <Input keyboardType='numeric' textAlign={'right'} 
+              <Input keyboardType='numeric' textAlign={'right'}
               value={`${this.state.pcs}`}
               onChangeText={
                 (text) => {
                   this.setState({pcs:text})
                 }
               }
-              onEndEditing={(event) => {this.setState({dirty:true})}} 
+              onEndEditing={(event) => {this.setState({dirty:true})}}
               returnKeyType="done" />
 
               </Item>
 
-              
+
               </Right>
             </CardItem>
 

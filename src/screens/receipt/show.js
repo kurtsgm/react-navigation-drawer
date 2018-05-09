@@ -83,7 +83,7 @@ class ShowReceipt extends Component {
     apiFetch(RECOMMEND_SHELF, {
       id: this.state.receipt_id,
       items: items
-    }).then((data) => {
+    },(data) => {
       if (data.status == "success") {
         this.props.navigation.navigate("RecommendShelf",
           {

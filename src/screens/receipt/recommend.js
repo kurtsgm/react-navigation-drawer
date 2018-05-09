@@ -16,7 +16,7 @@ import {
 } from "native-base";
 
 import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
- 
+
 import { Grid, Col } from "react-native-easy-grid";
 import { apiFetch, RECEIVE_RECEIPT } from "../../api"
 import styles from "./styles";
@@ -43,7 +43,7 @@ class RecommendShelf extends Component {
       id: this.props.receipt_id,
       shelf_id: this.state.shelf_id,
       items: items
-    }).then((data) => {
+    },(data) => {
       if (data.status == "success") {
         this.props.navigation.state.params.onReceived()
         this.props.navigation.goBack()

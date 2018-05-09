@@ -18,7 +18,7 @@ import styles from "./style";
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 const drawerCover = require("../../../assets/drawer-cover.png");
-const drawerImage = require("../../../assets/logo-kitchen-sink.png");
+const drawerImage = require("../../../assets/logo-wms.png");
 const datas = [
   {
     name: '入倉作業',

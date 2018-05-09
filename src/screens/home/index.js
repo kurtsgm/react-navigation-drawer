@@ -10,7 +10,7 @@ import * as AppActions from '../../redux/actions/AppAction'
 import {apiFetch,API_OAUTH} from "../../api"
 
 const launchscreenBg = require("../../../assets/launchscreen-bg.png");
-const launchscreenLogo = require("../../../assets/logo-kitchen-sink.png");
+const launchscreenLogo = require("../../../assets/logo-wms.png");
 
 class Home extends Component {
   constructor(props){
@@ -32,7 +32,7 @@ class Home extends Component {
         username: this.state.username,
         password: this.state.password,
         grant_type: 'password'
-      }).then((data)=>{
+      },(data)=>{
         if(data.access_token){
           this.props.setToken(data.access_token)
           navigate('Welcome')
@@ -50,7 +50,7 @@ class Home extends Component {
         username: 'a',
         password: 'qwertyui',
         grant_type: 'password'
-      }).then((data)=>{
+      },(data)=>{
         if(data.access_token){
           this.props.setToken(data.access_token)
           navigate('Welcome')
@@ -77,11 +77,11 @@ class Home extends Component {
               <Form>
                 <Item fixedLabel >
                   <Label style={styles.text}>帳號</Label>
-                  <Input style={styles.text} onChangeText={(text) => this.setState({username: text})}/>
+                  <Input style={styles.text} autoCapitalize="none" onChangeText={(text) => this.setState({username: text})}/>
                 </Item>
                 <Item fixedLabel>
                   <Label style={styles.text}>密碼</Label>
-                  <Input style={styles.text} secureTextEntry onChangeText={(text) => this.setState({password: text})}/>
+                  <Input style={styles.text} autoCapitalize="none" secureTextEntry onChangeText={(text) => this.setState({password: text})}/>
                 </Item>
                 <Label style={styles.center_container}>
                   <Text style={[styles.warning_text,styles.center]}>

@@ -34,11 +34,11 @@ class Receipt extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(GET_RECEIPTS,{}).then((_data) => {
+    apiFetch(GET_RECEIPTS,{},(_data) => {
       this.setState({ receipts: _data })
     })
   }
-  
+
   onReceiptUpdate(receipt){
     let receipts = this.state.receipts
     for(let _r of receipts){
@@ -65,7 +65,7 @@ class Receipt extends Component {
         previous_date = receipt.est_date
       }
       rows.push(
-        <ListItem key={receipt.barcode} button onPress={() => 
+        <ListItem key={receipt.barcode} button onPress={() =>
           this.props.navigation.navigate("ShowReceipt",{receipt:receipt,onReceiptUpdate:this.onReceiptUpdate})}>
           <Left>
             <Text>

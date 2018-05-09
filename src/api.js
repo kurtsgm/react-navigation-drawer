@@ -19,27 +19,30 @@ export const GET_PICKING_LISTS = 'GET_PICKING_LISTS'
 export const MERGE_SHELVES = 'MERGE_SHELVES'
 export const CONFIRM_PICKING = 'CONFIRM_PICKING'
 
+import {Toast} from 'native-base'
+
+const DEV_API_PATH = __DEV__ ? "/api" : ''
 
 const Actions = {
-  OAUTH: {path: "/oauth/token",method: "POST"},
-  GET_RECEIPTS: {path: '/v1/receipts',method: "GET"},
-  GET_RECEIPT: {path: '/v1/receipts/{id}', method: "GET"},
-  RECEIVE_RECEIPT: {path: '/v1/receipts/{id}/receive', method: "POST"},
-  RECOMMEND_SHELF: {path: '/v1/receipts/{id}/recommend', method: "POST"},
-  GET_SHELVES: {path: '/v1/shelves/', method: "GET"},
-  GET_PRODUCTS: {path: '/v1/products/{barcode}', method: "GET"},
-  GET_SHELF_INFO: {path: '/v1/shelves/{token}', method: "GET"},
-  GET_PICKING_LISTS: {path: '/v1/picking_lists/', method: "GET"},
-  CONFIRM_PICKING: {path: '/v1/picking_lists/{id}/pick', method: "POST"},
-  MERGE_SHELVES: {path:'/v1/shelves/merge', method: "POST"},
-  ADJUST_SHELF_QUANTITY: {path: '/v1/shelves/{token}/adjust',method: "POST"}
+  OAUTH: {path: `/oauth/token`,method: "POST"},
+  GET_RECEIPTS: {path: `${DEV_API_PATH}/v1/receipts`,method: "GET"},
+  GET_RECEIPT: {path: `${DEV_API_PATH}/v1/receipts/{id}`, method: "GET"},
+  RECEIVE_RECEIPT: {path: `${DEV_API_PATH}/v1/receipts/{id}/receive`, method: "POST"},
+  RECOMMEND_SHELF: {path: `${DEV_API_PATH}/v1/receipts/{id}/recommend`, method: "POST"},
+  GET_SHELVES: {path: `${DEV_API_PATH}/v1/shelves/`, method: "GET"},
+  GET_PRODUCTS: {path: `${DEV_API_PATH}/v1/products/{barcode}`, method: "GET"},
+  GET_SHELF_INFO: {path: `${DEV_API_PATH}/v1/shelves/{token}`, method: "GET"},
+  GET_PICKING_LISTS: {path: `${DEV_API_PATH}/v1/picking_lists/`, method: "GET"},
+  CONFIRM_PICKING: {path: `${DEV_API_PATH}/v1/picking_lists/{id}/pick`, method: "POST"},
+  MERGE_SHELVES: {path:`${DEV_API_PATH}/v1/shelves/merge`, method: "POST"},
+  ADJUST_SHELF_QUANTITY: {path: `${DEV_API_PATH}/v1/shelves/{token}/adjust`,method: "POST"}
 }
 
 
-export function apiFetch(action,data={}){
+export function apiFetch(action,data={},callback_function){
   let host
-  if(__DEV__){
-    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000/api")
+  if(__DEV__ ){
+    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
   }else{
     host = "http://wms-api.ibiza.com.tw"
   }
@@ -71,11 +74,19 @@ export function apiFetch(action,data={}){
   console.log(url)
   console.log(data)
   return fetch(url, options).then((response)=>{
-    return response.json();
+    console.log(response)
+    if(response.status != 200){
+      throw new Error(`${response.status}`);
+    }else{
+      return response.json();
+    }
+  }).then(response=>callback_function(response)).catch(function(error) {
+    Toast.show({
+      text: `連線異常，請檢查網路狀態 (狀態${error})`,
+      duration: 2500,
+      type: 'danger',
+      textStyle: {textAlign: "center"}
+    })
+    Promise.reject(error)
   })
-
 }
-
-
-
-

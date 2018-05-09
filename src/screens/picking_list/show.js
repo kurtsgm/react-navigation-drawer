@@ -113,7 +113,7 @@ class ShowPickingList extends Component {
       shelf_token: shelf_token,
       item_id: item_id,
       quantity: quantity
-    }).then(data => {
+    },data => {
       console.log(data)
     })
   }
@@ -297,7 +297,7 @@ class ShowPickingList extends Component {
         list_items.push(_sector.shortage)
       }
       if(_sector.orders && this.state.show_order){
-        list_items.push(_sector.orders)        
+        list_items.push(_sector.orders)
       }
     }
 

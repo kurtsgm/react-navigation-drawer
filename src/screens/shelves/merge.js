@@ -50,7 +50,7 @@ class ShelfMerge extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(GET_SHELVES).then(data => {
+    apiFetch(GET_SHELVES,{},data => {
       this.setState(Object.assign(init_state,{ shelves: data }))
     })
   }
@@ -60,7 +60,7 @@ class ShelfMerge extends Component {
   }
 
   onSourceSelected(token) {
-    apiFetch(GET_SHELF_INFO, { token: token }).then(data => {
+    apiFetch(GET_SHELF_INFO, { token: token },data => {
       let avaible_shelves = this.state.shelves.filter((shelf) => shelf.shop_id == null || shelf.shop_id == data.shop_id)
       this.setState({
         source_shelf: token,
@@ -95,7 +95,7 @@ class ShelfMerge extends Component {
       from: this.state.source_shelf,
       to: this.state.destination_shelf,
       shelf_storages: this.state.products.filter(p=>p.checked).map(p=>p.id)
-    }).then(data => {
+    },data => {
       if(data.status == "success"){
         this.reload()
         Alert.alert("系統訊息", "已成功轉移")

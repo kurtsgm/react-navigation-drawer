@@ -33,8 +33,7 @@ class PickingLists extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(GET_PICKING_LISTS,{}).then((_data) => {
-      console.log(_data)
+    apiFetch(GET_PICKING_LISTS,{},(_data) => {
       this.setState({ picking_lists: _data })
     })
   }
@@ -42,7 +41,7 @@ class PickingLists extends Component {
   render() {
     let previous_date = null
     let rows = this.state.picking_lists.map(picking_list=>{
-      return <ListItem key={picking_list.id} button onPress={() => 
+      return <ListItem key={picking_list.id} button onPress={() =>
         this.props.navigation.navigate("ShowPickingList",picking_list)}>
         <Left>
           <Text>
