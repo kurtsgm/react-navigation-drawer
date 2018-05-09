@@ -22,26 +22,26 @@ export const CONFIRM_PICKING = 'CONFIRM_PICKING'
 
 const Actions = {
   OAUTH: {path: "/oauth/token",method: "POST"},
-  GET_RECEIPTS: {path: '/api/v1/receipts',method: "GET"},
-  GET_RECEIPT: {path: '/api/v1/receipts/{id}', method: "GET"},
-  RECEIVE_RECEIPT: {path: '/api/v1/receipts/{id}/receive', method: "POST"},
-  RECOMMEND_SHELF: {path: '/api/v1/receipts/{id}/recommend', method: "POST"},
-  GET_SHELVES: {path: '/api/v1/shelves/', method: "GET"},
-  GET_PRODUCTS: {path: '/api/v1/products/{barcode}', method: "GET"},
-  GET_SHELF_INFO: {path: '/api/v1/shelves/{token}', method: "GET"},
-  GET_PICKING_LISTS: {path: '/api/v1/picking_lists/', method: "GET"},
-  CONFIRM_PICKING: {path: '/api/v1/picking_lists/{id}/pick', method: "POST"},
-  MERGE_SHELVES: {path:'/api/v1/shelves/merge', method: "POST"},
-  ADJUST_SHELF_QUANTITY: {path: '/api/v1/shelves/{token}/adjust',method: "POST"} 
+  GET_RECEIPTS: {path: '/v1/receipts',method: "GET"},
+  GET_RECEIPT: {path: '/v1/receipts/{id}', method: "GET"},
+  RECEIVE_RECEIPT: {path: '/v1/receipts/{id}/receive', method: "POST"},
+  RECOMMEND_SHELF: {path: '/v1/receipts/{id}/recommend', method: "POST"},
+  GET_SHELVES: {path: '/v1/shelves/', method: "GET"},
+  GET_PRODUCTS: {path: '/v1/products/{barcode}', method: "GET"},
+  GET_SHELF_INFO: {path: '/v1/shelves/{token}', method: "GET"},
+  GET_PICKING_LISTS: {path: '/v1/picking_lists/', method: "GET"},
+  CONFIRM_PICKING: {path: '/v1/picking_lists/{id}/pick', method: "POST"},
+  MERGE_SHELVES: {path:'/v1/shelves/merge', method: "POST"},
+  ADJUST_SHELF_QUANTITY: {path: '/v1/shelves/{token}/adjust',method: "POST"}
 }
 
 
-export function apiFetch(action,data={}){      
+export function apiFetch(action,data={}){
   let host
   if(__DEV__){
-    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000/")
+    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000/api")
   }else{
-    host = "TODO"
+    host = "http://wms-api.ibiza.com.tw"
   }
   let _action = Actions[action]
   let path = _action.path
@@ -73,7 +73,7 @@ export function apiFetch(action,data={}){
   return fetch(url, options).then((response)=>{
     return response.json();
   })
-  
+
 }
 
 
