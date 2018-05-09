@@ -71,7 +71,6 @@ class ShowReceipt extends Component {
   }
   onReceived() {
     Alert.alert("系統訊息", "已成功入庫")
-    console.log("received")
     this.reload()
   }
 
@@ -86,7 +85,6 @@ class ShowReceipt extends Component {
       items: items
     }).then((data) => {
       if (data.status == "success") {
-        console.log(data)
         this.props.navigation.navigate("RecommendShelf",
           {
             items: this.state.items.filter((item) => item.ready_to_receive > 0),
@@ -141,7 +139,6 @@ class ShowReceipt extends Component {
                       :
                       <Button bordered light block primary onPress={() => {
                         let quantities = [...Array(data.box_count - data.received_count + 1)].map((v,index) => index.toString())
-                        console.log(quantities)
                         ActionSheet.show(
                           {
                             options: quantities,

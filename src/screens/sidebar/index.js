@@ -9,13 +9,13 @@ import {
   Text,
   List,
   ListItem,
-  Icon,
   Container,
   Left,
   Right,
   Badge
 } from "native-base";
 import styles from "./style";
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 const drawerCover = require("../../../assets/drawer-cover.png");
 const drawerImage = require("../../../assets/logo-kitchen-sink.png");
@@ -23,7 +23,7 @@ const datas = [
   {
     name: '入倉作業',
     route: 'Receipt',
-    icon: 'list-box',
+    icon: 'truck',
     bg: "#C5F442"
   },
   {
@@ -36,19 +36,19 @@ const datas = [
   {
     name: '庫存查詢',
     route: 'ProductSearch',
-    icon: 'search',
+    icon: 'cube',
     bg: "#C5F442"
-  },  
+  },
   {
     name: '儲位查詢',
     route: 'ShelfSearch',
-    icon: 'md-albums',
+    icon: 'search',
     bg: "#C5F442"
-  },  
+  },
   {
     name: '儲位移動',
     route: 'ShelfMerge',
-    icon: 'ios-log-in',
+    icon: 'cubes',
     bg: "#C5F442"
 
   },
@@ -213,7 +213,7 @@ const datas = [
   {
     name: "登出",
     route: 'Logout',
-    icon: 'key',
+    icon: 'sign-out',
     bg: ''
   }
 ];
@@ -231,14 +231,14 @@ class SideBar extends Component {
   route(route){
     if(route == 'Logout'){
       this.props.setToken(null)
-      this.props.navigation.navigate("Home")      
+      this.props.navigation.navigate("Home")
     }else{
       this.props.navigation.navigate(route)
     }
   }
   componentWillUpdate(){
     if(this.props.auth_token == null){
-      this.props.navigation.navigate("Home")      
+      this.props.navigation.navigate("Home")
     }
   }
   render() {

@@ -35,7 +35,7 @@ class Home extends Component {
       }).then((data)=>{
         if(data.access_token){
           this.props.setToken(data.access_token)
-          navigate('Welcome')            
+          navigate('Welcome')
         }else{
           this.setState({login_failed: true})
         }
@@ -53,7 +53,7 @@ class Home extends Component {
       }).then((data)=>{
         if(data.access_token){
           this.props.setToken(data.access_token)
-          navigate('Welcome')            
+          navigate('Welcome')
         }else{
           this.setState({login_failed: true})
         }
@@ -88,16 +88,16 @@ class Home extends Component {
                     { this.state.login_failed ? "登入失敗，請檢查帳號密碼" : ""}
                   </Text>
                 </Label>
-                
+
               </Form>
               <Button
                 style={{ backgroundColor: "#6FAF98", alignSelf: "center" }}
                 onPress={ this.login }
               >
-              <Text>Login</Text>
+              <Text>登入</Text>
               </Button>
               {
-                __DEV__ ? 
+                __DEV__ ?
                 <Button
                 style={{ backgroundColor: "#6FAF98", alignSelf: "center" }}
                 onPress={ this.fast_login }
