@@ -75,7 +75,7 @@ export function apiFetch(action,data={},callback_function){
   console.log(data)
   return fetch(url, options).then((response)=>{
     console.log(response)
-    if(response.status != 200){
+    if(!response.ok){
       throw new Error(`${response.status}`);
     }else{
       return response.json();
