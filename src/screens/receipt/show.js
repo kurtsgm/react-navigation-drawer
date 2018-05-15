@@ -50,7 +50,7 @@ class ShowReceipt extends Component {
   reload() {
     apiFetch(GET_RECEIPT, {
       id: this.state.receipt_id,
-    }).then((data) => {
+    },(data) => {
       this.setState({
         receipt_id: data.id,
         receipt_title: data.barcode,
