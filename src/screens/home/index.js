@@ -8,7 +8,7 @@ import styles from "./styles";
 
 import * as AppActions from '../../redux/actions/AppAction'
 import {apiFetch,API_OAUTH} from "../../api"
-
+import {Keyboard} from 'react-native'
 const launchscreenBg = require("../../../assets/launchscreen-bg.png");
 const launchscreenLogo = require("../../../assets/logo-wms.png");
 
@@ -28,6 +28,7 @@ class Home extends Component {
   login(){
     const { navigate } = this.props.navigation;
     if(this.state.username && this.state.password){
+      Keyboard.dismiss()
       apiFetch(API_OAUTH, {
         username: this.state.username,
         password: this.state.password,

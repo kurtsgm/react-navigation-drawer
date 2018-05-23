@@ -81,8 +81,19 @@ export function apiFetch(action,data={},callback_function){
       return response.json();
     }
   }).then(response=>callback_function(response)).catch(function(error) {
+    let text
+    switch(error.message){
+      case '401':
+        text = '登入(狀態)失敗，請重新嘗試登入'
+        break
+      case '500':
+        text = '發生錯誤，請通報工程人員處理'
+        break
+      default:
+        text = `連線異常，請檢查網路狀態 (狀態${error})`
+    }
     Toast.show({
-      text: `連線異常，請檢查網路狀態 (狀態${error})`,
+      text: text,
       duration: 2500,
       type: 'danger',
       textStyle: {textAlign: "center"}

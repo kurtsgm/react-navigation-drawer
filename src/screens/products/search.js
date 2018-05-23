@@ -14,7 +14,8 @@ import {
   Form,
   List,
   ListItem,
-  Text
+  Text,
+  Toast
 } from "native-base";
 
 import {Keyboard} from 'react-native'
@@ -37,9 +38,14 @@ class ProductSearch extends Component {
       }>
         <Left>
           <Text>
-            {product.name}
+            {product.shop_name}
           </Text>
         </Left>
+        <Body>
+          <Text>
+            {product.name}
+          </Text>
+        </Body>
         <Right>
           <Icon name="arrow-forward" style={{ color: "#999" }} />
         </Right>
@@ -69,7 +75,15 @@ class ProductSearch extends Component {
                 let barcode = event.nativeEvent.text
                 if(barcode){
                   apiFetch(GET_PRODUCTS, { barcode: barcode },data => {
+                    console.log(data)
+                    if(data.length == 0){
+                      Toast.show({
+                        text: "查無此商品",
+                        buttonText: "OK"
+                      })
+                    }
                     this.setState({ products: data,barcode:'' })
+
                   })
                 }else{
                   this.setState({ products: [] })
