@@ -18,7 +18,7 @@
     "jest-expo": "19.0.5",
     "prettier": "1.5.3",
     "react-native-debugger-open": "^0.3.17",
-    "react-native-scripts": "^1.1.1",
+    "react-native-scripts": "^1.14.0",
     "react-test-renderer": "16.0.0-alpha.12"
   },
   "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
@@ -38,12 +38,13 @@
     "lodash": "4.13.1",
     "moment": "2.13.0",
     "native-base": "2.3.5",
-    "react": "16.3.0",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-27.0.0.tar.gz",
-    "react-native-actionsheet": "^2.4.0",
+    "react": "16.3.1",
+    "react-native": "0.55.4",
+    "react-native-actionsheet": "^2.4.2",
+    "react-native-loading-spinner-overlay": "^0.5.2",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "1.5.2",
     "react-redux": "^5.0.7",
-    "redux": "^3.7.2"
+    "redux": "4.0.0"
   }
 }

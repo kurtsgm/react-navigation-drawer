@@ -32,7 +32,6 @@ import ShelfProduct from './screens/shelves/product'
 import Welcome from './screens/welcome/index'
 
 import SideBar from "./screens/sidebar";
-
 const Drawer = DrawerNavigator(
   {
     Home: { screen: Home },
@@ -82,3 +81,4 @@ export default () =>
   </Root>;
 
 console.disableYellowBox = true;
+

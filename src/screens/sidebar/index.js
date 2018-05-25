@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+import {store} from '../../redux/stores/store'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as AppActions from '../../redux/actions/AppAction'
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import { Image } from "react-native";
 import {
@@ -68,6 +70,7 @@ class SideBar extends Component {
     this.state = {
       shadowOffsetWidth: 1,
       shadowRadius: 4,
+      loading: false
     };
     this.route = this.route.bind(this)
   }
@@ -88,6 +91,7 @@ class SideBar extends Component {
   render() {
     return (
       <Container>
+        <Spinner visible={this.props.loading} textContent={"資料讀取中"} textStyle={{color: '#FFF'}} />
         <Content
           bounces={false}
           style={{ flex: 1, backgroundColor: "#fff", top: -1 }}
@@ -138,4 +142,4 @@ class SideBar extends Component {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(AppActions, dispatch);
 }
-export default connect((state)=>{return {auth_token: state.auth_token}}, mapDispatchToProps)(SideBar);
+export default connect((state)=>{return {auth_token: state.auth_token,loading: state.loading}}, mapDispatchToProps)(SideBar);

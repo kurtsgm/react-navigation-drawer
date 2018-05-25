@@ -73,8 +73,10 @@ export function apiFetch(action,data={},callback_function){
   }
   console.log(url)
   console.log(data)
+  store.dispatch(AppActions.onLoadingStart())
   return fetch(url, options).then((response)=>{
     console.log(response)
+    store.dispatch(AppActions.onLoadingEnd())
     if(!response.ok){
       throw new Error(`${response.status}`);
     }else{
@@ -101,3 +103,4 @@ export function apiFetch(action,data={},callback_function){
     Promise.reject(error)
   })
 }
+

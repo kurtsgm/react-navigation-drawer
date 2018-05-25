@@ -1,6 +1,8 @@
 import {
   SET_AUTH_TOKEN,
-  SET_SHELVES
+  SET_SHELVES,
+  LOADING_START,
+  LOADING_END
 } from './action_types'
 
 
@@ -15,5 +17,17 @@ export const setShelves = (shelves)=>{
   return {
     type: SET_SHELVES,
     shelves: shelves
+  }
+}
+
+export const onLoadingStart = ()=>{
+  return {
+    type: LOADING_START
+  }
+}
+
+export const onLoadingEnd = ()=>{
+  return {
+    type: LOADING_END
   }
 }
