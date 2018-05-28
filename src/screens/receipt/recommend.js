@@ -76,9 +76,6 @@ class RecommendShelf extends Component {
             <Title>{this.state.receipt_title}</Title>
           </Body>
           <Right>
-            <Button transparent>
-              <Icon name="refresh" onPress={() => this.reload()} />
-            </Button>
           </Right>
         </Header>
 
