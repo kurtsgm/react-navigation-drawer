@@ -149,9 +149,9 @@ class ShowPickingList extends Component {
     others_quantity = this.state.items.reduce((value, i) => {
       return i.product_storage_id == target.product_storage_id && i.storage_shelf_id != target.storage_shelf_id ? value + i.ready_to_pick : value
     }, 0)
-    console.log(total_quantity)
-    console.log(others_quantity)
-    console.log(this.state.items)
+    // console.log(total_quantity)
+    // console.log(others_quantity)
+    // console.log(this.state.items)
 
     target.ready_to_pick = Math.min(quantity, total_quantity - others_quantity ,target.pcs)
     target.manual_set = true
@@ -215,11 +215,13 @@ class ShowPickingList extends Component {
     let item_g = this.item_generator(this.state.items.sort((a, b) => a.product_storage_id - b.product_storage_id))
     let done = false
     let list_items = []
+    console.log(this.state.picking_list.items)
     let sectors = this.state.picking_list.items.map(item => {
       return {
         product_storage_id: item.product_storage_id,
         picked_quantity: item.picked_quantity,
         product_name: item.product_name,
+        product_uid: item.product_uid,
         product_expiration_date: item.product_expiration_date,
         quantity: item.quantity,
         items: [],
@@ -298,8 +300,11 @@ class ShowPickingList extends Component {
     for (let _sector of sectors) {
       list_items.push(
         <ListItem itemDivider key={`divider-${_sector.product_storage_id}`}>
-          <Body>
+          <Left>
           <Text>{_sector.product_name}</Text>
+          </Left>
+          <Body>
+          <Text>{_sector.product_uid}</Text>
           </Body>
           <Right>
             <Text>
