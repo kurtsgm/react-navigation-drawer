@@ -46,11 +46,17 @@ class ShowReceipt extends Component {
     this.recommend = this.recommend.bind(this)
     this.reload = this.reload.bind(this)
     this.onReceived = this.onReceived.bind(this)
+    this.item_count = this.item_count.bind(this)
   }
+
+  item_count() {
+    return this.state.items.reduce((sum, item) => sum + item.ready_to_receive, 0)
+  }
+
   reload() {
     apiFetch(GET_RECEIPT, {
       id: this.state.receipt_id,
-    },(data) => {
+    }, (data) => {
       this.setState({
         receipt_id: data.id,
         receipt_title: data.barcode,
@@ -83,7 +89,7 @@ class ShowReceipt extends Component {
     apiFetch(RECOMMEND_SHELF, {
       id: this.state.receipt_id,
       items: items
-    },(data) => {
+    }, (data) => {
       if (data.status == "success") {
         this.props.navigation.navigate("RecommendShelf",
           {
@@ -138,7 +144,7 @@ class ShowReceipt extends Component {
                       null
                       :
                       <Button bordered light block primary onPress={() => {
-                        let quantities = [...Array(data.box_count - data.received_count + 1)].map((v,index) => index.toString())
+                        let quantities = [...Array(data.box_count - data.received_count + 1)].map((v, index) => index.toString())
                         ActionSheet.show(
                           {
                             options: quantities,
@@ -168,13 +174,18 @@ class ShowReceipt extends Component {
             }
           </List>
         </Content>
-        <View style={styles.footer}>
-          <Button primary full style={styles.mb15} onPress={() => {
-            this.recommend()
-          }}>
-            <Text>建議儲位</Text>
-          </Button>
-        </View>
+        {
+          this.item_count() > 0 ?
+            <View style={styles.footer}>
+              <Button primary full style={styles.mb15} onPress={() => {
+                this.recommend()
+              }}>
+                <Text>建議儲位</Text>
+              </Button>
+            </View>
+            : null
+
+        }
       </Container>
     );
   }
