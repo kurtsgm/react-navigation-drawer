@@ -166,7 +166,7 @@ class ShelfMerge extends Component {
             <View>
               <Picker selectedValue = {this.state.source_shelf} onValueChange = {this.onSourceSelected}>
               {
-                candidate_shelves.map(candidate=><Picker.Item label = {candidate.token} value = {candidate.token} />)
+                candidate_shelves.map(candidate=><Picker.Item label = {`${candidate.token} - ${candidate.shop_name}`} value = {candidate.token} />)
               }
             </Picker>
             </View>:null
@@ -174,9 +174,9 @@ class ShelfMerge extends Component {
           {
             this.state.show_destination_picker ?
             <View>
-              <Picker selectedValue = {this.state.source_shelf} onValueChange = {this.onDestinationSelected}>
+              <Picker selectedValue = {this.state.destination_shelf} onValueChange = {this.onDestinationSelected}>
               {
-                this.state.destination_shelves_candidate.map(candidate=><Picker.Item label = {candidate.token} value = {candidate.token} />)
+                this.state.destination_shelves_candidate.map(candidate=><Picker.Item label = {`${candidate.token} ${candidate.shop_id ? '' : '(空)'}`} value = {candidate.token} />)
               }
             </Picker>
             </View>:null
