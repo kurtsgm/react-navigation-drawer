@@ -42,6 +42,7 @@ const Actions = {
 export function apiFetch(action,data={},callback_function){
   let host
   if(__DEV__ ){
+    // host = "http://192.168.1.108:8088"
     host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
   }else{
     host = "http://wms-api.ibiza.com.tw"
@@ -84,6 +85,7 @@ export function apiFetch(action,data={},callback_function){
     }
   }).then(response=>callback_function(response)).catch(function(error) {
     let text
+    store.dispatch(AppActions.onLoadingEnd())
     switch(error.message){
       case '401':
         text = '登入(狀態)失敗，請重新嘗試登入'
