@@ -1,6 +1,6 @@
 
 import React, { Component } from "react";
-import { View ,Alert} from 'react-native';
+import { View ,Alert ,Picker} from 'react-native';
 import {
   Container,
   Header,
@@ -33,7 +33,9 @@ const init_state =  {
   source_shelf: null,
   destination_shelf: null,
   destination_shelves_candidate: [],
-  products: []
+  products: [],
+  show_source_picker: false,
+  show_destination_picker: false,
 }
 
 class ShelfMerge extends Component {
@@ -42,6 +44,7 @@ class ShelfMerge extends Component {
     this.state = init_state
     this.reload = this.reload.bind(this)
     this.onSourceSelected = this.onSourceSelected.bind(this)
+    this.onDestinationSelected = this.onDestinationSelected.bind(this)
     this.toggle_product = this.toggle_product.bind(this)
     this.valid = this.valid.bind(this)
   }
@@ -60,6 +63,7 @@ class ShelfMerge extends Component {
   }
 
   onSourceSelected(token) {
+    this.setState({show_source_picker:false})
     apiFetch(GET_SHELF_INFO, { token: token },data => {
       let avaible_shelves = this.state.shelves.filter((shelf) => shelf.shop_id == null || shelf.shop_id == data.shop_id)
       this.setState({
@@ -77,6 +81,10 @@ class ShelfMerge extends Component {
       })
     })
 
+  }
+
+  onDestinationSelected(token){
+    this.setState({show_destination_picker: false,destination_shelf: token})
   }
 
   toggle_product(id) {
@@ -105,6 +113,7 @@ class ShelfMerge extends Component {
     })
   }
 
+
   render() {
     let rows = []
     let candidate_shelves = this.state.shelves.filter(s=>s.shop_id)
@@ -129,8 +138,7 @@ class ShelfMerge extends Component {
               <Left>
                 <Button bordered light primary style={styles.mb15}
                   onPress={() => {
-                    this.source_shelf_sheet.show()
-
+                    this.setState({show_source_picker:true,show_destination_picker: false})
                   }}>
                   <Text>
                     {this.state.source_shelf || "請選擇"}
@@ -143,7 +151,7 @@ class ShelfMerge extends Component {
               <Right>
                 <Button bordered light primary style={styles.mb15}
                   onPress={() => {
-                    this.destination_shelf_sheet.show()
+                    this.setState({show_source_picker:false,show_destination_picker: true})
 
                   }}>
                   <Text>
@@ -153,6 +161,27 @@ class ShelfMerge extends Component {
               </Right>
             </CardItem>
           </Card>
+          {
+            this.state.show_source_picker ?
+            <View>
+              <Picker selectedValue = {this.state.source_shelf} onValueChange = {this.onSourceSelected}>
+              {
+                candidate_shelves.map(candidate=><Picker.Item label = {candidate.token} value = {candidate.token} />)
+              }
+            </Picker>
+            </View>:null
+          }
+          {
+            this.state.show_destination_picker ?
+            <View>
+              <Picker selectedValue = {this.state.source_shelf} onValueChange = {this.onDestinationSelected}>
+              {
+                this.state.destination_shelves_candidate.map(candidate=><Picker.Item label = {candidate.token} value = {candidate.token} />)
+              }
+            </Picker>
+            </View>:null
+          }
+
           <List>
             {
               this.state.products.map(product => {
@@ -185,40 +214,7 @@ class ShelfMerge extends Component {
               })
             }
           </List>
-          <ActionSheet
-            ref={o => this.source_shelf_sheet = o}
-            title={<Text style={{ color: '#000', fontSize: 18 }}>請選擇儲位</Text>}
-            options={['取消', ...candidate_shelves.map(shelf => {
-              if (shelf.token == this.state.source_shelf) {
-                return <Text style={[styles.orange, styles.highlight]} > {shelf.token} {shelf.shop_name || ""} </Text>
-              }
-              return `${shelf.token} ${shelf.shop_name || ""}`
-            })]}
-            cancelButtonIndex={0}
-            onPress={(index) => {
-              if (index > 0) {
-                this.onSourceSelected(candidate_shelves[index - 1].token)
-              }
-            }
-            }
-          />
-          <ActionSheet
-            ref={o => this.destination_shelf_sheet = o}
-            title={<Text style={{ color: '#000', fontSize: 18 }}>請選擇儲位</Text>}
-            options={["取消", ...this.state.destination_shelves_candidate.map(shelf => {
-              if (shelf.token == this.state.destination_shelf) {
-                return <Text style={[styles.orange, styles.highlight]} > {shelf.token} {shelf.shop_id ? '' : " (空)"}</Text>
-              }
-              return `${shelf.token} ${shelf.shop_id ? '' : " (空)"}`
-            })]}
-            cancelButtonIndex={0}
-            onPress={(index) => {
-              if (index > 0) {
-                this.setState({ destination_shelf: this.state.destination_shelves_candidate[index - 1].token })
-              }
-            }
-            }
-          />
+
         </Content>
         <View style={styles.footer}>
           { this.valid() ?

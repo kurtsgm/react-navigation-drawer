@@ -55,9 +55,9 @@ class ShelfProduct extends Component {
             </Button>
           </Left>
           <Body>
-            <Text>
+            <Title>
               {storage.product_storage.product.name}
-            </Text>
+            </Title>
           </Body>
           <Right>
           </Right>

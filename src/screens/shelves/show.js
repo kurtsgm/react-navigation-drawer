@@ -50,9 +50,9 @@ class ShelfShow extends Component {
             </Button>
           </Left>
           <Body>
-            <Text>
+            <Title>
             {this.state.shelf.token}
-            </Text>
+            </Title>
           </Body>
           <Right>
             <Title>
