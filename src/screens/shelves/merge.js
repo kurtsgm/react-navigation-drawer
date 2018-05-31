@@ -107,6 +107,7 @@ class ShelfMerge extends Component {
 
   render() {
     let rows = []
+    let candidate_shelves = this.state.shelves.filter(s=>s.shop_id)
     return (
       <Container style={styles.container}>
         <Header searchBar rounded>
@@ -187,7 +188,7 @@ class ShelfMerge extends Component {
           <ActionSheet
             ref={o => this.source_shelf_sheet = o}
             title={<Text style={{ color: '#000', fontSize: 18 }}>請選擇儲位</Text>}
-            options={['取消', ...this.state.shelves.filter(s => s.shop_id).map(shelf => {
+            options={['取消', ...candidate_shelves.map(shelf => {
               if (shelf.token == this.state.source_shelf) {
                 return <Text style={[styles.orange, styles.highlight]} > {shelf.token} {shelf.shop_name || ""} </Text>
               }
@@ -196,7 +197,7 @@ class ShelfMerge extends Component {
             cancelButtonIndex={0}
             onPress={(index) => {
               if (index > 0) {
-                this.onSourceSelected(this.state.shelves[index - 1].token)
+                this.onSourceSelected(candidate_shelves[index - 1].token)
               }
             }
             }
