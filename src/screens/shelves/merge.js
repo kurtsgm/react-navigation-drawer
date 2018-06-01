@@ -1,6 +1,6 @@
 
 import React, { Component } from "react";
-import { View ,Alert ,Picker} from 'react-native';
+import { View ,Picker} from 'react-native';
 import {
   Container,
   Header,
