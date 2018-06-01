@@ -83,9 +83,8 @@ export function apiFetch(action,data={},callback_function){
       return response.json();
     }
   }).then(response=>{
-    callback_function(response)
     store.dispatch(AppActions.onLoadingEnd())
-
+    callback_function(response)
   }).catch(function(error) {
     let text
     store.dispatch(AppActions.onLoadingEnd())
@@ -105,7 +104,6 @@ export function apiFetch(action,data={},callback_function){
       type: 'danger',
       textStyle: {textAlign: "center"}
     })
-    Promise.reject(error)
   })
 }
 
