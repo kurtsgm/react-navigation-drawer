@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert, View } from 'react-native';
+import { Alert, View , Picker} from 'react-native';
 import {
   Container,
   Header,
@@ -14,7 +14,8 @@ import {
   List,
   ListItem,
   ActionSheet,
-  Footer
+  Footer,
+  Toast
 } from "native-base";
 
 
@@ -76,7 +77,12 @@ class ShowReceipt extends Component {
     });
   }
   onReceived() {
-    Alert.alert("系統訊息", "已成功入庫")
+    Toast.show({
+      text: '已成功入庫',
+      duration: 2500,
+      textStyle: {textAlign: "center"}
+    })
+
     this.reload()
   }
 

@@ -26,7 +26,6 @@ import {
 
 import styles from "./styles"
 import { apiFetch, GET_SHELVES, GET_SHELF_INFO ,MERGE_SHELVES} from "../../api"
-import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
 
 const init_state =  {
   shelves: [],
@@ -106,9 +105,18 @@ class ShelfMerge extends Component {
     },data => {
       if(data.status == "success"){
         this.reload()
-        Alert.alert("系統訊息", "已成功轉移")
+        Toast.show({
+          text: "已成功轉移",
+          duration: 2500,
+          textStyle: {textAlign: "center"}
+        })
       }else{
-        Alert.alert("系統訊息", `錯誤，${data.message}`)
+        Toast.show({
+          text: data.message,
+          duration: 2500,
+          textStyle: {textAlign: "center"}
+        })
+
       }
     })
   }
