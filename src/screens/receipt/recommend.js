@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View } from 'react-native';
+import { View , Picker} from 'react-native';
 import {
   Container,
   Header,
@@ -15,8 +15,6 @@ import {
   ListItem
 } from "native-base";
 
-import { ActionSheetCustom as ActionSheet } from 'react-native-actionsheet'
-
 import { Grid, Col } from "react-native-easy-grid";
 import { apiFetch, RECEIVE_RECEIPT } from "../../api"
 import styles from "./styles";
@@ -29,8 +27,14 @@ class RecommendShelf extends Component {
     const { params } = this.props.navigation.state;
     this.state = {
       shelf_id: params.shelf.id,
-      shelf_token: params.shelf.token
+      shelf_token: params.shelf.token,
+      show_picker: false
     }
+    this.onShelfSelected = this.onShelfSelected.bind(this)
+  }
+  onShelfSelected(token){
+    shelf_id = this.props.navigation.state.params.shelves.filter(shelf => shelf.token == token)[0].id
+    this.setState({shelf_token: token,shelf_id:shelf_id,show_picker:false})
   }
 
   receive() {
@@ -54,13 +58,6 @@ class RecommendShelf extends Component {
   }
   render() {
     const { back } = this.props.navigation;
-    let shelves = this.props.navigation.state.params.shelves.map(i => {
-        let _token = i.token
-        if( i.id == this.state.shelf_id){
-          _token = <Text style={styles.orange} > {i.token} </Text>
-        }
-        return _token
-      })
     return (
       <Container style={styles.container}>
         <Header>
@@ -89,7 +86,7 @@ class RecommendShelf extends Component {
               </Left>
               <Button bordered light primary style={styles.mb15}
                 onPress={() => {
-                  this.action_sheet.show()
+                  this.setState({show_picker:true})
 
                 }}>
                 <Text>
@@ -97,7 +94,16 @@ class RecommendShelf extends Component {
                 </Text>
               </Button>
             </ListItem>
-
+            {
+            this.state.show_picker ?
+            <View>
+              <Picker selectedValue = {this.state.shelf_token} onValueChange = {this.onShelfSelected}>
+              {
+                this.props.navigation.state.params.shelves.map(shelf=><Picker.Item key={shelf.token} label = {shelf.token} value = {shelf.token} />)
+              }
+            </Picker>
+            </View>:null
+          }
             {this.props.navigation.state.params.items.map(data => {
               return <ListItem key={data.id}>
                 <Left>
@@ -114,17 +120,6 @@ class RecommendShelf extends Component {
             })
             }
           </List>
-        <ActionSheet
-          ref={o => this.action_sheet = o}
-          title={<Text style={{color: '#000', fontSize: 18}}>請選擇儲位</Text>}
-          options={shelves}
-          onPress={(index) => {
-            this.setState({
-              shelf_id: this.props.navigation.state.params.shelves[index].id,
-              shelf_token: this.props.navigation.state.params.shelves[index].token})
-            }
-          }
-        />
         </Content>
         <View style={styles.footer}>
           <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {

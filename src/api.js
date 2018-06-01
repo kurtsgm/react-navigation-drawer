@@ -76,13 +76,13 @@ export function apiFetch(action,data={},callback_function){
   console.log(data)
   store.dispatch(AppActions.onLoadingStart())
   return fetch(url, options).then((response)=>{
-    console.log(response)
     if(!response.ok){
       throw new Error(`${response.status}`);
     }else{
       return response.json();
     }
   }).then(response=>{
+    console.log(response)
     store.dispatch(AppActions.onLoadingEnd())
     callback_function(response)
   }).catch(function(error) {
