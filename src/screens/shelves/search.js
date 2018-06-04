@@ -23,6 +23,7 @@ import styles from "./styles"
 import { apiFetch, GET_SHELF_INFO } from "../../api"
 
 import ShelfShow from './show'
+import { normalize_shelf_barcode } from '../../sdj_common'
 
 class ShelfSearch extends Component {
   constructor() {
@@ -49,25 +50,22 @@ class ShelfSearch extends Component {
         </Left>
           <Item>
             <Input placeholder="Search" placeholder="請輸入或者掃描條碼"
+              keyboardType='numeric'
+              returnKeyType="done"
               value={this.state.barcode}
-              onChangeText={(text) => this.setState({ barcode: text.toUpperCase() })}
+              onChangeText={(text) => this.setState({ barcode: normalize_shelf_barcode(text.toUpperCase())})}
               autoFocus={true} onEndEditing={
               (event) => {
-                let token = event.nativeEvent.text
-                if(token){
-                  apiFetch(GET_SHELF_INFO, { token: token.toUpperCase() },data => {
-                    if(data){
-                      this.props.navigation.navigate("ShelfShow",data)
-                    }else{
-                      Toast.show({
-                        text: "查無此儲位",
-                        buttonText: "OK"
-                      })
-                    }
-                  })
-                }else{
-                  this.setState({ })
-                }
+                apiFetch(GET_SHELF_INFO, { token: this.state.barcode},data => {
+                  if(data){
+                    this.props.navigation.navigate("ShelfShow",data)
+                  }else{
+                    Toast.show({
+                      text: "查無此儲位",
+                      buttonText: "OK"
+                    })
+                  }
+                })
               }
             } />
           </Item>

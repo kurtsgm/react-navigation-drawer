@@ -14,7 +14,7 @@ export default {
   },
   blue: {
     color: "blue"
-    
+
   },
   orange: {
     color: "orange",
@@ -28,5 +28,9 @@ export default {
   },
   footer: {
     bottom: 0
+  },
+  arrow: {
+    marginTop: 13
   }
+
 };
