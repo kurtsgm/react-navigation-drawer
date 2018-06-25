@@ -50,22 +50,24 @@ class ShelfMerge extends Component {
   }
 
   onSourceSelected(token) {
-    apiFetch(GET_SHELF_INFO, { token: token }, data => {
-      let avaible_shelves = this.state.shelves.filter((shelf) => shelf.shop_id == null || shelf.shop_id == data.shop_id)
-      this.setState({
-        source_shelf: token,
-        products: data.storages.map(shelf_storage => {
-          return {
-            checked: true,
-            id: shelf_storage.id,
-            pcs: shelf_storage.pcs,
-            product_title: shelf_storage.product_storage.product.name,
-            expiration_date: shelf_storage.product_storage.expiration_date
-          }
+    token = token.trim()
+    if(token){
+      apiFetch(GET_SHELF_INFO, { token: token }, data => {
+        let avaible_shelves = this.state.shelves.filter((shelf) => shelf.shop_id == null || shelf.shop_id == data.shop_id)
+        this.setState({
+          source_shelf: token,
+          products: data.storages.map(shelf_storage => {
+            return {
+              checked: true,
+              id: shelf_storage.id,
+              pcs: shelf_storage.pcs,
+              product_title: shelf_storage.product_storage.product.name,
+              expiration_date: shelf_storage.product_storage.expiration_date
+            }
+          })
         })
       })
-    })
-
+    }
   }
 
   toggle_product(id) {
@@ -130,9 +132,7 @@ class ShelfMerge extends Component {
                     placeholder='請輸入或掃描'
                     onChangeText={
                       (text) => {
-                        console.log(text)
                         console.log(normalize_shelf_barcode(text))
-
                         this.setState({ source_shelf: normalize_shelf_barcode(text) })
                       }
                     }
@@ -149,8 +149,6 @@ class ShelfMerge extends Component {
                     placeholder='請輸入或掃描'
                     onChangeText={
                       (text) => {
-                        console.log(text)
-                        console.log(normalize_shelf_barcode(text))
                         this.setState({ destination_shelf: normalize_shelf_barcode(text) })
                       }
                     }

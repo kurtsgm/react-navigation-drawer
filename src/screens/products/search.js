@@ -72,7 +72,7 @@ class ProductSearch extends Component {
             onChangeText={(text) => this.setState({ barcode: text })}
             onEndEditing={
               (event) => {
-                let barcode = event.nativeEvent.text
+                let barcode = event.nativeEvent.text.trim()
                 if(barcode){
                   apiFetch(GET_PRODUCTS, { barcode: barcode },data => {
                     console.log(data)
