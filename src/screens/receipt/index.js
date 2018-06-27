@@ -55,7 +55,7 @@ class Receipt extends Component {
     let rows = []
     let previous_date = null
     let receipts = this.state.receipts.sort((a, b) => {
-      return new Date(a.est_date) > new Date(b.est_date)
+      return new Date(a.est_date) - new Date(b.est_date)
     })
     receipts.forEach((receipt) => {
       if (previous_date != receipt.est_date) {

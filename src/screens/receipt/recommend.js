@@ -13,7 +13,8 @@ import {
   Right,
   List,
   ListItem,
-  Toast
+  Toast,
+  Input
 } from "native-base";
 
 import Dialog from "react-native-dialog";
@@ -29,18 +30,17 @@ class RecommendShelf extends Component {
     super(props)
     const { params } = this.props.navigation.state;
     this.state = {
-      shelf_id: params.shelf.id,
       shelf_token: params.shelf.token,
       show_picker: false,
       isModalVisible: false,
-      confirm_shelf: null
+      confirm_shelf: null,
+      receipt_id: params.receipt_id
     }
     this.onShelfSelected = this.onShelfSelected.bind(this)
     this._toggleModal = this._toggleModal.bind(this)
   }
   onShelfSelected(token) {
-    shelf_id = this.props.navigation.state.params.shelves.filter(shelf => shelf.token == token)[0].id
-    this.setState({ shelf_token: token, shelf_id: shelf_id, show_picker: false })
+    this.setState({ shelf_token: token, show_picker: false })
   }
   _toggleModal() {
     this.setState({ isModalVisible: !this.state.isModalVisible });
@@ -53,15 +53,22 @@ class RecommendShelf extends Component {
       }
     }).filter(Boolean);
     apiFetch(RECEIVE_RECEIPT, {
-      id: this.props.receipt_id,
-      shelf_id: this.state.shelf_id,
+      id: this.state.receipt_id,
+      shelf_token: this.state.shelf_token,
       items: items
     }, (data) => {
       if (data.status == "success") {
         this.props.navigation.state.params.onReceived()
         this.props.navigation.goBack()
       } else {
-        console.log(data)
+        Toast.show({
+          text: data.message,
+          duration: 2500,
+          type: 'danger',
+          position: "bottom",
+          style: { bottom: "50%" },
+          textStyle: { textAlign: "center" }
+        })
       }
     });
   }
@@ -93,26 +100,20 @@ class RecommendShelf extends Component {
                   儲位
               </Text>
               </Left>
-              <Button bordered light primary style={styles.mb15}
-                onPress={() => {
-                  this.setState({ show_picker: true })
-
-                }}>
-                <Text>
-                  {this.state.shelf_token}
-                </Text>
-              </Button>
+              <Input placeholder='請指定儲位'
+                keyboardType='numeric'
+                returnKeyType="done"
+                value={this.state.shelf_token}
+                onChangeText={(text) => this.setState({ shelf_token: normalize_shelf_barcode(text.toUpperCase()) })}
+                onFocus={() => { this.setState({ shelf_token: '' }) }}
+                onEndEditing={
+                  (event) => {
+                    let shelf_token = event.nativeEvent.text.trim()
+                    this.setState({ shelf_token: shelf_token })
+                  }
+                } />
             </ListItem>
-            {
-              this.state.show_picker ?
-                <View>
-                  <Picker selectedValue={this.state.shelf_token} onValueChange={this.onShelfSelected}>
-                    {
-                      this.props.navigation.state.params.shelves.map(shelf => <Picker.Item key={shelf.token} label={shelf.token} value={shelf.token} />)
-                    }
-                  </Picker>
-                </View> : null
-            }
+
             {this.props.navigation.state.params.items.map(data => {
               return <ListItem key={data.id}>
                 <Left>
@@ -130,42 +131,48 @@ class RecommendShelf extends Component {
             }
           </List>
           <Dialog.Container visible={this.state.isModalVisible}>
-          <Dialog.Title>請掃描儲位</Dialog.Title>
-          <Dialog.Input keyboardType='numeric' value={this.state.confirm_shelf}
-                    placeholder='請掃描儲位'
-                    autoFocus={true}
-                    ref={(input) => { this.confirm_input = input; }}
-                    onChangeText={
-                      (text) => {
-                        this.setState({ confirm_shelf: normalize_shelf_barcode(text) })
-                      }
-                    }
-                    onEndEditing={(event) => {
-                      this.setState({isModalVisible:false})
-                      if(event.nativeEvent.text == this.state.shelf_token){
-                        this.receive()
-                      }else{
-                        Toast.show({
-                          text: '錯誤，掃描結果不符',
-                          duration: 2500,
-                          type: 'danger',
-                          position: "bottom",
-                          style: { bottom: "50%" },
-                          textStyle: {textAlign: "center"}
-                        })
-                      } }}
-                    returnKeyType="done" />
-          <Dialog.Button label="取消" onPress={()=>this.setState({isModalVisible:false})} />
-        </Dialog.Container>
+            <Dialog.Title>請掃描儲位</Dialog.Title>
+            <Dialog.Input keyboardType='numeric' value={this.state.confirm_shelf}
+              placeholder='請掃描儲位'
+              autoFocus={true}
+              ref={(input) => { this.confirm_input = input; }}
+              onChangeText={
+                (text) => {
+                  this.setState({ confirm_shelf: normalize_shelf_barcode(text) })
+                }
+              }
+              onEndEditing={(event) => {
+                this.setState({ isModalVisible: false })
+                if (event.nativeEvent.text == this.state.shelf_token) {
+                  this.receive()
+                } else {
+                  Toast.show({
+                    text: '錯誤，掃描結果不符',
+                    duration: 2500,
+                    type: 'danger',
+                    position: "bottom",
+                    style: { bottom: "50%" },
+                    textStyle: { textAlign: "center" }
+                  })
+                }
+              }}
+              returnKeyType="done" />
+            <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+          </Dialog.Container>
 
         </Content>
-        <View style={styles.footer}>
-          <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
-            this.setState({ isModalVisible: true })
-          }}>
-            <Text>確認入倉</Text>
-          </Button>
-        </View>
+        {
+          this.state.shelf_token ?
+            <View style={styles.footer}>
+              <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
+                this.setState({ isModalVisible: true })
+              }}>
+                <Text>確認入倉</Text>
+              </Button>
+            </View>
+            : null
+
+        }
       </Container>
     );
   }

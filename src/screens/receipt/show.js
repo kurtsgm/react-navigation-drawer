@@ -100,8 +100,8 @@ class ShowReceipt extends Component {
         this.props.navigation.navigate("RecommendShelf",
           {
             items: this.state.items.filter((item) => item.ready_to_receive > 0),
+            receipt_id: this.state.receipt_id,
             shelf: data.shelf,
-            shelves: data.shelves,
             onReceived: this.onReceived
           })
       } else {
