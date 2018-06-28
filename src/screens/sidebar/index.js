@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import * as AppActions from '../../redux/actions/AppAction'
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import { Image } from "react-native";
+import { Image ,Linking} from "react-native";
 import {
   Content,
   Text,
@@ -55,7 +55,12 @@ const datas = [
 
   },
 
-
+  {
+    name: "更新版本",
+    route: 'Update',
+    icon: 'cloud-download',
+    bg: ''
+  },
   {
     name: "登出",
     route: 'Logout',
@@ -79,6 +84,9 @@ class SideBar extends Component {
     if(route == 'Logout'){
       this.props.setToken(null)
       this.props.navigation.navigate("Home")
+    }
+    else if(route == "Update"){
+      Linking.openURL('https://wms.ibiza.com.tw/apk/wms.apk')
     }else{
       this.props.navigation.navigate(route)
     }

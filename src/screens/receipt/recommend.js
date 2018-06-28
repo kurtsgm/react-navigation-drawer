@@ -65,8 +65,7 @@ class RecommendShelf extends Component {
           text: data.message,
           duration: 2500,
           type: 'danger',
-          position: "bottom",
-          style: { bottom: "50%" },
+          position: "top",
           textStyle: { textAlign: "center" }
         })
       }
@@ -150,8 +149,7 @@ class RecommendShelf extends Component {
                     text: '錯誤，掃描結果不符',
                     duration: 2500,
                     type: 'danger',
-                    position: "bottom",
-                    style: { bottom: "50%" },
+                    position: "top",
                     textStyle: { textAlign: "center" }
                   })
                 }
