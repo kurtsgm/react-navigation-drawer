@@ -18,7 +18,7 @@ import styles from "./styles";
 
 class ProductStorages extends Component {
   constructor(props) {
-    super(props)    
+    super(props)
   }
   render() {
     let rows = []
@@ -26,21 +26,21 @@ class ProductStorages extends Component {
     const { params: storages } = this.props.navigation.state;
     console.log(storages)
     let sorted_storages = storages.sort((a,b)=>{
-      return a.storage_type != "normal" && a.storage_type > b.storage_type
+      return a.product_storage_type_id - b.product_storage_type_id
     })
     sorted_storages.forEach(storage => {
       let storage_title = "無批號"
-      if (previous_type != storage.storage_type) {
-        rows.push(<ListItem itemDivider key={storage.storage_type}>
+      if (previous_type != storage.product_storage_type_id) {
+        rows.push(<ListItem itemDivider key={storage.product_storage_type_id}>
           <Text>{storage.storage_type_name}</Text>
         </ListItem>)
-        previous_type = storage.storage_type
+        previous_type = storage.product_storage_type_id
       }
       if(storage.batch || storage.expiration_date){
         storage_title= [storage.batch,storage.expiration_date].filter(e=>e).join("/")
       }
 
-      rows.push(<ListItem key={storage.id} button onPress={() => 
+      rows.push(<ListItem key={storage.id} button onPress={() =>
         this.props.navigation.navigate("ProductShelf",storage.shelf_storages)}>
         <Left>
           <Text>

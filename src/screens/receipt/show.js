@@ -116,7 +116,10 @@ class ShowReceipt extends Component {
           <Left>
             <Button
               transparent
-              onPress={() => this.props.navigation.goBack()}
+              onPress={() => {
+                this.props.navigation.state.params.onBack()
+                this.props.navigation.goBack()}
+              }
             >
               <Icon name="arrow-back" />
             </Button>

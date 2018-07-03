@@ -28,6 +28,7 @@ class Receipt extends Component {
       receipts: []
     }
     this.reload = this.reload.bind(this)
+    this.onBack = this.onBack.bind(this)
     this.onReceiptUpdate = this.onReceiptUpdate.bind(this)
   }
   componentWillMount() {
@@ -37,6 +38,10 @@ class Receipt extends Component {
     apiFetch(GET_RECEIPTS,{},(_data) => {
       this.setState({ receipts: _data })
     })
+  }
+
+  onBack(){
+    this.reload()
   }
 
   onReceiptUpdate(receipt){
@@ -66,7 +71,9 @@ class Receipt extends Component {
       }
       rows.push(
         <ListItem key={receipt.barcode} button onPress={() =>
-          this.props.navigation.navigate("ShowReceipt",{receipt:receipt,onReceiptUpdate:this.onReceiptUpdate})}>
+          this.props.navigation.navigate("ShowReceipt",{receipt:receipt,
+          onReceiptUpdate:this.onReceiptUpdate,
+          onBack:this.onBack})}>
           <Left>
             <Text>
               {receipt.shop_name + " " + receipt.barcode}
