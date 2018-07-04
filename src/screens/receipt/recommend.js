@@ -14,7 +14,8 @@ import {
   List,
   ListItem,
   Toast,
-  Input
+  Input,
+  Item
 } from "native-base";
 
 import Dialog from "react-native-dialog";
@@ -34,7 +35,11 @@ class RecommendShelf extends Component {
       show_picker: false,
       isModalVisible: false,
       confirm_shelf: null,
-      receipt_id: params.receipt_id
+      receipt_id: params.receipt_id,
+      items: params.items.map(item => {
+        item.total_quantity = item.ready_to_receive * item.pcs_per_box
+        return item
+      })
     }
     this.onShelfSelected = this.onShelfSelected.bind(this)
     this._toggleModal = this._toggleModal.bind(this)
@@ -47,9 +52,9 @@ class RecommendShelf extends Component {
   }
 
   receive() {
-    items = this.props.navigation.state.params.items.map((item) => {
+    items = this.state.items.map((item) => {
       if (item.ready_to_receive > 0) {
-        return { id: item.id, quantity: item.ready_to_receive }
+        return { id: item.id, quantity: item.ready_to_receive, total_quantity: item.total_quantity }
       }
     }).filter(Boolean);
     apiFetch(RECEIVE_RECEIPT, {
@@ -73,6 +78,7 @@ class RecommendShelf extends Component {
   }
   render() {
     const { back } = this.props.navigation;
+    console.log(this.state)
     return (
       <Container style={styles.container}>
         <Header>
@@ -107,24 +113,46 @@ class RecommendShelf extends Component {
                 onFocus={() => { this.setState({ shelf_token: '' }) }}
                 onEndEditing={
                   (event) => {
-                    let shelf_token = event.nativeEvent.text.trim()
+                    let shelf_token = normalize_shelf_barcode(event.nativeEvent.text.trim())
                     this.setState({ shelf_token: shelf_token })
                   }
                 } />
             </ListItem>
 
-            {this.props.navigation.state.params.items.map(data => {
+            {this.state.items.map(data => {
               return <ListItem key={data.id}>
                 <Left>
-                  <Left>
-                    <Text>
-                      {data.product_name + " " + data.storage_type_name}
-                    </Text>
-                  </Left>
+                  <Text>
+                    {data.product_name + " " + data.storage_type_name}
+                  </Text>
                 </Left>
+                <Body>
                 <Text>
                   {data.ready_to_receive}
-                </Text>
+                  箱
+                </Text>q
+                </Body>
+                <Right>
+                  <Item success >
+
+                    <Input keyboardType='numeric'
+                      value={`${data.total_quantity}`}
+                      onChangeText={
+                        (text) => {
+                          let items = this.state.items
+                          for (let item of items) {
+                            if (item.id == data.id) {
+                              item.total_quantity = text
+                              break
+                            }
+                          }
+                          this.setState({ items: items })
+                        }
+                      }
+                      returnKeyType="done" />
+                  </Item>
+                </Right>
+
               </ListItem>
             })
             }
@@ -142,7 +170,7 @@ class RecommendShelf extends Component {
               }
               onEndEditing={(event) => {
                 this.setState({ isModalVisible: false })
-                if (event.nativeEvent.text == this.state.shelf_token) {
+                if (normalize_shelf_barcode(event.nativeEvent.text) == this.state.shelf_token) {
                   this.receive()
                 } else {
                   Toast.show({

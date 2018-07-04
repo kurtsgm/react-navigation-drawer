@@ -136,7 +136,7 @@ class ShelfMerge extends Component {
                         this.setState({ source_shelf: normalize_shelf_barcode(text) })
                       }
                     }
-                    onEndEditing={(event) => { this.onSourceSelected(event.nativeEvent.text) }}
+                    onEndEditing={(event) => { this.onSourceSelected(normalize_shelf_barcode(event.nativeEvent.text)) }}
                     returnKeyType="done" />
                 </Col>
                 <Col size={1}>

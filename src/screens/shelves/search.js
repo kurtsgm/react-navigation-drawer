@@ -58,7 +58,7 @@ class ShelfSearch extends Component {
               autoFocus={true}
               onEndEditing={
                 (event) => {
-                  let barcode = event.nativeEvent.text.trim()
+                  let barcode = normalize_shelf_barcode(event.nativeEvent.text.trim())
                   if (barcode) {
                     apiFetch(GET_SHELF_INFO, { token: barcode }, data => {
                       console.log(data)
