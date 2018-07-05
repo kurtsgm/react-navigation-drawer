@@ -130,7 +130,7 @@ class RecommendShelf extends Component {
                 <Text>
                   {data.ready_to_receive}
                   箱
-                </Text>q
+                </Text>
                 </Body>
                 <Right>
                   <Item success >
