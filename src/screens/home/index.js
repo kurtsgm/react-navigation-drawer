@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { ImageBackground, View, StatusBar } from "react-native";
-import { H1,Container, Button, H3, Text ,Form, Item, Label ,Input ,Content } from "native-base";
+import { H1,Container, Button, H3, Text ,Form, Item, Label ,Input ,Content ,Footer,Right} from "native-base";
 import styles from "./styles";
 
 import * as AppActions from '../../redux/actions/AppAction'
@@ -109,6 +109,9 @@ class Home extends Component {
 
             </View>
           </Content>
+          <Text style={{ backgroundColor: 'transparent',bottom: 0 ,position: 'fixed',textAlign:'right'}} >
+            版本: 2018/7/5
+          </Text>
         </ImageBackground>
       </Container>
     );
