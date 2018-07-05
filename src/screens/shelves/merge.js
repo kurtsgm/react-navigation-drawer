@@ -49,6 +49,7 @@ class ShelfMerge extends Component {
     return this.state.source_shelf && this.state.destination_shelf && this.state.products.filter(p => p.checked).length > 0
   }
 
+
   onSourceSelected(token) {
     token = token.trim()
     if(token){
@@ -88,7 +89,7 @@ class ShelfMerge extends Component {
       shelf_storages: this.state.products.filter(p => p.checked).map(p => p.id)
     }, data => {
       if (data.status == "success") {
-        this.reload()
+        this.setState(INIT_STATE)
         Toast.show({
           text: "已成功轉移",
           duration: 2500,

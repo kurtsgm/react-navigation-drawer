@@ -210,7 +210,7 @@ class ShowPickingList extends Component {
   *item_generator(data_array) {
     for (let data of data_array) {
       yield (
-        <ListItem key={data.storage_shelf_id} product_name={data.product_name} product_storage_id={data.product_storage_id}>
+        <ListItem key={data.storage_shelf_id} shelf={data.shelf_token} product_storage_id={data.product_storage_id}>
           <Grid>
             <Col size={4} style={styles.vertical_center} >
               <Text>
@@ -294,6 +294,14 @@ class ShowPickingList extends Component {
         }
       }
     }
+
+    sectors = sectors.sort((a,b)=>{
+      try{
+        return parseInt(a.items[0].props.shelf) - parseInt(b.items[0].props.shelf)
+      }catch(e){
+        return 1
+      }
+    })
     for (let sector of sectors) {
       for (let shortage of this.state.shortage) {
         if (shortage.product_storage_id === sector.product_storage_id) {
