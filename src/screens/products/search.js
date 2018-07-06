@@ -69,6 +69,7 @@ class ProductSearch extends Component {
           <Item>
             <Input placeholder="Search" placeholder="請輸入或者掃描條碼" autoFocus={true}
             value={this.state.barcode}
+            onFocus={()=>this.setState({barcode:null})}
             onChangeText={(text) => this.setState({ barcode: text })}
             onEndEditing={
               (event) => {

@@ -55,6 +55,7 @@ class ShelfSearch extends Component {
               returnKeyType="done"
               value={this.state.barcode}
               onChangeText={(text) => this.setState({ barcode: normalize_shelf_barcode(text.toUpperCase()) })}
+              onFocus={()=>this.setState({ barcode:null})}
               autoFocus={true}
               onEndEditing={
                 (event) => {

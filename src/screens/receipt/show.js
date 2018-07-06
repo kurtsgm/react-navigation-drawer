@@ -173,7 +173,7 @@ class ShowReceipt extends Component {
                       }}>
                         {data.ready_to_receive > 0 ?
                           <Text>{data.ready_to_receive}</Text> :
-                          <Icon name="checkmark" />}
+                          <Icon name="remove" />}
                       </Button>
                     }
                   </Col>

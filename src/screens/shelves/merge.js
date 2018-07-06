@@ -54,19 +54,27 @@ class ShelfMerge extends Component {
     token = token.trim()
     if(token){
       apiFetch(GET_SHELF_INFO, { token: token }, data => {
-        let avaible_shelves = this.state.shelves.filter((shelf) => shelf.shop_id == null || shelf.shop_id == data.shop_id)
-        this.setState({
-          source_shelf: token,
-          products: data.storages.map(shelf_storage => {
-            return {
-              checked: true,
-              id: shelf_storage.id,
-              pcs: shelf_storage.pcs,
-              product_title: shelf_storage.product_storage.product.name,
-              expiration_date: shelf_storage.product_storage.expiration_date
-            }
+        if(data){
+          this.setState({
+            source_shelf: token,
+            products: data.storages.map(shelf_storage => {
+              return {
+                checked: true,
+                id: shelf_storage.id,
+                pcs: shelf_storage.pcs,
+                product_title: shelf_storage.product_storage.product.name,
+                expiration_date: shelf_storage.product_storage.expiration_date
+              }
+            })
           })
-        })
+        }else{
+          Toast.show({
+            text: "查無資料",
+            duration: 2500,
+            textStyle: { textAlign: "center" }
+          })
+
+        }
       })
     }
   }
@@ -86,7 +94,9 @@ class ShelfMerge extends Component {
     apiFetch(MERGE_SHELVES, {
       from: this.state.source_shelf,
       to: this.state.destination_shelf,
-      shelf_storages: this.state.products.filter(p => p.checked).map(p => p.id)
+      shelf_storages: this.state.products.filter(p => p.checked).map(p => {
+        return {id: p.id,pcs: p.pcs}
+      })
     }, data => {
       if (data.status == "success") {
         this.setState(INIT_STATE)
@@ -131,6 +141,8 @@ class ShelfMerge extends Component {
                 <Col size={4}  >
                   <Input keyboardType='numeric' value={this.state.source_shelf}
                     placeholder='請輸入或掃描'
+                    onFocus={()=> this.setState({source_shelf: "",shelves: [],products:[]})
+                    }
                     onChangeText={
                       (text) => {
                         console.log(normalize_shelf_barcode(text))
@@ -148,6 +160,7 @@ class ShelfMerge extends Component {
                 <Col size={4}>
                   <Input keyboardType='numeric' value={this.state.destination_shelf}
                     placeholder='請輸入或掃描'
+                    onFocus={()=> this.setState({destination_shelf: ""})}
                     onChangeText={
                       (text) => {
                         this.setState({ destination_shelf: normalize_shelf_barcode(text) })
@@ -181,10 +194,30 @@ class ShelfMerge extends Component {
 
                   </Body>
                   <Right>
-                    <Text>
-                      {product.pcs}
-                    </Text>
-                  </Right>
+                  <Item success >
+
+                    <Input keyboardType='numeric'
+                      value={`${product.pcs}`}
+                      onChangeText={
+                        (text) => {
+                          let products = this.state.products
+                          for (let p of products) {
+                            if (p.id == product.id) {
+                              p.pcs = text
+                              if(!parseInt(text)>0){
+                                p.checked= false
+                              }else{
+                                p.checked = true
+                              }
+                              break
+                            }
+                          }
+                          this.setState({ products: products })
+                        }
+                      }
+                      returnKeyType="done" />
+                  </Item>
+                                    </Right>
                 </ListItem>
 
               })
