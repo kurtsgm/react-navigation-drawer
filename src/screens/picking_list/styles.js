@@ -26,6 +26,12 @@ export default {
   footer: {
     bottom: 0
   },
+  item_done: {
+    backgroundColor: '#d2edf4'
+  },
+  extra_info: {
+    color: "blue",
+  },
   red:{
     color: 'red'
   }

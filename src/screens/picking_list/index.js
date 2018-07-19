@@ -38,9 +38,11 @@ class PickingLists extends Component {
     })
   }
 
+
   render() {
     let previous_date = null
     let rows = this.state.picking_lists.map(picking_list=>{
+      picking_list.onBack = ()=>{this.reload()}
       return <ListItem key={picking_list.id} button onPress={() =>
         this.props.navigation.navigate("ShowPickingList",picking_list)}>
         <Left>

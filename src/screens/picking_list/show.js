@@ -26,7 +26,7 @@ import {
 
 
 
-import { Grid, Col } from "react-native-easy-grid";
+import { Grid, Col, Row } from "react-native-easy-grid";
 import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST } from "../../api"
 import styles from "./styles";
 
@@ -51,6 +51,7 @@ class ShowPickingList extends Component {
     this.changeMode = this.changeMode.bind(this)
     this.togglePicked = this.togglePicked.bind(this)
     this.reload = this.reload.bind(this)
+    this.onBack = params.onBack
   }
 
   normalize_order(orders) {
@@ -256,7 +257,6 @@ class ShowPickingList extends Component {
       )
     }
   }
-
   render() {
     let picking_list = this.state.picking_list
     let item_g = this.item_generator(this.state.items.sort((a, b) => a.product_storage_id - b.product_storage_id))
@@ -295,10 +295,10 @@ class ShowPickingList extends Component {
       }
     }
 
-    sectors = sectors.sort((a,b)=>{
-      try{
+    sectors = sectors.sort((a, b) => {
+      try {
         return parseInt(a.items[0].props.shelf) - parseInt(b.items[0].props.shelf)
-      }catch(e){
+      } catch (e) {
         return 1
       }
     })
@@ -337,7 +337,7 @@ class ShowPickingList extends Component {
                     style={{
                       borderRadius: 3,
                       height: 25,
-                      width: 72,
+                      width: 100,
                       backgroundColor: "blue"
                     }}
                     textStyle={{ color: "white" }}
@@ -388,36 +388,55 @@ class ShowPickingList extends Component {
 
 
     for (let _sector of sectors) {
+      let is_done = _sector.picked_quantity == _sector.quantity
       list_items.push(
-        <ListItem itemDivider key={`divider-${_sector.product_storage_id}`}>
-          <Left>
-            <Text>{_sector.product_name}
-              {"\n"}
-              {_sector.product_stroage_type}
-            </Text>
-          </Left>
-          <Body>
-            <Text>
-              {_sector.product_uid}
-              {"\n"}
-              {_sector.batch}
-            </Text>
-          </Body>
-          <Right>
-            <Text>
-              已揀
-              {_sector.picked_quantity}
-              /
-              {_sector.quantity}
-            </Text>
-          </Right>
+        <ListItem itemDivider style={ is_done ? styles.item_done : ''} key={`divider-${_sector.product_storage_id}`}>
+          <Grid>
+            <Row>
+              <Col>
+                <Text>{_sector.product_name}
+                </Text>
+              </Col>
+              <Col>
+                <Text>
+                {_sector.product_uid}
+                </Text>
+              </Col>
+              <Col>
+              <Text>
+              {is_done ? '已完成' : '待撿'}
+              </Text>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Text style={styles.extra_info}>
+                  {_sector.product_stroage_type}
+                </Text>
+              </Col>
+              <Col>
+                <Text style={styles.extra_info}>
+                  {[_sector.product_expiration_date, _sector.batch].filter(e => e).join("\n")}
+                </Text>
+              </Col>
+              <Col>
+                <Text>
+                  {_sector.picked_quantity}
+                  /
+                  {_sector.quantity}
+                </Text>
+              </Col>
+            </Row>
+          </Grid>
         </ListItem>
       )
-      for (let _item of _sector.items) {
-        list_items.push(_item)
-      }
-      if (_sector.shortage) {
-        list_items.push(_sector.shortage)
+      if(!is_done){
+        for (let _item of _sector.items) {
+          list_items.push(_item)
+        }
+        if (_sector.shortage) {
+          list_items.push(_sector.shortage)
+        }
       }
       if (this.state.show_order && _sector.orders) {
         list_items.push(_sector.orders)
@@ -435,7 +454,11 @@ class ShowPickingList extends Component {
           <Left>
             <Button
               transparent
-              onPress={() => this.props.navigation.goBack()}
+              onPress={() => {
+                this.onBack()
+                this.props.navigation.goBack()
+              }
+            }
             >
               <Icon name="arrow-back" />
             </Button>
