@@ -297,7 +297,7 @@ class ShowPickingList extends Component {
 
     sectors = sectors.sort((a, b) => {
       try {
-        return parseInt(a.items[0].props.shelf) - parseInt(b.items[0].props.shelf)
+        return parseInt(a.items[0].props.shelf.substring(0,5).replace('-','')) - parseInt(b.items[0].props.shelf.substring(0,5).replace('-',''))
       } catch (e) {
         return 1
       }
