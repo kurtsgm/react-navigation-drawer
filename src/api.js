@@ -47,7 +47,7 @@ export function apiFetch(action,data={},callback_function){
     // host = "http://192.168.1.108:8088"
     host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
   }else{
-    host = "http://wms-api.ibiza.com.tw"
+    host = "https://wms-api.ibiza.com.tw"
   }
   let _action = Actions[action]
   let path = _action.path
