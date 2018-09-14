@@ -39,12 +39,12 @@ class ShowPickingList extends Component {
     console.log(params.items)
     this.normalize_order = this.normalize_order.bind(this)
 
-    let orders = this.normalize_order(params.orders)
-    this.state = Object.assign(ShowPickingList.arrange_items([], params.items), {
+    params.items = []
+    this.state = Object.assign(ShowPickingList.arrange_items([],[]), {
       picking_list: params,
       show_order: false,
       show_picked: false,
-      storage_orders: orders
+      storage_orders: []
     })
     this.item_generator = this.item_generator.bind(this)
     this.changeQuantity = this.changeQuantity.bind(this)
@@ -52,6 +52,7 @@ class ShowPickingList extends Component {
     this.togglePicked = this.togglePicked.bind(this)
     this.reload = this.reload.bind(this)
     this.onBack = params.onBack
+    this.reload()
   }
 
   normalize_order(orders) {

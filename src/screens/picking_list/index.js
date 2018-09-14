@@ -47,7 +47,7 @@ class PickingLists extends Component {
         this.props.navigation.navigate("ShowPickingList",picking_list)}>
         <Left>
           <Text>
-            {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders.length}]`}
+            {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders_length}]`}
           </Text>
         </Left>
         <Right>
