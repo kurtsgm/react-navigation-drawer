@@ -54,13 +54,6 @@ const datas = [
     bg: "#C5F442"
 
   },
-
-  {
-    name: "更新版本",
-    route: 'Update',
-    icon: 'cloud-download',
-    bg: ''
-  },
   {
     name: "登出",
     route: 'Logout',
