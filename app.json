@@ -3,7 +3,7 @@
     "sdkVersion": "27.0.0",
     "android":{
       "package": "com.ibiza.sdj",
-      "versionCode": 5
+      "versionCode": 6
     },
     "icon": "./assets/icon.png",
     "slug": "ibiza_sdj",
