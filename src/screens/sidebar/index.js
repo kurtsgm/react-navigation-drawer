@@ -26,39 +26,46 @@ const datas = [
     name: '入倉作業',
     route: 'Receipt',
     icon: 'truck',
-    bg: "#C5F442"
+    bg: "#C5F442",
+    roles: ['admin','manager','staff']
   },
   {
     name: '揀貨作業',
     route: 'PickingLists',
     icon: 'clipboard',
-    bg: "#C5F442"
+    bg: "#C5F442",
+    roles: ['admin','manager','staff','parttime']
   },
 
   {
     name: '庫存查詢',
     route: 'ProductSearch',
     icon: 'cube',
-    bg: "#C5F442"
+    bg: "#C5F442",
+    roles: ['admin','manager','staff']
   },
   {
     name: '儲位查詢',
     route: 'ShelfSearch',
     icon: 'search',
-    bg: "#C5F442"
+    bg: "#C5F442",
+    roles: ['admin','manager','staff']
   },
   {
     name: '儲位移動',
     route: 'ShelfMerge',
     icon: 'cubes',
-    bg: "#C5F442"
+    bg: "#C5F442",
+    roles: ['admin','manager','staff']
 
   },
   {
     name: "登出",
     route: 'Logout',
     icon: 'sign-out',
-    bg: ''
+    bg: '',
+    roles: ['admin','manager','staff','parttime']
+
   }
 ];
 
@@ -75,7 +82,7 @@ class SideBar extends Component {
 
   route(route){
     if(route == 'Logout'){
-      this.props.setToken(null)
+      this.props.setToken(null,null)
       this.props.navigation.navigate("Home")
     }
     else if(route == "Update"){
@@ -90,6 +97,7 @@ class SideBar extends Component {
     }
   }
   render() {
+    console.log(this.props)
     return (
       <Container>
         <Spinner visible={this.props.loading} textContent={"資料讀取中"} textStyle={{color: '#FFF'}} />
@@ -101,7 +109,7 @@ class SideBar extends Component {
           <Image square style={styles.drawerImage} source={drawerImage} />
 
           <List
-            dataArray={datas}
+            dataArray={datas.filter(route=> route.roles.includes(this.props.role))}
             renderRow={data =>
               <ListItem
                 button
@@ -143,4 +151,4 @@ class SideBar extends Component {
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(AppActions, dispatch);
 }
-export default connect((state)=>{return {auth_token: state.auth_token,loading: state.loading}}, mapDispatchToProps)(SideBar);
+export default connect((state)=>{return {auth_token: state.auth_token,role: state.role,loading: state.loading}}, mapDispatchToProps)(SideBar);

@@ -35,7 +35,7 @@ class Home extends Component {
         grant_type: 'password'
       },(data)=>{
         if(data.access_token){
-          this.props.setToken(data.access_token)
+          this.props.setToken(data.access_token,data.role)
           navigate('Welcome')
         }else{
           this.setState({login_failed: true})
@@ -53,7 +53,7 @@ class Home extends Component {
         grant_type: 'password'
       },(data)=>{
         if(data.access_token){
-          this.props.setToken(data.access_token)
+          this.props.setToken(data.access_token,data.role)
           navigate('Welcome')
         }else{
           this.setState({login_failed: true})
@@ -120,7 +120,8 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    auth_token: state.auth_token
+    auth_token: state.auth_token,
+    role: state.role
   }
 }
 const mapDispatchToProps = (dispatch) => {

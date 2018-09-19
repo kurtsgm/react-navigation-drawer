@@ -6,9 +6,10 @@ import {
 } from './action_types'
 
 
-export const setToken = (token) => {
+export const setToken = (token,role) => {
   return {
     type: SET_AUTH_TOKEN,
+    role: role,
     auth_token: token
   }
 }
