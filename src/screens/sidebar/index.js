@@ -60,6 +60,15 @@ const datas = [
 
   },
   {
+    name: '高空待撿',
+    route: 'HighLayerShelf',
+    icon: 'flash',
+    bg: "#C5F442",
+    roles: ['admin','manager','staff']
+
+  },
+
+  {
     name: "登出",
     route: 'Logout',
     icon: 'sign-out',
