@@ -33,7 +33,6 @@ class ShelfSearch extends Component {
     }
   }
   render() {
-    let rows = []
     return (
       <Container style={styles.container}>
         <Header searchBar rounded>

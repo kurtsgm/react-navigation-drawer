@@ -29,6 +29,7 @@ import ShelfShow from './screens/shelves/show'
 import ShelfMerge from './screens/shelves/merge'
 import ShelfProduct from './screens/shelves/product'
 import HighLayerShelf from './screens/shelves/high_layer'
+import HighLayerShelfMerge from './screens/shelves/high_layer_merge'
 import Welcome from './screens/welcome/index'
 
 import SideBar from "./screens/sidebar";
@@ -63,8 +64,7 @@ const AppNavigator = StackNavigator(
 
     ProductStorages: {screen: ProductStorages},
     ProductShelf: {screen: ProductShelf},
-
-
+    HighLayerShelfMerge: {screen: HighLayerShelfMerge},
     ShelfShow: {screen: ShelfShow},
     ShelfProduct: {screen: ShelfProduct},
 

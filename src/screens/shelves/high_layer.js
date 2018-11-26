@@ -12,7 +12,8 @@ import {
   Body,
   Right,
   List,
-  ListItem
+  ListItem,
+  Label
 } from "native-base";
 import styles from "./styles";
 
@@ -35,25 +36,37 @@ class HighLayerShelf extends Component {
   reload() {
     apiFetch(GET_HIGH_LAYER,{},(_data) => {
       console.log(_data)
+      this.setState({high_layers: _data})
     })
   }
 
 
   render() {
     let rows = this.state.high_layers.map(shelf=>{
-      return <ListItem key={shelf.id} >{shelf.token}</ListItem>
-      // shelf.onBack = ()=>{this.reload()}
-      // return <ListItem key={shelf.id} button onPress={() =>
-      //   this.props.navigation.navigate("ShowPickingList",picking_list)}>
-      //   <Left>
-      //     <Text>
-      //       {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders_length}]`}
-      //     </Text>
-      //   </Left>
-      //   <Right>
-      //     <Icon name="arrow-forward" style={{ color: "#999" }} />
-      //   </Right>
-      // </ListItem>
+      shelf.onBack = ()=>{this.reload()}
+      return <ListItem key={`${shelf.shelf_id}-${shelf.product}`} button onPress={() =>
+        this.props.navigation.navigate("HighLayerShelfMerge",{high_layer:shelf})}>
+        <Body>
+          <Text>
+            {shelf.shelf_token}
+          </Text>
+        </Body>
+        <Body>
+          <Text>
+          {`${shelf.product}/${shelf.storage_type_name}`}
+
+          </Text>
+        </Body>
+        <Right>
+          <Button disabled={true} primary transparent>
+          <Text>
+          {shelf.shelf_quantity}
+          </Text>
+          <Icon name="arrow-forward" style={{ color: "#999" }} />
+
+          </Button>
+        </Right>
+      </ListItem>
     })
 
 
@@ -69,7 +82,7 @@ class HighLayerShelf extends Component {
             </Button>
           </Left>
           <Body>
-            <Title>揀貨作業</Title>
+            <Title>高空待撿</Title>
           </Body>
           <Right>
             <Button transparent>
@@ -80,7 +93,7 @@ class HighLayerShelf extends Component {
 
         <Content>
           {
-            this.state.high_layers.length > 0 ?
+            rows.length > 0 ?
               <List>
                 {rows}
               </List> : null

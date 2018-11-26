@@ -31,6 +31,9 @@ export default {
   },
   arrow: {
     marginTop: 13
-  }
+  },
+  target_product: {
+    color: 'blue'
+  },
 
 };
