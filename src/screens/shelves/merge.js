@@ -42,8 +42,9 @@ class ShelfMerge extends Component {
     super(props)
     this.state = INIT_STATE
     this.onSourceSelected = this.onSourceSelected.bind(this)
-    this.toggle_product = this.toggle_product.bind(this)
+    this.toggleProduct = this.toggleProduct.bind(this)
     this.valid = this.valid.bind(this)
+    this.afterMerge = this.afterMerge.bind(this)
   }
 
   valid() {
@@ -83,7 +84,7 @@ class ShelfMerge extends Component {
     }
   }
 
-  toggle_product(id) {
+  toggleProduct(id) {
     let products = this.state.products
     for (let p of products) {
       if (p.id == id) {
@@ -94,6 +95,9 @@ class ShelfMerge extends Component {
 
   }
 
+  afterMerge(){
+
+  }
   merge() {
     apiFetch(MERGE_SHELVES, {
       from: this.state.source_shelf,
@@ -115,8 +119,8 @@ class ShelfMerge extends Component {
           duration: 2500,
           textStyle: { textAlign: "center" }
         })
-
       }
+      this.afterMerge()
     })
   }
 
@@ -206,12 +210,12 @@ class ShelfMerge extends Component {
               this.state.products.map(product => {
                 return <ListItem key={product.id}
                   onPress={() => {
-                    this.toggle_product(product.id)
+                    this.toggleProduct(product.id)
                   }}
                 >
                   <Left>
                     <CheckBox checked={product.checked} onPress={() => {
-                      this.toggle_product(product.id)
+                      this.toggleProduct(product.id)
                     }
                     } />
 

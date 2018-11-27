@@ -19,6 +19,11 @@ class HighLayerShelfMerge extends ShelfMerge {
       <Icon name="arrow-back" />
     </Button>
   }
+
+  afterMerge(){
+    this.props.navigation.state.params.high_layer.onBack()
+    this.props.navigation.goBack()
+  }
   componentDidMount() {
     if (this.props.navigation.state.params.high_layer) {
       this.setState({high_layer:this.props.navigation.state.params.high_layer})
