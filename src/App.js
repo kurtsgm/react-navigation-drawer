@@ -29,6 +29,8 @@ import ShelfShow from './screens/shelves/show'
 import ShelfMerge from './screens/shelves/merge'
 import ShelfProduct from './screens/shelves/product'
 import HighLayerShelf from './screens/shelves/high_layer'
+import HighLayerShopIndex from './screens/shelves/high_layer_shops'
+
 import HighLayerShelfMerge from './screens/shelves/high_layer_merge'
 import Welcome from './screens/welcome/index'
 
@@ -41,7 +43,7 @@ const Drawer = DrawerNavigator(
     ProductSearch: {screen: ProductSearch},
     ShelfSearch: {screen: ShelfSearch},
     ShelfMerge: {screen: ShelfMerge},
-    HighLayerShelf: {screen: HighLayerShelf},
+    HighLayerShopIndex: {screen: HighLayerShopIndex},
     Welcome: { screen: Welcome},
   },
   {
@@ -65,6 +67,7 @@ const AppNavigator = StackNavigator(
     ProductStorages: {screen: ProductStorages},
     ProductShelf: {screen: ProductShelf},
     HighLayerShelfMerge: {screen: HighLayerShelfMerge},
+    HighLayerShelf: {screen: HighLayerShelf},
     ShelfShow: {screen: ShelfShow},
     ShelfProduct: {screen: ShelfProduct},
 

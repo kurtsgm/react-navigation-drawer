@@ -45,6 +45,7 @@ class ShelfMerge extends Component {
     this.toggleProduct = this.toggleProduct.bind(this)
     this.valid = this.valid.bind(this)
     this.afterMerge = this.afterMerge.bind(this)
+    this.extra_info = this.extra_info.bind(this)
   }
 
   valid() {
@@ -129,6 +130,9 @@ class ShelfMerge extends Component {
     <Icon name="menu" />
   </Button>
   }
+  extra_info(){
+
+  }
 
 
   render() {
@@ -164,7 +168,9 @@ class ShelfMerge extends Component {
 
                 </CardItem> : null
             }
-
+            {
+              this.extra_info()
+            }
             <CardItem header bordered>
               <Grid>
                 <Col size={4} >

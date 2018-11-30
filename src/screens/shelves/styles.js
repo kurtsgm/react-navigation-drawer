@@ -35,5 +35,7 @@ export default {
   target_product: {
     color: 'blue'
   },
-
+  vertical_center:{
+    justifyContent: 'center'
+  },
 };

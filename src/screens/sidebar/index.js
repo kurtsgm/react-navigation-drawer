@@ -61,7 +61,7 @@ const datas = [
   },
   {
     name: '高空待撿',
-    route: 'HighLayerShelf',
+    route: 'HighLayerShopIndex',
     icon: 'flash',
     bg: "#C5F442",
     roles: ['admin','manager','staff']
