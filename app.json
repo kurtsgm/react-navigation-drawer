@@ -17,6 +17,10 @@
         "ttf"
       ]
     },
+    "ios": {
+      "bundleIdentifier": "com.ibiza.sdj",
+      "icon":"./assets/icon-ios.png"
+    },
     "androidStatusBarColor": "#334393",
     "androidStatusBar": {
       "barStyle": "light-content",

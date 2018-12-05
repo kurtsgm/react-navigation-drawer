@@ -1,6 +1,6 @@
 {
   "name": "WmsIbiza",
-  "version": "1.0.4.2",
+  "version": "1.0.43",
   "private": true,
   "devDependencies": {
     "babel-eslint": "8.2.2",

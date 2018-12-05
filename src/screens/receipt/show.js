@@ -31,7 +31,7 @@ class ShowReceipt extends Component {
     const { receipt } = this.props.navigation.state.params;
     this.state = {
       receipt_id: receipt.id,
-      receipt_title: receipt.barcode,
+      receipt_title: receipt.title,
       items: receipt.items.map((item) => {
         return {
           ready_to_receive: 0,
@@ -60,7 +60,7 @@ class ShowReceipt extends Component {
     }, (data) => {
       this.setState({
         receipt_id: data.id,
-        receipt_title: data.barcode,
+        receipt_title: data.title,
         items: data.items.map((item) => {
           return {
             ready_to_receive: 0,

@@ -76,7 +76,7 @@ class Receipt extends Component {
           onBack:this.onBack})}>
           <Left>
             <Text>
-              {receipt.shop_name + " " + receipt.barcode}
+              {receipt.shop_name + " " + receipt.title}
             </Text>
           </Left>
           <Right>
