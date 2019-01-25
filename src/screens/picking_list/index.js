@@ -40,7 +40,6 @@ class PickingLists extends Component {
 
 
   render() {
-    let previous_date = null
     let rows = this.state.picking_lists.map(picking_list=>{
       picking_list.onBack = ()=>{this.reload()}
       return <ListItem key={picking_list.id} button onPress={() =>
@@ -50,6 +49,11 @@ class PickingLists extends Component {
             {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders_length}]`}
           </Text>
         </Left>
+        <Body>
+          <Text>
+            {picking_list.created_date}
+          </Text>
+        </Body>
         <Right>
           <Icon name="arrow-forward" style={{ color: "#999" }} />
         </Right>
