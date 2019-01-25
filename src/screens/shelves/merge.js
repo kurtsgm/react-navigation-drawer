@@ -126,7 +126,7 @@ class ShelfMerge extends Component {
   }
 
   backButton(){
-    return <Button transparent onPress={() => { this.props.navigation.navigate("DrawerOpen") }}>
+    return <Button transparent onPress={() => { this.props.navigation.openDrawer() }}>
     <Icon name="menu" />
   </Button>
   }

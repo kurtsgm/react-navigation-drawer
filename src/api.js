@@ -3,7 +3,7 @@ import Expo from "expo";
 import * as AppActions from './redux/actions/AppAction'
 import {store} from './redux/stores/store'
 
-const { manifest } = Expo.Constants;
+// const { manifest } = Expo.Constants;
 
 export const API_OAUTH = "OAUTH"
 export const GET_RECEIPTS = "GET_RECEIPTS"
@@ -47,9 +47,10 @@ export function apiFetch(action,data={},callback_function){
   let host
   if(__DEV__ ){
     // host = "http://192.168.1.108:8088"
-    host = "http://"+manifest.debuggerHost.split(":").shift().concat(":3000")
+    host = "http://192.168.1.108:3000"
   }else{
     host = "https://wms-api.ibiza.com.tw"
+
   }
   let _action = Actions[action]
   let path = _action.path

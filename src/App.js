@@ -1,7 +1,5 @@
 import React from "react";
-import { Root } from "native-base";
-import { StackNavigator, DrawerNavigator } from "react-navigation";
-import {StatusBar} from 'react-native'
+import { createStackNavigator, createDrawerNavigator ,createAppContainer} from "react-navigation";
 
 
 import Home from "./screens/home/";
@@ -35,7 +33,7 @@ import HighLayerShelfMerge from './screens/shelves/high_layer_merge'
 import Welcome from './screens/welcome/index'
 
 import SideBar from "./screens/sidebar";
-const Drawer = DrawerNavigator(
+const Drawer = createDrawerNavigator(
   {
     Home: { screen: Home },
     Receipt: {screen: Receipt},
@@ -55,7 +53,7 @@ const Drawer = DrawerNavigator(
   }
 );
 
-const AppNavigator = StackNavigator(
+const AppNavigator = createStackNavigator(
   {
     Drawer: { screen: Drawer },
 
@@ -78,11 +76,21 @@ const AppNavigator = StackNavigator(
   }
 );
 
-export default () =>
-  <Root>
-    <StatusBar hidden={true} />
-    <AppNavigator />
-  </Root>;
+const AppContainer = createAppContainer(AppNavigator);
+
+
+export default class App extends React.Component {
+  render() {
+    return (
+      <AppContainer
+        ref={nav => {
+          this.navigator = nav;
+        }}
+      />
+    );
+  }
+}
+
 
 console.disableYellowBox = true;
 

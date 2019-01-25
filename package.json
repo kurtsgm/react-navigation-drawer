@@ -1,51 +1,27 @@
 {
-  "name": "SDJ智慧倉儲系統",
-  "version": "1.0.45",
-  "private": true,
-  "devDependencies": {
-    "babel-eslint": "8.2.2",
-    "eslint": "4.4.1",
-    "eslint-plugin-flowtype": "2.35.0",
-    "eslint-plugin-import": "2.7.0",
-    "eslint-plugin-jsx-a11y": "6.0.2",
-    "eslint-plugin-prettier": "2.1.2",
-    "eslint-plugin-react": "7.1.0",
-    "eslint-plugin-react-native": "3.0.1",
-    "flow-bin": "0.52.0",
-    "flow-typed": "2.1.5",
-    "husky": "0.14.3",
-    "jest": "20.0.4",
-    "jest-expo": "19.0.5",
-    "prettier": "1.5.3",
-    "react-native-debugger-open": "^0.3.17",
-    "react-native-scripts": "^1.14.0",
-    "react-test-renderer": "16.0.0-alpha.12"
-  },
-  "main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "react-native-scripts start",
-    "eject": "react-native-scripts eject",
-    "android": "react-native-scripts android",
-    "ios": "react-native-scripts ios",
-    "test": "node node_modules/jest/bin/jest.js --watch"
-  },
-  "jest": {
-    "preset": "jest-expo"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "eject": "expo eject"
   },
   "dependencies": {
-    "color": "1.0.3",
-    "expo": "27.0.0",
-    "lodash": "4.13.1",
-    "moment": "2.13.0",
-    "native-base": "2.3.5",
-    "react": "16.3.1",
-    "react-native": "0.55.4",
+    "@expo/vector-icons": "^9.0.0",
+    "expo": "^32.0.0",
+    "native-base": "^2.10.0",
+    "react": "16.5.0",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-actionsheet": "^2.4.2",
-    "react-native-dialog": "^4.0.0",
-    "react-native-loading-spinner-overlay": "^0.5.2",
-    "react-native-vector-icons": "^4.6.0",
-    "react-navigation": "1.5.2",
-    "react-redux": "^5.0.7",
-    "redux": "4.0.0"
-  }
+    "react-native-dialog": "^5.5.0",
+    "react-native-loading-spinner-overlay": "^1.0.1",
+    "react-native-vector-icons": "^6.2.0",
+    "react-navigation": "^3.0.9",
+    "react-redux": "^6.0.0",
+    "redux": "^4.0.1"
+  },
+  "devDependencies": {
+    "babel-preset-expo": "^5.0.0"
+  },
+  "private": true
 }

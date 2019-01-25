@@ -93,9 +93,6 @@ class SideBar extends Component {
     if(route == 'Logout'){
       this.props.setToken(null,null)
       this.props.navigation.navigate("Home")
-    }
-    else if(route == "Update"){
-      Linking.openURL('https://wms.ibiza.com.tw/apk/wms.apk')
     }else{
       this.props.navigation.navigate(route)
     }

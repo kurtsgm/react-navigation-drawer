@@ -41,7 +41,7 @@ class ShelfSearch extends Component {
               transparent
               onPress={() => {
                 Keyboard.dismiss()
-                this.props.navigation.navigate("DrawerOpen")
+                this.props.navigation.openDrawer()
               }
               }
             >

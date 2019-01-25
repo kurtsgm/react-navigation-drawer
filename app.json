@@ -1,22 +1,28 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0",
+    "name": "SDJ智慧倉儲系統",
+    "version": "1.0.45",
     "android":{
       "package": "com.ibiza.sdj",
       "versionCode": 11
     },
+    "sdkVersion": "32.0.0",
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "icon": "./assets/icon.png",
     "slug": "ibiza_sdj",
     "loading": {
       "hideExponentText": true,
       "backgroundImage": "./assets/splashscreen.png"
     },
-    "primaryColor": "#cccccc",
-    "packagerOpts": {
-      "assetExts": [
-        "ttf"
-      ]
+    "updates": {
+      "fallbackToCacheTimeout": 0
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "bundleIdentifier": "com.ibiza.sdj",
       "icon":"./assets/icon-ios.png"
@@ -24,7 +30,8 @@
     "androidStatusBarColor": "#334393",
     "androidStatusBar": {
       "barStyle": "light-content",
-      "backgroundColor": "#334393"
+      "backgroundColor": "#334393",
+      "supportsTablet": true
     }
   }
 }
