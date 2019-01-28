@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator, createDrawerNavigator ,createAppContainer} from "react-navigation";
 
-
+import { Root } from "native-base";
 import Home from "./screens/home/";
 
 // Receipts and Shelves
@@ -82,11 +82,13 @@ const AppContainer = createAppContainer(AppNavigator);
 export default class App extends React.Component {
   render() {
     return (
-      <AppContainer
-        ref={nav => {
-          this.navigator = nav;
-        }}
-      />
+      <Root>
+        <AppContainer
+          ref={nav => {
+            this.navigator = nav;
+          }}
+        />
+      </Root>
     );
   }
 }

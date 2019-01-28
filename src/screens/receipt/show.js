@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View , Picker} from 'react-native';
+import { View } from 'react-native';
 import {
   Container,
   Header,
@@ -14,7 +14,6 @@ import {
   List,
   ListItem,
   ActionSheet,
-  Footer,
   Toast
 } from "native-base";
 
