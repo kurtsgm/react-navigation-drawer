@@ -4,7 +4,8 @@
     "version": "1.0.45",
     "android":{
       "package": "com.ibiza.sdj",
-      "versionCode": 11
+      "versionCode": 12,
+      "permissions":[]
     },
     "sdkVersion": "32.0.0",
     "platforms": [
