@@ -72,7 +72,7 @@ class ShowPickingList extends Component {
 
   reload() {
     apiFetch(GET_PICKING_LIST, { id: this.state.picking_list.id }, (_data) => {
-      this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items), {
+      this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items.sort((a,b)=>a.is_done ? 0 : -1)), {
         picking_list: _data,
         storage_orders: this.normalize_order(_data.orders)
       }))
