@@ -13,10 +13,10 @@ import {
   Right,
   List,
   ListItem,
-  ActionSheet,
   Toast
 } from "native-base";
 
+import Dialog from "react-native-dialog";
 
 import { Grid, Col } from "react-native-easy-grid";
 import { apiFetch, GET_RECEIPT, RECEIVE_RECEIPT, RECOMMEND_SHELF } from "../../api"
@@ -31,6 +31,8 @@ class ShowReceipt extends Component {
     this.state = {
       receipt_id: receipt.id,
       receipt_title: receipt.title,
+      isModalVisible: false,
+      currentItemId: null,
       items: receipt.items.map((item) => {
         return {
           ready_to_receive: 0,
@@ -104,7 +106,12 @@ class ShowReceipt extends Component {
             onReceived: this.onReceived
           })
       } else {
-        console.log(data)
+        Toast.show({
+          text: data.message,
+          duration: 2500,
+          textStyle: {textAlign: "center"}
+        })
+
       }
     });
   }
@@ -133,6 +140,35 @@ class ShowReceipt extends Component {
           </Right>
         </Header>
         <Content>
+          <Dialog.Container visible={this.state.isModalVisible}>
+            <Dialog.Title>請輸入數量</Dialog.Title>
+            <Dialog.Input keyboardType='numeric'
+              placeholder='請輸入數量'
+              autoFocus={true}
+              onEndEditing={(event) => {
+                this.setState({ isModalVisible: false })
+                console.log(event.nativeEvent.text)
+                let items = this.state.items
+                for (item of items) {
+                  if (item.id == this.state.currentItemId) {
+                    item.ready_to_receive = parseInt(event.nativeEvent.text)
+                    if(item.ready_to_receive > (item.box_count - item.received_count )){
+                      item.ready_to_receive  = item.box_count - item.received_count
+                      Toast.show({
+                        text: `最多可輸入${item.ready_to_receive}箱`,
+                        duration: 2500,
+                        textStyle: {textAlign: "center"}
+                      })
+                    }
+                    break
+                  }
+                }
+                this.setState({ items: items })
+              }}
+              returnKeyType="done" />
+            <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+          </Dialog.Container>
+
           <List>
             {this.state.items.map(data => {
               return <ListItem key={data.id}>
@@ -152,23 +188,7 @@ class ShowReceipt extends Component {
                       null
                       :
                       <Button bordered light block primary onPress={() => {
-                        let quantities = [...Array(data.box_count - data.received_count + 1)].map((v, index) => index.toString())
-                        ActionSheet.show(
-                          {
-                            options: quantities,
-                            title: "點收數量"
-                          },
-                          buttonIndex => {
-                            items = this.state.items
-                            for (item of items) {
-                              if (item.id == data.id) {
-                                item.ready_to_receive = buttonIndex
-                                break
-                              }
-                            }
-                            this.setState({ items: items })
-                          }
-                        )
+                        this.setState({isModalVisible:true,currentItemId: data.id})
                       }}>
                         {data.ready_to_receive > 0 ?
                           <Text>{data.ready_to_receive}</Text> :

@@ -13,7 +13,6 @@ import {
   Right,
   List,
   ListItem,
-  ActionSheet,
   Input,
   Footer,
   FooterTab,
