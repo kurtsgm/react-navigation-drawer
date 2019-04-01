@@ -62,7 +62,7 @@ class ShelfMerge extends Component {
             source_shelf: token,
             products: data.storages.map(shelf_storage => {
               return {
-                checked: true,
+                checked: !this.state.high_layer || shelf_storage.product_storage.id == this.state.high_layer.product_storage_id,
                 id: shelf_storage.id,
                 pcs: shelf_storage.pcs,
                 product_title: shelf_storage.product_storage.product.name,
@@ -96,7 +96,7 @@ class ShelfMerge extends Component {
 
   }
 
-  afterMerge(){
+  afterMerge() {
 
   }
   merge() {
@@ -125,12 +125,12 @@ class ShelfMerge extends Component {
     })
   }
 
-  backButton(){
+  backButton() {
     return <Button transparent onPress={() => { this.props.navigation.openDrawer() }}>
-    <Icon name="menu" />
-  </Button>
+      <Icon name="menu" />
+    </Button>
   }
-  extra_info(){
+  extra_info() {
 
   }
 
@@ -157,10 +157,10 @@ class ShelfMerge extends Component {
 
                 <CardItem bordered>
                   <Left>
-                  <Text>{high_layer.product}</Text>
+                    <Text>{high_layer.product}</Text>
                   </Left>
                   <Body>
-                    <Text>{[high_layer.storage_type_name,high_layer.expiration_date,high_layer.batch].filter(e=>e).join("\n")}</Text>
+                    <Text>{[high_layer.storage_type_name, high_layer.expiration_date, high_layer.batch].filter(e => e).join("\n")}</Text>
                   </Body>
                   <Right>
                     <Text>{high_layer.shelf_quantity}(個)</Text>
@@ -219,43 +219,44 @@ class ShelfMerge extends Component {
                     this.toggleProduct(product.id)
                   }}
                 >
-                  <Left>
-                    <CheckBox checked={product.checked} onPress={() => {
-                      this.toggleProduct(product.id)
-                    }
-                    } />
+                  <Grid>
+                    <Col size={1} >
+                      <CheckBox checked={product.checked} onPress={() => {
+                        this.toggleProduct(product.id)
+                      }
+                      } />
+                    </Col>
+                    <Col size={4} >
+                      <Text style={high_layer && product.storage_id == high_layer.product_storage_id ? styles.target_product : null}>
+                        {product.product_title} {[product.storage_type_name, product.expiration_date, product.batch].filter(e => e).join("\n")}
+                      </Text>
+                    </Col>
 
-                  </Left>
-                  <Body>
-                    <Text style={high_layer && product.storage_id == high_layer.product_storage_id ? styles.target_product : null}>
-                      {product.product_title} {[product.storage_type_name,product.expiration_date,product.batch].filter(e=>e).join("\n")}
-                    </Text>
-
-                  </Body>
-                  <Right>
-                    <Item success >
-                      <Input keyboardType='numeric'
-                        value={`${product.pcs}`}
-                        onChangeText={
-                          (text) => {
-                            let products = this.state.products
-                            for (let p of products) {
-                              if (p.id == product.id) {
-                                p.pcs = text
-                                if (!parseInt(text) > 0) {
-                                  p.checked = false
-                                } else {
-                                  p.checked = true
+                    <Col size={2} >
+                      <Item success >
+                        <Input keyboardType='numeric'
+                          value={`${product.pcs}`}
+                          onChangeText={
+                            (text) => {
+                              let products = this.state.products
+                              for (let p of products) {
+                                if (p.id == product.id) {
+                                  p.pcs = text
+                                  if (!parseInt(text) > 0) {
+                                    p.checked = false
+                                  } else {
+                                    p.checked = true
+                                  }
+                                  break
                                 }
-                                break
                               }
+                              this.setState({ products: products })
                             }
-                            this.setState({ products: products })
                           }
-                        }
-                        returnKeyType="done" />
-                    </Item>
-                  </Right>
+                          returnKeyType="done" />
+                      </Item>
+                    </Col>
+                  </Grid>
                 </ListItem>
 
               })
