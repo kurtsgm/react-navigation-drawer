@@ -13,7 +13,8 @@ import {
   Right,
   List,
   ListItem,
-  Toast
+  Toast,
+  CheckBox
 } from "native-base";
 
 import Dialog from "react-native-dialog";
@@ -44,11 +45,21 @@ class ShowReceipt extends Component {
           pcs_per_box: item.pcs_per_box
         }
       }),
+      all_checked: false
     }
     this.recommend = this.recommend.bind(this)
     this.reload = this.reload.bind(this)
     this.onReceived = this.onReceived.bind(this)
     this.item_count = this.item_count.bind(this)
+    this.toggleAll = this.toggleAll.bind(this)
+  }
+
+  toggleAll(){
+    let items = this.state.items
+    for(let item of items){
+      item.ready_to_receive = this.state.all_checked ? 0 : item.box_count - item.received_count
+    }
+    this.setState({items:items,all_checked: !this.state.all_checked})
   }
 
   item_count() {
@@ -170,6 +181,19 @@ class ShowReceipt extends Component {
           </Dialog.Container>
 
           <List>
+          <ListItem>
+                <Grid>
+                  <Col size={6} style={styles.vertical_center} >
+                    <Text>選擇全部</Text>
+                  </Col>
+                  <Col size={1} style={styles.vertical_center} >
+                    <CheckBox checked={this.state.all_checked}
+                            onPress={() => {
+                              this.toggleAll()
+                            }}/>
+                  </Col>
+                </Grid>
+              </ListItem>
             {this.state.items.map(data => {
               return <ListItem key={data.id}>
                 <Grid>

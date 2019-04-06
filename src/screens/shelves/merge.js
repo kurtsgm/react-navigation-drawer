@@ -34,7 +34,8 @@ const INIT_STATE = {
   source_shelf: null,
   destination_shelf: null,
   products: [],
-  high_layer: null
+  high_layer: null,
+  all_checked: false
 }
 
 class ShelfMerge extends Component {
@@ -46,6 +47,7 @@ class ShelfMerge extends Component {
     this.valid = this.valid.bind(this)
     this.afterMerge = this.afterMerge.bind(this)
     this.extra_info = this.extra_info.bind(this)
+    this.toggleAll = this.toggleAll.bind(this)
   }
 
   valid() {
@@ -58,20 +60,22 @@ class ShelfMerge extends Component {
     if (token) {
       apiFetch(GET_SHELF_INFO, { token: token }, data => {
         if (data) {
+          let products = data.storages.map(shelf_storage => {
+            return {
+              checked: !this.state.high_layer || shelf_storage.product_storage.id == this.state.high_layer.product_storage_id,
+              id: shelf_storage.id,
+              pcs: shelf_storage.pcs,
+              product_title: shelf_storage.product_storage.product.name,
+              expiration_date: shelf_storage.product_storage.expiration_date,
+              batch: shelf_storage.product_storage.batch,
+              storage_type_name: shelf_storage.product_storage.storage_type_name,
+              storage_id: shelf_storage.product_storage.id
+            }
+          })
           this.setState({
             source_shelf: token,
-            products: data.storages.map(shelf_storage => {
-              return {
-                checked: !this.state.high_layer || shelf_storage.product_storage.id == this.state.high_layer.product_storage_id,
-                id: shelf_storage.id,
-                pcs: shelf_storage.pcs,
-                product_title: shelf_storage.product_storage.product.name,
-                expiration_date: shelf_storage.product_storage.expiration_date,
-                batch: shelf_storage.product_storage.batch,
-                storage_type_name: shelf_storage.product_storage.storage_type_name,
-                storage_id: shelf_storage.product_storage.id
-              }
-            })
+            all_checked: products.reduce((checked,p)=>{return p.checked && checked},true),
+            products: products
           })
         } else {
           Toast.show({
@@ -87,18 +91,29 @@ class ShelfMerge extends Component {
 
   toggleProduct(id) {
     let products = this.state.products
+    let all_checked = true
     for (let p of products) {
       if (p.id == id) {
         p.checked = !p.checked
       }
+      all_checked = all_checked && p.checked
     }
-    this.setState({ products: products })
+    this.setState({ products: products, all_checked: all_checked })
 
   }
 
   afterMerge() {
 
   }
+
+  toggleAll(){
+    let products = this.state.products
+    for(let product of products){
+      product.checked = !this.state.all_checked
+    }
+    this.setState({products:products,all_checked: !this.state.all_checked})
+  }
+
   merge() {
     apiFetch(MERGE_SHELVES, {
       from: this.state.source_shelf,
@@ -148,7 +163,8 @@ class ShelfMerge extends Component {
               合併／移動儲位
             </Title>
           </Body>
-          <Right></Right>
+          <Right>
+          </Right>
         </Header>
         <Content padder>
           <Card style={styles.mb}>
@@ -212,6 +228,20 @@ class ShelfMerge extends Component {
             </CardItem>
           </Card>
           <List>
+            <ListItem>
+              <Grid>
+                <Col size={1}>
+                <CheckBox checked={this.state.all_checked}
+                          onPress={() => {
+                            this.toggleAll()
+                          }}/>
+                </Col>
+                <Col size={4}>
+                  <Text>選擇全部</Text>
+                </Col>
+                <Col size={2}></Col>
+              </Grid>
+            </ListItem>
             {
               this.state.products.map(product => {
                 return <ListItem key={product.id}
