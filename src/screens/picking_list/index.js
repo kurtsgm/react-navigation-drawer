@@ -45,6 +45,10 @@ class PickingLists extends Component {
       return <ListItem key={picking_list.id} button onPress={() =>
         this.props.navigation.navigate("ShowPickingList",picking_list)}>
         <Left>
+          {
+            picking_list.status == "done" ?
+            <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null
+          }
           <Text>
             {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders_length}]`}
           </Text>
@@ -86,6 +90,11 @@ class PickingLists extends Component {
           {
             this.state.picking_lists.length > 0 ?
               <List>
+                <ListItem itemDivider>
+                <Left><Text>單號</Text></Left>
+                <Body><Text>日期</Text></Body>
+                <Right></Right>
+                </ListItem>
                 {rows}
               </List> : null
           }

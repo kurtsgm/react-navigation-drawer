@@ -24,6 +24,7 @@ import {
 } from "native-base";
 
 
+import {store} from '../../redux/stores/store'
 
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST } from "../../api"
@@ -35,7 +36,6 @@ class ShowPickingList extends Component {
     super(props)
     const { params } = this.props.navigation.state;
 
-    console.log(params.items)
     this.normalize_order = this.normalize_order.bind(this)
 
     params.items = []
@@ -43,14 +43,18 @@ class ShowPickingList extends Component {
       picking_list: params,
       show_order: false,
       show_picked: false,
-      storage_orders: []
+      storage_orders: [],
+      auto_confirming: false
     })
     this.item_generator = this.item_generator.bind(this)
     this.changeQuantity = this.changeQuantity.bind(this)
     this.changeMode = this.changeMode.bind(this)
     this.togglePicked = this.togglePicked.bind(this)
     this.reload = this.reload.bind(this)
+    this.autoConfirm = this.autoConfirm.bind(this)
+    this.onConfirmed = this.onConfirmed.bind(this)
     this.onBack = params.onBack
+    this.firstButton = null
     this.reload()
   }
 
@@ -74,7 +78,8 @@ class ShowPickingList extends Component {
     apiFetch(GET_PICKING_LIST, { id: this.state.picking_list.id }, (_data) => {
       this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items.sort((a,b)=>a.is_done ? 0 : -1)), {
         picking_list: _data,
-        storage_orders: this.normalize_order(_data.orders)
+        storage_orders: this.normalize_order(_data.orders),
+        auto_confirming:false
       }))
 
     })
@@ -138,7 +143,7 @@ class ShowPickingList extends Component {
       shortage: shortage
     }
   }
-  confirm_pick(item_id, shelf_token, quantity) {
+  confirm_pick(item_id, shelf_token, quantity,callback) {
     apiFetch(CONFIRM_PICKING, {
       id: this.state.picking_list.id,
       shelf_token: shelf_token,
@@ -154,6 +159,7 @@ class ShowPickingList extends Component {
           }
         }
         this.setState({ items: items, picking_list: data.picking_list })
+        this.onConfirmed()
 
       } else {
         Toast.show({
@@ -245,8 +251,8 @@ class ShowPickingList extends Component {
             </Col>
             <Col size={2} style={styles.vertical_center} >
               {data.done ? null :
-                <Button primary onPress={() => {
-                  this.confirm_pick(data.item_id, data.shelf_token, data.ready_to_pick)
+                <Button ref={(ref)=>!this.firstButton ? this.firstButton = ref: null} primary onPress={() => {
+                  this.confirm_pick(data.item_id, data.shelf_token, data.ready_to_pick,this.onConfirmed)
                 }}>
                   <Text>確認</Text>
                 </Button>
@@ -257,12 +263,27 @@ class ShowPickingList extends Component {
       )
     }
   }
+
+  onConfirmed(){
+    if(this.state.auto_confirming){
+      this.autoConfirm()
+    }
+  }
+
+  autoConfirm(){
+    if(this.firstButton){
+      this.firstButton.props.onPress()
+    }else{
+      this.setState({auto_confirming:false})
+    }
+  }
+
   render() {
     let picking_list = this.state.picking_list
     let item_g = this.item_generator(this.state.items.sort((a, b) => a.product_storage_id - b.product_storage_id))
     let done = false
     let list_items = []
-    console.log(this.state.picking_list.items)
+    this.firstButton = null
     let sectors = this.state.picking_list.items.map(item => {
       return {
         product_storage_id: item.product_storage_id,
@@ -475,6 +496,20 @@ class ShowPickingList extends Component {
         </Header>
         <Content>
           <List>
+            {
+              store.getState().role == "admin" ?
+              <ListItem>
+                <Grid>
+                  <Col size={4} style={styles.vertical_center} >
+                  </Col>
+                  <Col size={2} style={styles.vertical_center} >
+                    <Button disabled={this.auto_confirming} onPress={() => {this.setState({auto_confirming:true});this.autoConfirm()} }>
+                      <Text>自動確認</Text>
+                    </Button>
+                  </Col>
+                </Grid>
+              </ListItem> : null
+            }
             {
               list_items
             }

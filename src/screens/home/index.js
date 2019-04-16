@@ -110,13 +110,14 @@ class Home extends Component {
             </View>
           </Content>
           <Text style={{ backgroundColor: 'transparent',bottom: 0 ,textAlign:'right'}} >
-            版本: 1.0.52 (2019/4/6)
+            版本: 1.0.54 (2019/4/16)
           </Text>
         </ImageBackground>
       </Container>
     );
   }
 }
+
 
 const mapStateToProps = (state) => {
   return {
