@@ -497,18 +497,18 @@ class ShowPickingList extends Component {
         <Content>
           <List>
             {
-              store.getState().role == "admin" ?
-              <ListItem>
-                <Grid>
-                  <Col size={4} style={styles.vertical_center} >
-                  </Col>
-                  <Col size={2} style={styles.vertical_center} >
-                    <Button disabled={this.auto_confirming} onPress={() => {this.setState({auto_confirming:true});this.autoConfirm()} }>
-                      <Text>自動確認</Text>
-                    </Button>
-                  </Col>
-                </Grid>
-              </ListItem> : null
+              ["admin","manager"].includes(store.getState().role) ?
+                <ListItem>
+                  <Grid>
+                    <Col size={4} style={styles.vertical_center} >
+                    </Col>
+                    <Col size={2} style={styles.vertical_center} >
+                      <Button disabled={this.auto_confirming} onPress={() => {this.setState({auto_confirming:true});this.autoConfirm()} }>
+                        <Text>自動確認</Text>
+                      </Button>
+                    </Col>
+                  </Grid>
+                </ListItem> : null
             }
             {
               list_items
