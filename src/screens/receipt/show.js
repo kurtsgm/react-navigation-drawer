@@ -19,7 +19,7 @@ import {
 
 import Dialog from "react-native-dialog";
 
-import { Grid, Col } from "react-native-easy-grid";
+import { Grid, Col,Row } from "react-native-easy-grid";
 import { apiFetch, GET_RECEIPT, RECEIVE_RECEIPT, RECOMMEND_SHELF } from "../../api"
 import styles from "./styles";
 
@@ -35,15 +35,7 @@ class ShowReceipt extends Component {
       isModalVisible: false,
       currentItemId: null,
       items: receipt.items.map((item) => {
-        return {
-          ready_to_receive: 0,
-          id: item.id,
-          product_name: item.product_name,
-          storage_type_name: item.storage_type_name,
-          received_count: item.received_count,
-          box_count: item.box_count,
-          pcs_per_box: item.pcs_per_box
-        }
+        return Object.assign({}, item, { ready_to_receive: 0 })
       }),
       all_checked: false
     }
@@ -74,15 +66,7 @@ class ShowReceipt extends Component {
         receipt_id: data.id,
         receipt_title: data.title,
         items: data.items.map((item) => {
-          return {
-            ready_to_receive: 0,
-            id: item.id,
-            product_name: item.product_name,
-            storage_type_name: item.storage_type_name,
-            received_count: item.received_count,
-            box_count: item.box_count,
-            pcs_per_box: item.pcs_per_box
-          }
+          return Object.assign({}, item, { ready_to_receive: 0 })
         })
       })
       this.props.navigation.state.params.onReceiptUpdate(data)
@@ -198,9 +182,17 @@ class ShowReceipt extends Component {
               return <ListItem key={data.id}>
                 <Grid>
                   <Col size={4} style={styles.vertical_center} >
-                    <Text style={styles.storage_title} >
-                      {data.product_name + " " + data.storage_type_name + " [" + data.pcs_per_box + "入]"}
-                    </Text>
+                    <Row>
+                      <Text style={styles.storage_title} >
+                        {data.product_name + " " + data.storage_type_name + " [" + data.pcs_per_box + "入]"}
+                      </Text>
+                    </Row>
+                    <Row>
+                      <Text>
+                        {[data.product_uid,data.expiration_date,data.batch].filter(e=>e).join('/')}
+                      </Text>
+                    </Row>
+
                   </Col>
                   <Col size={2} style={styles.vertical_center} >
                     <Text>
