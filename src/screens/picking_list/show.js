@@ -346,7 +346,7 @@ class ShowPickingList extends Component {
         }
       }
       if (this.state.show_picked && sector.picked.length > 0) {
-        sector.picked_area = <Content padder key={`card-${sector.product_storage_id}`} >
+        sector.picked_area = <Content disableKBDismissScroll={true} padder key={`card-${sector.product_storage_id}`} >
           <Card style={styles.mb}>
             <CardItem header bordered>
               <Text>儲位 - 商品數</Text>
@@ -376,7 +376,7 @@ class ShowPickingList extends Component {
         </Content>
       }
       if (this.state.show_order) {
-        sector.orders = <Content padder key={`card-${sector.product_storage_id}`} >
+        sector.orders = <Content padder disableKBDismissScroll={true} key={`card-${sector.product_storage_id}`} >
           <Card style={styles.mb}>
             <CardItem header bordered>
               <Text>訂單序號 - 商品數</Text>
@@ -494,7 +494,7 @@ class ShowPickingList extends Component {
 
           </Right>
         </Header>
-        <Content>
+        <Content disableKBDismissScroll={true}>
           <List>
             {
               ["admin","manager"].includes(store.getState().role) ?

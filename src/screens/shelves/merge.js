@@ -166,7 +166,7 @@ class ShelfMerge extends Component {
           <Right>
           </Right>
         </Header>
-        <Content padder>
+        <Content disableKBDismissScroll={true} padder>
           <Card style={styles.mb}>
             {
               high_layer ?
