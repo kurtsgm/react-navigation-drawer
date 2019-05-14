@@ -135,7 +135,7 @@ class ShowPickingList extends Component {
       }
     }
     results = results.sort((a, b) => {
-      return parseInt(a.shelves[0].token.substring(0, 2)) - parseInt(b.shelves[0].token.substring(0, 2))
+      return parseInt(a.shelves[0].token.substring(0, 4)) - parseInt(b.shelves[0].token.substring(0, 4))
 
     })
     return {
