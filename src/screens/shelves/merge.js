@@ -27,7 +27,7 @@ import {
 import styles from "./styles"
 import { apiFetch, GET_SHELVES, GET_SHELF_INFO, MERGE_SHELVES } from "../../api"
 import { normalize_shelf_barcode } from '../../sdj_common'
-import { Grid, Col } from "react-native-easy-grid";
+import { Grid, Row, Col } from "react-native-easy-grid";
 
 const INIT_STATE = {
   shelves: [],
@@ -35,7 +35,8 @@ const INIT_STATE = {
   destination_shelf: null,
   products: [],
   high_layer: null,
-  all_checked: false
+  all_checked: false,
+  set_for_picking: false
 }
 
 class ShelfMerge extends Component {
@@ -48,6 +49,7 @@ class ShelfMerge extends Component {
     this.afterMerge = this.afterMerge.bind(this)
     this.extra_info = this.extra_info.bind(this)
     this.toggleAll = this.toggleAll.bind(this)
+    this.isLayerOne = this.isLayerOne.bind(this)
   }
 
   valid() {
@@ -74,7 +76,7 @@ class ShelfMerge extends Component {
           })
           this.setState({
             source_shelf: token,
-            all_checked: products.reduce((checked,p)=>{return p.checked && checked},true),
+            all_checked: products.reduce((checked, p) => { return p.checked && checked }, true),
             products: products
           })
         } else {
@@ -106,18 +108,19 @@ class ShelfMerge extends Component {
 
   }
 
-  toggleAll(){
+  toggleAll() {
     let products = this.state.products
-    for(let product of products){
+    for (let product of products) {
       product.checked = !this.state.all_checked
     }
-    this.setState({products:products,all_checked: !this.state.all_checked})
+    this.setState({ products: products, all_checked: !this.state.all_checked })
   }
 
   merge() {
     apiFetch(MERGE_SHELVES, {
       from: this.state.source_shelf,
       to: this.state.destination_shelf,
+      set_for_picking: this.state.set_for_picking,
       shelf_storages: this.state.products.filter(p => p.checked).map(p => {
         return { id: p.id, pcs: p.pcs }
       })
@@ -149,6 +152,9 @@ class ShelfMerge extends Component {
 
   }
 
+  isLayerOne(shelf) {
+    return shelf && shelf[6] == "1"
+  }
 
   render() {
     let high_layer = this.state.high_layer
@@ -189,52 +195,76 @@ class ShelfMerge extends Component {
             }
             <CardItem header bordered>
               <Grid>
-                <Col size={4} >
-                  {
-                    high_layer ?
-                      <Input editable={false} value={high_layer.shelf_token} />
-                      :
-                      <Input keyboardType='numeric' value={this.state.source_shelf}
-                        placeholder='請輸入或掃描'
-                        onFocus={() => this.setState({ source_shelf: "", shelves: [], products: [] })
-                        }
-                        onChangeText={
-                          (text) => {
-                            console.log(normalize_shelf_barcode(text))
-                            this.setState({ source_shelf: normalize_shelf_barcode(text) })
+                <Row>
+                  <Col size={4} >
+                    {
+                      high_layer ?
+                        <Input editable={false} value={high_layer.shelf_token} />
+                        :
+                        <Input keyboardType='numeric' value={this.state.source_shelf}
+                          placeholder='請輸入或掃描'
+                          onFocus={() => this.setState({ source_shelf: "", shelves: [], products: [] })
                           }
-                        }
-                        onEndEditing={(event) => { this.onSourceSelected(normalize_shelf_barcode(event.nativeEvent.text)) }}
-                        returnKeyType="done" />
-                  }
-                </Col>
-                <Col size={1}>
-                  <Label style={styles.arrow}>
-                    <Icon name="md-arrow-round-forward"></Icon>
-                  </Label>
-                </Col>
-                <Col size={4}>
-                  <Input keyboardType='numeric' value={this.state.destination_shelf}
-                    placeholder='請輸入或掃描'
-                    onFocus={() => this.setState({ destination_shelf: "" })}
-                    onChangeText={
-                      (text) => {
-                        this.setState({ destination_shelf: normalize_shelf_barcode(text) })
-                      }
+                          onChangeText={
+                            (text) => {
+                              console.log(normalize_shelf_barcode(text))
+                              this.setState({ source_shelf: normalize_shelf_barcode(text) })
+                            }
+                          }
+                          onEndEditing={(event) => { this.onSourceSelected(normalize_shelf_barcode(event.nativeEvent.text)) }}
+                          returnKeyType="done" />
                     }
-                    returnKeyType="done" />
-                </Col>
+                  </Col>
+                  <Col size={1}>
+                    <Label style={styles.arrow}>
+                      <Icon name="md-arrow-round-forward"></Icon>
+                    </Label>
+                  </Col>
+                  <Col size={4}>
+                    <Input keyboardType='numeric' value={this.state.destination_shelf}
+                      placeholder='請輸入或掃描'
+                      onFocus={() => this.setState({ destination_shelf: "" })}
+                      onChangeText={
+                        (text) => {
+                          this.setState({ destination_shelf: normalize_shelf_barcode(text) })
+                        }
+                      }
+                      returnKeyType="done" />
+                  </Col>
+                </Row>
               </Grid>
             </CardItem>
+            {
+              this.isLayerOne(this.state.destination_shelf) ?
+                <CardItem bordered>
+
+                  <Row>
+                  <Col size={5}>
+                  </Col>
+                    <Col size={1}>
+                      <CheckBox checked={this.state.set_for_picking}
+                        onPress={() => {
+                          this.setState({ set_for_picking: !this.state.set_for_picking })
+                        }} />
+                    </Col>
+                    <Col size={5}>
+                      <Text>同時設定揀貨儲</Text>
+                    </Col>
+                  </Row>
+                </CardItem>
+
+                : null
+            }
+
           </Card>
           <List>
             <ListItem>
               <Grid>
                 <Col size={1}>
-                <CheckBox checked={this.state.all_checked}
-                          onPress={() => {
-                            this.toggleAll()
-                          }}/>
+                  <CheckBox checked={this.state.all_checked}
+                    onPress={() => {
+                      this.toggleAll()
+                    }} />
                 </Col>
                 <Col size={4}>
                   <Text>選擇全部</Text>
