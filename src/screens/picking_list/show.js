@@ -290,6 +290,7 @@ class ShowPickingList extends Component {
         picked_quantity: item.picked_quantity,
         product_name: item.product_name,
         product_uid: item.product_uid,
+        product_barcode: item.product_barcode,
         product_expiration_date: item.product_expiration_date,
         product_stroage_type: item.product_type_name,
         batch: item.batch,
@@ -426,6 +427,13 @@ class ShowPickingList extends Component {
               <Col>
               <Text>
               {is_done ? '已完成' : '待撿'}
+              </Text>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+              <Text>
+                {_sector.product_barcode}
               </Text>
               </Col>
             </Row>
