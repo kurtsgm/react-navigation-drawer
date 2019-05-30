@@ -14,11 +14,12 @@ import {
   List,
   ListItem
 } from "native-base";
+
 import styles from "./styles";
 
 import * as AppActions from '../../redux/actions/AppAction'
 import { apiFetch, GET_PICKING_LISTS } from "../../api"
-
+import { Grid, Col, Row } from "react-native-easy-grid";
 
 
 class PickingLists extends Component {
@@ -33,25 +34,37 @@ class PickingLists extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(GET_PICKING_LISTS,{},(_data) => {
+    apiFetch(GET_PICKING_LISTS, {}, (_data) => {
       this.setState({ picking_lists: _data })
     })
   }
 
 
   render() {
-    let rows = this.state.picking_lists.map(picking_list=>{
-      picking_list.onBack = ()=>{this.reload()}
+    let rows = this.state.picking_lists.map(picking_list => {
+      picking_list.onBack = () => { this.reload() }
       return <ListItem key={picking_list.id} button onPress={() =>
-        this.props.navigation.navigate("ShowPickingList",picking_list)}>
+        this.props.navigation.navigate("ShowPickingList", picking_list)}>
         <Left>
-          {
-            picking_list.status == "done" ?
-            <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null
-          }
-          <Text>
-            {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders_length}]`}
-          </Text>
+          <Row>
+            <Col size={1}>
+              {
+                picking_list.status == "done" ?
+                  <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null
+              }
+              {
+                picking_list.status == "processing" ?
+                  <Icon name="flash" style={{ color: "orange" }} /> : null
+              }
+            </Col>
+            <Col size={8}>
+              <Text>
+                {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders_length}]`}
+              </Text>
+
+            </Col>
+          </Row>
+
         </Left>
         <Body>
           <Text>
@@ -91,9 +104,9 @@ class PickingLists extends Component {
             this.state.picking_lists.length > 0 ?
               <List>
                 <ListItem itemDivider>
-                <Left><Text>單號</Text></Left>
-                <Body><Text>日期</Text></Body>
-                <Right></Right>
+                  <Left><Text>單號</Text></Left>
+                  <Body><Text>日期</Text></Body>
+                  <Right></Right>
                 </ListItem>
                 {rows}
               </List> : null

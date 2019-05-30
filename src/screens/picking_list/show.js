@@ -216,11 +216,19 @@ class ShowPickingList extends Component {
 
   *item_generator(data_array) {
     for (let data of data_array) {
+      let high_layer = false
+      try{
+        if(parseInt(data.shelf_token.split('-').slice(-1)) >1){
+          high_layer = true
+        }
+      }
+      catch{
+      }
       yield (
         <ListItem key={data.storage_shelf_id} shelf={data.shelf_token} product_storage_id={data.product_storage_id}>
           <Grid>
             <Col size={4} style={styles.vertical_center} >
-              <Text>
+              <Text style={high_layer ? { "color": "orange" } : {}} >
                 {data.shelf_token}
               </Text>
             </Col>
