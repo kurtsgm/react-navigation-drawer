@@ -27,7 +27,7 @@ import {
 import {store} from '../../redux/stores/store'
 
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST } from "../../api"
+import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST,ACTIVATE_PICKING } from "../../api"
 import styles from "./styles";
 
 
@@ -55,6 +55,7 @@ class ShowPickingList extends Component {
     this.onConfirmed = this.onConfirmed.bind(this)
     this.onBack = params.onBack
     this.firstButton = null
+    this.activate = this.activate.bind(this)
     this.reload()
   }
 
@@ -73,6 +74,11 @@ class ShowPickingList extends Component {
     }
     return results
   }
+  activate(){
+    apiFetch(ACTIVATE_PICKING,{id: this.state.picking_list.id},(data)=>{
+      this.reload()
+    })
+  }
 
   reload() {
     apiFetch(GET_PICKING_LIST, { id: this.state.picking_list.id }, (_data) => {
@@ -83,8 +89,6 @@ class ShowPickingList extends Component {
       }))
 
     })
-
-
   }
 
   static arrange_items(items, original_items) {
@@ -218,7 +222,7 @@ class ShowPickingList extends Component {
     for (let data of data_array) {
       let high_layer = false
       try{
-        if(parseInt(data.shelf_token.split('-').slice(-1)) >1){
+        if(parseInt(data.shelf_token.split('-')[2]) >1){
           high_layer = true
         }
       }
@@ -504,6 +508,13 @@ class ShowPickingList extends Component {
             <Title>{picking_list.shop_name} {picking_list.id}</Title>
           </Body>
           <Right>
+            {
+              this.state.picking_list.status == "ready" ?
+                <Button transparent>
+                  <Icon name="flash" onPress={() => this.activate()} />
+                </Button> : null
+
+            }
             <Button transparent>
               <Icon name="refresh" onPress={() => this.reload()} />
             </Button>
