@@ -18,7 +18,8 @@ import ShowPickingList from './screens/picking_list/show'
 import ProductSearch from './screens/products/search'
 import ProductStorages from './screens/products/storages'
 import ProductShelf from './screens/products/shelf'
-
+// Barcode
+import BarcodeScanner from './screens/barcode/scanner'
 
 // Shelfs
 
@@ -61,6 +62,7 @@ const AppNavigator = createStackNavigator(
     RecommendShelf: {screen: RecommendShelf},
 
     ShowPickingList: {screen: ShowPickingList},
+    BarcodeScanner: {screen: BarcodeScanner},
 
     ProductStorages: {screen: ProductStorages},
     ProductShelf: {screen: ProductShelf},

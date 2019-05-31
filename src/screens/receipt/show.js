@@ -11,6 +11,7 @@ import {
   Left,
   Body,
   Right,
+  Input,
   List,
   ListItem,
   Toast,
@@ -19,7 +20,7 @@ import {
 
 import Dialog from "react-native-dialog";
 
-import { Grid, Col,Row } from "react-native-easy-grid";
+import { Grid, Col, Row } from "react-native-easy-grid";
 import { apiFetch, GET_RECEIPT, RECEIVE_RECEIPT, RECOMMEND_SHELF } from "../../api"
 import styles from "./styles";
 
@@ -37,6 +38,7 @@ class ShowReceipt extends Component {
       items: receipt.items.map((item) => {
         return Object.assign({}, item, { ready_to_receive: 0 })
       }),
+      barcode: null,
       all_checked: false
     }
     this.recommend = this.recommend.bind(this)
@@ -46,12 +48,12 @@ class ShowReceipt extends Component {
     this.toggleAll = this.toggleAll.bind(this)
   }
 
-  toggleAll(){
+  toggleAll() {
     let items = this.state.items
-    for(let item of items){
+    for (let item of items) {
       item.ready_to_receive = this.state.all_checked ? 0 : item.box_count - item.received_count
     }
-    this.setState({items:items,all_checked: !this.state.all_checked})
+    this.setState({ items: items, all_checked: !this.state.all_checked })
   }
 
   item_count() {
@@ -76,7 +78,7 @@ class ShowReceipt extends Component {
     Toast.show({
       text: '已成功入庫',
       duration: 2500,
-      textStyle: {textAlign: "center"}
+      textStyle: { textAlign: "center" }
     })
 
     this.reload()
@@ -104,13 +106,14 @@ class ShowReceipt extends Component {
         Toast.show({
           text: data.message,
           duration: 2500,
-          textStyle: {textAlign: "center"}
+          textStyle: { textAlign: "center" }
         })
 
       }
     });
   }
   render() {
+    console.log(this.state)
     return (
       <Container style={styles.container}>
         <Header>
@@ -119,7 +122,8 @@ class ShowReceipt extends Component {
               transparent
               onPress={() => {
                 this.props.navigation.state.params.onBack()
-                this.props.navigation.goBack()}
+                this.props.navigation.goBack()
+              }
               }
             >
               <Icon name="arrow-back" />
@@ -147,12 +151,12 @@ class ShowReceipt extends Component {
                 for (item of items) {
                   if (item.id == this.state.currentItemId) {
                     item.ready_to_receive = parseInt(event.nativeEvent.text)
-                    if(item.ready_to_receive > (item.box_count - item.received_count )){
-                      item.ready_to_receive  = item.box_count - item.received_count
+                    if (item.ready_to_receive > (item.box_count - item.received_count)) {
+                      item.ready_to_receive = item.box_count - item.received_count
                       Toast.show({
                         text: `最多可輸入${item.ready_to_receive}箱`,
                         duration: 2500,
-                        textStyle: {textAlign: "center"}
+                        textStyle: { textAlign: "center" }
                       })
                     }
                     break
@@ -165,20 +169,57 @@ class ShowReceipt extends Component {
           </Dialog.Container>
 
           <List>
-          <ListItem>
-                <Grid>
-                  <Col size={6} style={styles.vertical_center} >
-                    <Text>選擇全部</Text>
-                  </Col>
-                  <Col size={1} style={styles.vertical_center} >
-                    <CheckBox checked={this.state.all_checked}
-                            onPress={() => {
-                              this.toggleAll()
-                            }}/>
-                  </Col>
-                </Grid>
-              </ListItem>
-            {this.state.items.map(data => {
+            <ListItem>
+              <Grid>
+                <Col size={6} style={styles.vertical_center} >
+                  <Text>選擇全部</Text>
+                </Col>
+                <Col size={1} style={styles.vertical_center} >
+                  <CheckBox checked={this.state.all_checked}
+                    onPress={() => {
+                      this.toggleAll()
+                    }} />
+                </Col>
+              </Grid>
+            </ListItem>
+            <ListItem>
+              <Grid>
+                <Col size={6} style={styles.vertical_center} >
+                  <Input placeholder="請輸入或者掃描條碼" autoFocus={false}
+                    value={this.state.barcode}
+                    returnKeyType="done"
+                    onChangeText={(text) => this.setState({ barcode: text })}
+                    onEndEditing={
+                      (event) => {
+                        let barcode = event.nativeEvent.text.trim()
+                        this.setState({barcode:barcode})
+                      }
+                    } />
+
+                </Col>
+                <Col size={1} style={styles.vertical_center} >
+                  <Button
+                    transparent
+                    onPress={() =>
+                      this.props.navigation.navigate("BarcodeScanner", {
+                        onBarcodeScanned: (barcode) => {
+                          this.setState({ barcode: barcode })
+                        }
+                      }
+                      )
+                    }
+                  >
+                    <Icon name="camera" />
+                  </Button>
+                </Col>
+              </Grid>
+            </ListItem>
+            {this.state.items.filter((item)=>{
+              return this.state.barcode ?
+              item.product_barcode && item.product_barcode.toUpperCase().includes(this.state.barcode.toUpperCase())
+              || item.product_uid && item.product_uid.toUpperCase().includes(this.state.barcode.toUpperCase())
+               : true
+            }).map(data => {
               return <ListItem key={data.id}>
                 <Grid>
                   <Col size={4} style={styles.vertical_center} >
@@ -189,7 +230,7 @@ class ShowReceipt extends Component {
                     </Row>
                     <Row>
                       <Text>
-                        {[data.product_uid,data.expiration_date,data.batch].filter(e=>e).join('/')}
+                        {[data.product_uid, data.expiration_date, data.batch].filter(e => e).join('/')}
                       </Text>
                     </Row>
 
@@ -204,7 +245,7 @@ class ShowReceipt extends Component {
                       null
                       :
                       <Button bordered light block primary onPress={() => {
-                        this.setState({isModalVisible:true,currentItemId: data.id})
+                        this.setState({ isModalVisible: true, currentItemId: data.id })
                       }}>
                         {data.ready_to_receive > 0 ?
                           <Text>{data.ready_to_receive}</Text> :

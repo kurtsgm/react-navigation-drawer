@@ -18,7 +18,7 @@ import {
   Toast
 } from "native-base";
 
-import {Keyboard} from 'react-native'
+import { Keyboard } from 'react-native'
 import styles from "./styles"
 import { apiFetch, GET_PRODUCTS } from "../../api"
 import ProductStorages from './storages'
@@ -29,12 +29,30 @@ class ProductSearch extends Component {
     this.state = {
       products: []
     }
+    this.onSearch = this.onSearch.bind(this)
+  }
+  onSearch(barcode) {
+    if (barcode) {
+      apiFetch(GET_PRODUCTS, { barcode: barcode }, data => {
+        console.log(data)
+        if (data.length == 0) {
+          Toast.show({
+            text: "查無此商品",
+            buttonText: "OK"
+          })
+        }
+        this.setState({ products: data, barcode: '' })
+
+      })
+    } else {
+      this.setState({ products: [] })
+    }
   }
   render() {
     let rows = []
     rows = this.state.products.map(product => {
       return <ListItem key={product.id} button onPress={() =>
-        this.props.navigation.navigate("ProductStorages",product.storages)
+        this.props.navigation.navigate("ProductStorages", product.storages)
       }>
         <Left>
           <Text>
@@ -54,44 +72,48 @@ class ProductSearch extends Component {
     return (
       <Container style={styles.container}>
         <Header searchBar rounded>
-        <Left>
-          <Button
+          <Left>
+            <Button
 
-            transparent
-            onPress={() => {
-              Keyboard.dismiss()
-              this.props.navigation.openDrawer()}
-            }
-          >
-            <Icon name="menu" />
-          </Button>
-        </Left>
+              transparent
+              onPress={() => {
+                Keyboard.dismiss()
+                this.props.navigation.openDrawer()
+              }
+              }
+            >
+              <Icon name="menu" />
+            </Button>
+          </Left>
           <Item>
             <Input placeholder="Search" placeholder="請輸入或者掃描條碼" autoFocus={true}
-            value={this.state.barcode}
-            onFocus={()=>this.setState({barcode:null})}
-            onChangeText={(text) => this.setState({ barcode: text })}
-            onEndEditing={
-              (event) => {
-                let barcode = event.nativeEvent.text.trim()
-                if(barcode){
-                  apiFetch(GET_PRODUCTS, { barcode: barcode },data => {
-                    console.log(data)
-                    if(data.length == 0){
-                      Toast.show({
-                        text: "查無此商品",
-                        buttonText: "OK"
-                      })
-                    }
-                    this.setState({ products: data,barcode:'' })
-
-                  })
-                }else{
-                  this.setState({ products: [] })
+              value={this.state.barcode}
+              onFocus={() => this.setState({ barcode: null })}
+              onChangeText={(text) => this.setState({ barcode: text })}
+              onEndEditing={
+                (event) => {
+                  let barcode = event.nativeEvent.text.trim()
+                  this.onSearch(barcode)
                 }
-              }
-            } />
+              } />
+
           </Item>
+          <Right>
+            <Button
+              transparent
+              onPress={() =>
+                this.props.navigation.navigate("BarcodeScanner", {
+                  onBarcodeScanned: (barcode) => {
+                    this.setState({ barcode: barcode })
+                    this.onSearch(barcode)
+                  }
+                }
+                )
+              }
+            >
+              <Icon name="camera" />
+            </Button>
+          </Right>
         </Header>
         <Content>
           {
