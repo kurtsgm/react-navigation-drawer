@@ -26,17 +26,21 @@ class HighLayerShelf extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      high_layers: this.props.navigation.state.params.shop_data.shelves,
-      shop_name: this.props.navigation.state.params.shop_data.shop_name,
-      shop_id: this.props.navigation.state.params.shop_id
+      shop_name: this.props.navigation.state.params.shop_name,
+      shop_id: this.props.navigation.state.params.shop_id,
+      picking_list_ids: this.props.navigation.state.params.picking_list_ids,
+      high_layers: []
     }
     this.reload = this.reload.bind(this)
   }
   reload() {
-    apiFetch(GET_HIGH_LAYER, {shop_id: this.state.shop_id}, (_data) => {
+    apiFetch(GET_HIGH_LAYER, {shop_id: this.state.shop_id,picking_list_ids:this.state.picking_list_ids}, (_data) => {
       console.log(_data)
       this.setState({ high_layers: _data })
     })
+  }
+  componentWillMount() {
+    this.reload()
   }
 
 

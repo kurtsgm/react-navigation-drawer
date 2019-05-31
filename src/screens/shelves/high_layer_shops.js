@@ -18,7 +18,7 @@ import { Grid, Col, Row } from "react-native-easy-grid";
 import styles from "./styles";
 
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_HIGH_LAYER } from "../../api"
+import { apiFetch, GET_HIGH_LAYER, GET_PICKING_LISTS } from "../../api"
 
 
 
@@ -26,7 +26,6 @@ class HighLayerShopIndex extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      high_layers: [],
       shops: []
     }
     this.reload = this.reload.bind(this)
@@ -35,16 +34,15 @@ class HighLayerShopIndex extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(GET_HIGH_LAYER, {}, (_data) => {
-      console.log(_data)
+    apiFetch(GET_PICKING_LISTS, {}, (_data) => {
       let shops = {}
       for (let data of _data) {
         if (shops[data.shop_id]) {
-          shops[data.shop_id].shelves.push(data)
+          shops[data.shop_id].picking_lists.push(data)
         } else {
           shops[data.shop_id] = {
-            shelves: [data],
-            shop_name: data.shop,
+            picking_lists: [data],
+            shop_name: data.shop_name,
           }
         }
       }
@@ -54,10 +52,10 @@ class HighLayerShopIndex extends Component {
 
 
   render() {
-    let rows = Object.keys(this.state.shops).map(shop => {
-      let shop_data = this.state.shops[shop]
-      return <ListItem key={`shop-${shop_data.shop_id}`} button onPress={() =>
-        this.props.navigation.navigate("HighLayerShelf", {onBack: () => { this.reload() }, shop_id:shop,shop_data: shop_data })}>
+    let rows = Object.keys(this.state.shops).map(shop_id => {
+      let shop_data = this.state.shops[shop_id]
+      return <ListItem key={`shop-${shop_id}`} button onPress={() =>
+        this.props.navigation.navigate("HighLayerPickingLists", {onBack: () => { this.reload() }, shop_id:shop_id,shop_name: shop_data.shop_name,picking_lists: shop_data.picking_lists })}>
         <Body>
           <Text>
             {shop_data.shop_name}
@@ -66,7 +64,7 @@ class HighLayerShopIndex extends Component {
         <Right>
           <Button disabled={true} primary transparent>
             <Text>
-              {shop_data.shelves.length}
+              {shop_data.picking_lists.length}
             </Text>
             <Icon name="arrow-forward" style={{ color: "#999" }} />
           </Button>

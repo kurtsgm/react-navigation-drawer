@@ -27,7 +27,8 @@ import ShelfSearch from './screens/shelves/search'
 import ShelfShow from './screens/shelves/show'
 import ShelfMerge from './screens/shelves/merge'
 import ShelfProduct from './screens/shelves/product'
-import HighLayerShelf from './screens/shelves/high_layer'
+import HighLayerShelf from './screens/shelves/high_layer_shelf'
+import HighLayerPickingLists from './screens/shelves/high_layer_picking_lists'
 import HighLayerShopIndex from './screens/shelves/high_layer_shops'
 
 import HighLayerShelfMerge from './screens/shelves/high_layer_merge'
@@ -68,6 +69,8 @@ const AppNavigator = createStackNavigator(
     ProductShelf: {screen: ProductShelf},
     HighLayerShelfMerge: {screen: HighLayerShelfMerge},
     HighLayerShelf: {screen: HighLayerShelf},
+    HighLayerPickingLists: {screen: HighLayerPickingLists},
+
     ShelfShow: {screen: ShelfShow},
     ShelfProduct: {screen: ShelfProduct},
 
