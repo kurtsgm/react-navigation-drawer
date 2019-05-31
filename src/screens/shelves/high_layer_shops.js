@@ -34,7 +34,7 @@ class HighLayerShopIndex extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(GET_PICKING_LISTS, {}, (_data) => {
+    apiFetch(GET_PICKING_LISTS, {ready_to_pick: true}, (_data) => {
       let shops = {}
       for (let data of _data) {
         if (shops[data.shop_id]) {

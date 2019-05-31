@@ -36,7 +36,7 @@ class HighLayerPickingLists extends Component {
     this.togglePicking = this.togglePicking.bind(this)
   }
   reload() {
-    apiFetch(GET_PICKING_LISTS, { shop_id: this.state.shop_id }, (_data) => {
+    apiFetch(GET_PICKING_LISTS, { shop_id: this.state.shop_id,ready_to_pick: true}, (_data) => {
       console.log(_data)
       this.setState({ picking_lists: _data })
     })
