@@ -68,6 +68,7 @@ class ShelfMerge extends Component {
               id: shelf_storage.id,
               pcs: shelf_storage.pcs,
               product_title: shelf_storage.product_storage.product.name,
+              product_uid: shelf_storage.product_storage.product.uid,
               expiration_date: shelf_storage.product_storage.expiration_date,
               batch: shelf_storage.product_storage.batch,
               storage_type_name: shelf_storage.product_storage.storage_type_name,
@@ -287,6 +288,9 @@ class ShelfMerge extends Component {
                       } />
                     </Col>
                     <Col size={4} >
+                      <Text style={high_layer && product.storage_id == high_layer.product_storage_id ? styles.target_product : null}>
+                        {product.product_uid}
+                      </Text>
                       <Text style={high_layer && product.storage_id == high_layer.product_storage_id ? styles.target_product : null}>
                         {product.product_title} {[product.storage_type_name, product.expiration_date, product.batch].filter(e => e).join("\n")}
                       </Text>

@@ -24,13 +24,14 @@ import {
 } from "native-base";
 
 
-import {store} from '../../redux/stores/store'
+import { store } from '../../redux/stores/store'
 
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST,ACTIVATE_PICKING } from "../../api"
+import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST, ACTIVATE_PICKING } from "../../api"
 import styles from "./styles";
 
-
+const PRODUCT_MODE = "product_mode"
+const SHELF_MODE = "shelf_mode"
 class ShowPickingList extends Component {
   constructor(props) {
     super(props)
@@ -39,12 +40,14 @@ class ShowPickingList extends Component {
     this.normalize_order = this.normalize_order.bind(this)
 
     params.items = []
-    this.state = Object.assign(ShowPickingList.arrange_items([],[]), {
+    this.state = Object.assign(ShowPickingList.arrange_items([], []), {
       picking_list: params,
       show_order: false,
       show_picked: false,
       storage_orders: [],
-      auto_confirming: false
+      auto_confirming: false,
+      sorting_mode: PRODUCT_MODE,
+      shelf_items: []
     })
     this.item_generator = this.item_generator.bind(this)
     this.changeQuantity = this.changeQuantity.bind(this)
@@ -56,6 +59,7 @@ class ShowPickingList extends Component {
     this.onBack = params.onBack
     this.firstButton = null
     this.activate = this.activate.bind(this)
+    this.sortByShelf = this.sortByShelf.bind(this)
     this.reload()
   }
 
@@ -74,20 +78,107 @@ class ShowPickingList extends Component {
     }
     return results
   }
-  activate(){
-    apiFetch(ACTIVATE_PICKING,{id: this.state.picking_list.id},(data)=>{
+  activate() {
+    apiFetch(ACTIVATE_PICKING, { id: this.state.picking_list.id }, (data) => {
       this.reload()
     })
   }
 
+  switchSorting() {
+    if (this.state.sorting_mode == PRODUCT_MODE) {
+      this.setState({ sorting_mode: SHELF_MODE })
+    } else {
+      this.setState({ sorting_mode: PRODUCT_MODE })
+    }
+  }
+
+  sortByShelf(items) {
+    shelves = []
+    shortages = []
+    for (let item of items) {
+      let quantity_remain = item.quantity - item.picked_quantity
+      for (let shelf of item.shelves.filter(shelf => {
+        for (let picked_item of item.picked) {
+          if (shelf.token == picked_item.token) {
+            return false
+          }
+        }
+        return true
+      })) {
+        if (quantity_remain <= 0) {
+          break
+        }
+        let to_pick = Math.min(shelf.pcs, quantity_remain)
+        shelves.push(Object.assign({}, shelf, {
+          item_id: item.id,
+          product_barcode: item.product_barcode,
+          product_expiration_date: item.product_expiration_date,
+          product_name: item.product_name,
+          product_storage_id: item.product_storage_id,
+          product_type_name: item.product_type_name,
+          product_uid: item.product_uid,
+          batch: item.batch,
+          to_pick: to_pick,
+          picked: false,
+          key: shelf.storage_shelf_id
+        }))
+        quantity_remain -= to_pick
+      }
+      if (quantity_remain > 0) {
+        shortages.push({
+          product_barcode: item.product_barcode,
+          product_expiration_date: item.product_expiration_date,
+          product_name: item.product_name,
+          product_storage_id: item.product_storage_id,
+          product_type_name: item.product_type_name,
+          product_uid: item.product_uid,
+          batch: item.batch,
+          total_quantity: item.quantity,
+          shortage_quantity: quantity_remain,
+          key: `shortage-${item.id}`
+        })
+      }
+      for (let picked_item of item.picked) {
+        shelves.push({
+          item_id: item.id,
+          product_barcode: item.product_barcode,
+          product_expiration_date: item.product_expiration_date,
+          product_name: item.product_name,
+          product_storage_id: item.product_storage_id,
+          product_type_name: item.product_type_name,
+          product_uid: item.product_uid,
+          batch: item.batch,
+          picked: true,
+          token: picked_item.token,
+          picked_quantity: picked_item.quantity,
+          created_at: picked_item.created_at,
+          key: `${item.id}-${picked_item.created_at}`
+        })
+      }
+    }
+    this.setState({ shelf_items: shelves, shelf_shortages: shortages })
+  }
+
+  changeShelfItem(storage_shelf_id, quantity) {
+    console.log(quantity)
+    shelf_items = this.state.shelf_items
+    for (let item of shelf_items) {
+      if (item.storage_shelf_id == storage_shelf_id) {
+        item.to_pick = Math.min(quantity, item.pcs)
+        break
+      }
+    }
+    this.setState({ shelf_items: shelf_items })
+  }
+
   reload() {
     apiFetch(GET_PICKING_LIST, { id: this.state.picking_list.id }, (_data) => {
-      this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items.sort((a,b)=>a.is_done ? 0 : -1)), {
+      this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items.sort((a, b) => a.is_done ? 0 : -1)), {
         picking_list: _data,
         storage_orders: this.normalize_order(_data.orders),
-        auto_confirming:false
+        auto_confirming: false,
       }))
-
+      this.sortByShelf(_data.items)
     })
   }
 
@@ -147,7 +238,7 @@ class ShowPickingList extends Component {
       shortage: shortage
     }
   }
-  confirm_pick(item_id, shelf_token, quantity,callback) {
+  confirm_pick(item_id, shelf_token, quantity, callback) {
     apiFetch(CONFIRM_PICKING, {
       id: this.state.picking_list.id,
       shelf_token: shelf_token,
@@ -162,7 +253,11 @@ class ShowPickingList extends Component {
             break
           }
         }
-        this.setState({ items: items, picking_list: data.picking_list })
+        this.setState({
+          items: items,
+          picking_list: data.picking_list,
+        })
+        this.sortByShelf(data.picking_list.items)
         this.onConfirmed()
 
       } else {
@@ -221,8 +316,8 @@ class ShowPickingList extends Component {
   *item_generator(data_array) {
     for (let data of data_array) {
       let high_layer = false
-      try{
-        if(parseInt(data.shelf_token.split('-')[2]) >1){
+      try {
+        if (parseInt(data.shelf_token.split('-')[2]) > 1) {
           high_layer = true
         }
       }
@@ -263,8 +358,8 @@ class ShowPickingList extends Component {
             </Col>
             <Col size={2} style={styles.vertical_center} >
               {data.done ? null :
-                <Button ref={(ref)=>!this.firstButton ? this.firstButton = ref: null} primary onPress={() => {
-                  this.confirm_pick(data.item_id, data.shelf_token, data.ready_to_pick,this.onConfirmed)
+                <Button ref={(ref) => !this.firstButton ? this.firstButton = ref : null} primary onPress={() => {
+                  this.confirm_pick(data.item_id, data.shelf_token, data.ready_to_pick, this.onConfirmed)
                 }}>
                   <Text>確認</Text>
                 </Button>
@@ -276,17 +371,17 @@ class ShowPickingList extends Component {
     }
   }
 
-  onConfirmed(){
-    if(this.state.auto_confirming){
+  onConfirmed() {
+    if (this.state.auto_confirming) {
       this.autoConfirm()
     }
   }
 
-  autoConfirm(){
-    if(this.firstButton){
+  autoConfirm() {
+    if (this.firstButton) {
       this.firstButton.props.onPress()
-    }else{
-      this.setState({auto_confirming:false})
+    } else {
+      this.setState({ auto_confirming: false })
     }
   }
 
@@ -296,199 +391,289 @@ class ShowPickingList extends Component {
     let done = false
     let list_items = []
     this.firstButton = null
-    let sectors = this.state.picking_list.items.map(item => {
-      return {
-        product_storage_id: item.product_storage_id,
-        picked_quantity: item.picked_quantity,
-        product_name: item.product_name,
-        product_uid: item.product_uid,
-        product_barcode: item.product_barcode,
-        product_expiration_date: item.product_expiration_date,
-        product_stroage_type: item.product_type_name,
-        batch: item.batch,
-        quantity: item.quantity,
-        items: [],
-        picked: item.picked || [],
-        shortage: null,
-        orders: null
-      }
-    })
+    console.log(this.state.picking_list.items)
+    if (this.state.sorting_mode == PRODUCT_MODE) {
+      let sectors = this.state.picking_list.items.map(item => {
+        return {
+          product_storage_id: item.product_storage_id,
+          picked_quantity: item.picked_quantity,
+          product_name: item.product_name,
+          product_uid: item.product_uid,
+          product_barcode: item.product_barcode,
+          product_expiration_date: item.product_expiration_date,
+          product_stroage_type: item.product_type_name,
+          batch: item.batch,
+          quantity: item.quantity,
+          items: [],
+          picked: item.picked || [],
+          shortage: null,
+          orders: null
+        }
+      })
 
-    while (!done) {
-      let next = item_g.next()
-      let _item = next.value
-      done = next.done
-      if (!_item) {
-        break
-      }
-      for (let s of sectors) {
-        if (s.product_storage_id == _item.props.product_storage_id) {
-          s.items.push(_item)
+      while (!done) {
+        let next = item_g.next()
+        let _item = next.value
+        done = next.done
+        if (!_item) {
           break
         }
-      }
-    }
-
-    sectors = sectors.sort((a, b) => {
-      try {
-        return parseInt(a.items[0].props.shelf.substring(0,5).replace('-','')) - parseInt(b.items[0].props.shelf.substring(0,5).replace('-',''))
-      } catch (e) {
-        return 1
-      }
-    })
-    for (let sector of sectors) {
-      for (let shortage of this.state.shortage) {
-        if (shortage.product_storage_id === sector.product_storage_id) {
-          sector.shortage =
-            <ListItem key={`shortage-${shortage.product_storage_id}`}>
-              <Col size={4} style={styles.vertical_center} >
-                <Text style={styles.red}>
-
-                  {shortage.quantity > 0 ? '欠缺' : '過多'}
-                </Text>
-              </Col>
-              <Col size={4} style={styles.vertical_center} >
-                <Text style={styles.red}>
-                  {shortage.quantity}
-                </Text>
-              </Col>
-              <Col size={2} style={styles.vertical_center} >
-              </Col>
-            </ListItem>
-          break
+        for (let s of sectors) {
+          if (s.product_storage_id == _item.props.product_storage_id) {
+            s.items.push(_item)
+            break
+          }
         }
       }
-      if (this.state.show_picked && sector.picked.length > 0) {
-        sector.picked_area = <Content disableKBDismissScroll={true} padder key={`card-${sector.product_storage_id}`} >
-          <Card style={styles.mb}>
-            <CardItem header bordered>
-              <Text>儲位 - 商品數</Text>
-            </CardItem>
-            {
-              sector.picked.map((shelf) => {
-                return <CardItem key={`${sector.product_storage_id}-shelf-${shelf.token}`}>
-                  <Badge
-                    style={{
-                      borderRadius: 3,
-                      height: 25,
-                      width: 100,
-                      backgroundColor: "blue"
-                    }}
-                    textStyle={{ color: "white" }}
-                  >
-                    <Text>{shelf.token}</Text>
-                  </Badge>
 
-                  <Text> - x {shelf.quantity} </Text>
+      sectors = sectors.sort((a, b) => {
+        try {
+          return parseInt(a.items[0].props.shelf.substring(0, 5).replace('-', '')) - parseInt(b.items[0].props.shelf.substring(0, 5).replace('-', ''))
+        } catch (e) {
+          return 1
+        }
+      })
+      for (let sector of sectors) {
+        for (let shortage of this.state.shortage) {
+          if (shortage.product_storage_id === sector.product_storage_id) {
+            sector.shortage =
+              <ListItem key={`shortage-${shortage.product_storage_id}`}>
+                <Col size={4} style={styles.vertical_center} >
+                  <Text style={styles.red}>
 
-                </CardItem>
+                    {shortage.quantity > 0 ? '欠缺' : '過多'}
+                  </Text>
+                </Col>
+                <Col size={4} style={styles.vertical_center} >
+                  <Text style={styles.red}>
+                    {shortage.quantity}
+                  </Text>
+                </Col>
+                <Col size={2} style={styles.vertical_center} >
+                </Col>
+              </ListItem>
+            break
+          }
+        }
+        if (this.state.show_picked && sector.picked.length > 0) {
+          sector.picked_area = <Content disableKBDismissScroll={true} padder key={`card-${sector.product_storage_id}`} >
+            <Card style={styles.mb}>
+              <CardItem header bordered>
+                <Text>儲位 - 商品數</Text>
+              </CardItem>
+              {
+                sector.picked.map((shelf) => {
+                  return <CardItem key={`${sector.product_storage_id}-shelf-${shelf.token}`}>
+                    <Badge
+                      style={{
+                        borderRadius: 3,
+                        height: 25,
+                        width: 100,
+                        backgroundColor: "blue"
+                      }}
+                      textStyle={{ color: "white" }}
+                    >
+                      <Text>{shelf.token}</Text>
+                    </Badge>
 
-              })
-            }
-          </Card>
-        </Content>
+                    <Text> - x {shelf.quantity} </Text>
+
+                  </CardItem>
+
+                })
+              }
+            </Card>
+          </Content>
+        }
+        if (this.state.show_order) {
+          sector.orders = <Content padder disableKBDismissScroll={true} key={`card-${sector.product_storage_id}`} >
+            <Card style={styles.mb}>
+              <CardItem header bordered>
+                <Text>訂單序號 - 商品數</Text>
+              </CardItem>
+              {
+                this.state.storage_orders[sector.product_storage_id].map((order) => {
+                  return <CardItem key={`${sector.product_storage_id}-orders-${order.picking_index}`}>
+                    <Badge
+                      style={{
+                        borderRadius: 3,
+                        height: 25,
+                        width: 72,
+                        backgroundColor: "black"
+                      }}
+                      textStyle={{ color: "white" }}
+                    >
+                      <Text>{order.picking_index}</Text>
+                    </Badge>
+
+                    <Text> - x {order.quantity} </Text>
+
+                  </CardItem>
+
+                })
+              }
+            </Card>
+          </Content>
+        }
       }
-      if (this.state.show_order) {
-        sector.orders = <Content padder disableKBDismissScroll={true} key={`card-${sector.product_storage_id}`} >
-          <Card style={styles.mb}>
-            <CardItem header bordered>
-              <Text>訂單序號 - 商品數</Text>
-            </CardItem>
-            {
-              this.state.storage_orders[sector.product_storage_id].map((order) => {
-                return <CardItem key={`${sector.product_storage_id}-orders-${order.picking_index}`}>
-                  <Badge
-                    style={{
-                      borderRadius: 3,
-                      height: 25,
-                      width: 72,
-                      backgroundColor: "black"
-                    }}
-                    textStyle={{ color: "white" }}
-                  >
-                    <Text>{order.picking_index}</Text>
-                  </Badge>
 
-                  <Text> - x {order.quantity} </Text>
 
-                </CardItem>
+      for (let _sector of sectors) {
+        let is_done = _sector.picked_quantity == _sector.quantity
+        list_items.push(
+          <ListItem itemDivider style={is_done ? styles.item_done : ''} key={`divider-${_sector.product_storage_id}`}>
+            <Grid>
+              <Row>
+                <Col>
+                  <Text>{_sector.product_name}
+                  </Text>
+                </Col>
+                <Col>
+                  <Text>
+                    {_sector.product_uid}
+                  </Text>
+                </Col>
+                <Col>
+                  <Text>
+                    {is_done ? '已完成' : '待撿'}
+                  </Text>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Text>
+                    {_sector.product_barcode}
+                  </Text>
+                </Col>
+              </Row>
+              <Row>
+                <Col>
+                  <Text style={styles.extra_info}>
+                    {_sector.product_stroage_type}
+                  </Text>
+                </Col>
+                <Col>
+                  <Text style={styles.extra_info}>
+                    {[_sector.product_expiration_date, _sector.batch].filter(e => e).join("\n")}
+                  </Text>
+                </Col>
+                <Col>
+                  <Text>
+                    {_sector.picked_quantity}
+                    /
+                    {_sector.quantity}
+                  </Text>
+                </Col>
+              </Row>
+            </Grid>
+          </ListItem>
+        )
+        if (!is_done) {
+          for (let _item of _sector.items) {
+            list_items.push(_item)
+          }
+          if (_sector.shortage) {
+            list_items.push(_sector.shortage)
+          }
+        }
+        if (this.state.show_order && _sector.orders) {
+          list_items.push(_sector.orders)
+        }
+        if (this.state.show_picked && _sector.picked_area) {
+          list_items.push(_sector.picked_area)
+        }
 
-              })
-            }
-          </Card>
-        </Content>
       }
-    }
-
-
-    for (let _sector of sectors) {
-      let is_done = _sector.picked_quantity == _sector.quantity
-      list_items.push(
-        <ListItem itemDivider style={ is_done ? styles.item_done : ''} key={`divider-${_sector.product_storage_id}`}>
+    } else {
+      list_items = this.state.shelf_items.sort((a, b) => {
+        return parseInt(a.token.substring(0, 5).replace('-', '')) - parseInt(b.token.substring(0, 5).replace('-', ''))
+      }).filter(item => {
+        return this.state.show_picked || !item.picked
+      }).map(shelf_item => {
+        return <ListItem style={shelf_item.picked ? styles.item_done : ''} key={`${shelf_item.key}`}>
           <Grid>
             <Row>
-              <Col>
-                <Text>{_sector.product_name}
+              <Col size={3}>
+                <Text>{shelf_item.token}
+                </Text>
+                <Text>{shelf_item.product_name}
                 </Text>
               </Col>
-              <Col>
-                <Text>
-                {_sector.product_uid}
-                </Text>
+              <Col size={3}>
+                {[shelf_item.product_uid,
+                shelf_item.product_barcode,
+                shelf_item.product_type_name,
+                shelf_item.product_expiration_date,
+                shelf_item.batch,
+                ].filter(e => e).map(info => <Text style={styles.extra_info}>{info}</Text>)
+
+                }
               </Col>
-              <Col>
-              <Text>
-              {is_done ? '已完成' : '待撿'}
-              </Text>
+              <Col size={2}>
+                {
+                  shelf_item.picked ?
+                    <Text>{shelf_item.picked_quantity}</Text> :
+                    <Input keyboardType='numeric'
+                      value={shelf_item.to_pick}
+                      textAlign={'center'}
+                      onChangeText={(text) => {
+                        this.changeShelfItem(shelf_item.storage_shelf_id, text)
+                      }
+                      }
+                      onEndEditing={(event) => {
+                        this.changeShelfItem(shelf_item.storage_shelf_id, event.nativeEvent.text)
+                      }} value={`${shelf_item.to_pick}`} returnKeyType="done" />
+                }
               </Col>
-            </Row>
-            <Row>
-              <Col>
-              <Text>
-                {_sector.product_barcode}
-              </Text>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <Text style={styles.extra_info}>
-                  {_sector.product_stroage_type}
-                </Text>
-              </Col>
-              <Col>
-                <Text style={styles.extra_info}>
-                  {[_sector.product_expiration_date, _sector.batch].filter(e => e).join("\n")}
-                </Text>
-              </Col>
-              <Col>
-                <Text>
-                  {_sector.picked_quantity}
-                  /
-                  {_sector.quantity}
-                </Text>
+              <Col size={2} style={styles.vertical_center}>
+                {
+                  shelf_item.picked ?
+                  <Text>{shelf_item.created_at}</Text> :
+                    <Button ref={(ref) => !this.firstButton ? this.firstButton = ref : null} primary onPress={() => {
+                      this.confirm_pick(shelf_item.item_id, shelf_item.token, shelf_item.to_pick, this.onConfirmed)
+                    }}>
+                      <Text>確認</Text>
+                    </Button>
+
+                }
               </Col>
             </Row>
           </Grid>
         </ListItem>
-      )
-      if(!is_done){
-        for (let _item of _sector.items) {
-          list_items.push(_item)
-        }
-        if (_sector.shortage) {
-          list_items.push(_sector.shortage)
-        }
-      }
-      if (this.state.show_order && _sector.orders) {
-        list_items.push(_sector.orders)
-      }
-      if (this.state.show_picked && _sector.picked_area) {
-        list_items.push(_sector.picked_area)
+      })
+      for (let shortage of this.state.shelf_shortages) {
+        list_items.push(
+          <ListItem key={shortage.key}>
+            <Grid>
+              <Row>
+                <Col size={3} style={styles.vertical_center}>
+                  <Text style={styles.red}>{shortage.product_name}
+                  </Text>
+                </Col>
+                <Col size={3} style={styles.vertical_center}>
+                  {[shortage.product_uid,
+                  shortage.product_barcode,
+                  shortage.product_type_name,
+                  shortage.product_expiration_date,
+                  shortage.batch,
+                  ].filter(e => e).map(info => <Text style={styles.red}>{info}</Text>)
+                  }
+                </Col>
+                <Col size={2} style={styles.vertical_center}>
+                  <Text style={styles.red}>{shortage.shortage_quantity}
+                  </Text >
+                  <Text style={styles.red}>總量:{shortage.total_quantity}</Text>
+                </Col>
+                <Col size={2} style={styles.vertical_center}>
+                  <Text style={styles.red}>欠缺</Text>
+                </Col>
+              </Row>
+            </Grid>
+          </ListItem>
+        )
       }
 
     }
-
-
     return (
       <Container style={styles.container} >
         <Header>
@@ -499,7 +684,7 @@ class ShowPickingList extends Component {
                 this.onBack()
                 this.props.navigation.goBack()
               }
-            }
+              }
             >
               <Icon name="arrow-back" />
             </Button>
@@ -508,13 +693,9 @@ class ShowPickingList extends Component {
             <Title>{picking_list.shop_name} {picking_list.id}</Title>
           </Body>
           <Right>
-            {
-              this.state.picking_list.status == "ready" ?
-                <Button transparent>
-                  <Icon name="flash" onPress={() => this.activate()} />
-                </Button> : null
-
-            }
+            <Button transparent>
+              <Icon name={this.state.sorting_mode == PRODUCT_MODE ? "cube" : "filing"} onPress={() => this.switchSorting()} />
+            </Button>
             <Button transparent>
               <Icon name="refresh" onPress={() => this.reload()} />
             </Button>
@@ -524,13 +705,13 @@ class ShowPickingList extends Component {
         <Content disableKBDismissScroll={true}>
           <List>
             {
-              ["admin","manager"].includes(store.getState().role) ?
+              ["admin", "manager"].includes(store.getState().role) ?
                 <ListItem>
                   <Grid>
                     <Col size={4} style={styles.vertical_center} >
                     </Col>
                     <Col size={2} style={styles.vertical_center} >
-                      <Button disabled={this.auto_confirming} onPress={() => {this.setState({auto_confirming:true});this.autoConfirm()} }>
+                      <Button disabled={this.auto_confirming} onPress={() => { this.setState({ auto_confirming: true }); this.autoConfirm() }}>
                         <Text>自動確認</Text>
                       </Button>
                     </Col>
