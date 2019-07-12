@@ -187,7 +187,9 @@ class ShowPickingList extends Component {
     let shortage = []
     for (let element of original_items) {
       let quantity = element.quantity - element.picked_quantity
-      for (let shelf of element.shelves) {
+      for (let shelf of element.shelves.filter(shelf=>{
+        return !element.picked || !element.picked.map(e=>e.token).includes(shelf.token)
+      })) {
         if (quantity > 0 && shelf.pcs > 0) {
           let found_item = null
           let ready_to_pick = Math.min(shelf.pcs, quantity)
@@ -428,7 +430,17 @@ class ShowPickingList extends Component {
 
       sectors = sectors.sort((a, b) => {
         try {
-          return parseInt(a.items[0].props.shelf.substring(0, 5).replace('-', '')) - parseInt(b.items[0].props.shelf.substring(0, 5).replace('-', ''))
+          // SDJ Version SORTING
+          let layer_a = parseInt(a.items[0].props.shelf.substring(6,7))
+          let layer_b = parseInt(a.items[0].props.shelf.substring(6,7))
+          if( (layer_a == 1 && layer_b == 1) || (layer_a != 1 && layer_b != 1) ){
+            return parseInt(a.items[0].props.shelf.substring(0, 5).replace('-', '')) - parseInt(b.items[0].props.shelf.substring(0, 5).replace('-', ''))
+          }else{
+            return layer_a == 1
+          }
+
+          // NORMAL SORTING
+          // return parseInt(a.items[0].props.shelf.substring(0, 5).replace('-', '')) - parseInt(b.items[0].props.shelf.substring(0, 5).replace('-', ''))
         } catch (e) {
           return 1
         }
