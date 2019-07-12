@@ -187,8 +187,8 @@ class ShowPickingList extends Component {
     let shortage = []
     for (let element of original_items) {
       let quantity = element.quantity - element.picked_quantity
-      for (let shelf of element.shelves.filter(shelf=>{
-        return !element.picked || !element.picked.map(e=>e.token).includes(shelf.token)
+      for (let shelf of element.shelves.filter(shelf => {
+        return !element.picked || !element.picked.map(e => e.token).includes(shelf.token)
       })) {
         if (quantity > 0 && shelf.pcs > 0) {
           let found_item = null
@@ -430,17 +430,9 @@ class ShowPickingList extends Component {
 
       sectors = sectors.sort((a, b) => {
         try {
-          // SDJ Version SORTING
-          let layer_a = parseInt(a.items[0].props.shelf.substring(6,7))
-          let layer_b = parseInt(a.items[0].props.shelf.substring(6,7))
-          if( (layer_a == 1 && layer_b == 1) || (layer_a != 1 && layer_b != 1) ){
-            return parseInt(a.items[0].props.shelf.substring(0, 5).replace('-', '')) - parseInt(b.items[0].props.shelf.substring(0, 5).replace('-', ''))
-          }else{
-            return layer_a == 1
-          }
 
           // NORMAL SORTING
-          // return parseInt(a.items[0].props.shelf.substring(0, 5).replace('-', '')) - parseInt(b.items[0].props.shelf.substring(0, 5).replace('-', ''))
+          return parseInt(a.items[0].props.shelf.substring(0, 5).replace('-', '')) - parseInt(b.items[0].props.shelf.substring(0, 5).replace('-', ''))
         } catch (e) {
           return 1
         }
@@ -597,8 +589,15 @@ class ShowPickingList extends Component {
 
       }
     } else {
-      list_items = this.state.shelf_items.sort((a, b) => {
+      list_items = this.state.shelf_items.sort((a,b)=>{
         return parseInt(a.token.substring(0, 5).replace('-', '')) - parseInt(b.token.substring(0, 5).replace('-', ''))
+      }).sort((a, b) => {
+        // SDJ SORTING RULE
+        // SORT are now stable
+        let PICK_LAYER = 1
+        let layer_a = parseInt(a.token.substring(6, 7))
+        let layer_b = parseInt(b.token.substring(6, 7))
+        return layer_a == PICK_LAYER && layer_b != PICK_LAYER ? -1 : 0
       }).filter(item => {
         return this.state.show_picked || !item.picked
       }).map(shelf_item => {
@@ -606,8 +605,19 @@ class ShowPickingList extends Component {
           <Grid>
             <Row>
               <Col size={3}>
-                <Text>{shelf_item.token}
-                </Text>
+                <Badge
+                  style={{
+                    borderRadius: 3,
+                    height: 25,
+                    width: 100,
+                    backgroundColor: "green"
+                  }}
+                  textStyle={{ color: "white" }}
+                >
+                  <Text>{shelf_item.token}
+                  </Text>
+
+                </Badge>
                 <Text>{shelf_item.product_name}
                 </Text>
               </Col>
@@ -640,7 +650,7 @@ class ShowPickingList extends Component {
               <Col size={2} style={styles.vertical_center}>
                 {
                   shelf_item.picked ?
-                  <Text>{shelf_item.created_at}</Text> :
+                    <Text>{shelf_item.created_at}</Text> :
                     <Button ref={(ref) => !this.firstButton ? this.firstButton = ref : null} primary onPress={() => {
                       this.confirm_pick(shelf_item.item_id, shelf_item.token, shelf_item.to_pick, this.onConfirmed)
                     }}>
