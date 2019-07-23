@@ -27,7 +27,7 @@ const datas = [
     route: 'Receipt',
     icon: 'truck',
     bg: "#C5F442",
-    roles: ['admin','manager','staff']
+    roles: ['admin','manager','staff','parttime']
   },
   {
     name: '揀貨作業',
@@ -42,21 +42,21 @@ const datas = [
     route: 'ProductSearch',
     icon: 'cube',
     bg: "#C5F442",
-    roles: ['admin','manager','staff']
+    roles: ['admin','manager','staff','parttime']
   },
   {
     name: '儲位查詢',
     route: 'ShelfSearch',
     icon: 'search',
     bg: "#C5F442",
-    roles: ['admin','manager','staff']
+    roles: ['admin','manager','staff','parttime']
   },
   {
     name: '儲位移動',
     route: 'ShelfMerge',
     icon: 'cubes',
     bg: "#C5F442",
-    roles: ['admin','manager','staff']
+    roles: ['admin','manager','staff','parttime']
 
   },
   {
@@ -64,7 +64,7 @@ const datas = [
     route: 'HighLayerShopIndex',
     icon: 'flash',
     bg: "#C5F442",
-    roles: ['admin','manager','staff']
+    roles: ['admin','manager','staff','parttime']
 
   },
 
