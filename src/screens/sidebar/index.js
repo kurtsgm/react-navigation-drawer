@@ -67,7 +67,13 @@ const datas = [
     roles: ['admin','manager','staff','parttime']
 
   },
-
+  { 
+    name: '設定',
+    route: 'SettingShops',
+    icon: 'cog',
+    bg: "#C5F442",
+    roles: ['admin','manager','staff','parttime']
+  },
   {
     name: "登出",
     route: 'Logout',

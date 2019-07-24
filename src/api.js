@@ -23,6 +23,9 @@ export const CONFIRM_PICKING = 'CONFIRM_PICKING'
 export const GET_HIGH_LAYER = 'GET_HIGH_LAYER'
 export const ACTIVATE_PICKING = "ACTIVATE_PICKING"
 
+export const GET_SHOPS = "GET_SHOPS"
+export const SET_SHOPS = "SET_SHOPS"
+
 import {Toast} from 'native-base'
 
 const API_PATH = __DEV__ ? "/api" : ''
@@ -42,7 +45,11 @@ const Actions = {
   CONFIRM_PICKING: {path: `${API_PATH}/v1/picking_lists/{id}/pick`, method: "POST"},
   MERGE_SHELVES: {path:`${API_PATH}/v1/shelves/merge`, method: "POST"},
   ADJUST_SHELF_QUANTITY: {path: `${API_PATH}/v1/shelves/{token}/adjust`,method: "POST"},
-  ACTIVATE_PICKING: {path: `${API_PATH}/v1/picking_lists/{id}/activate`,method: "POST"}
+  ACTIVATE_PICKING: {path: `${API_PATH}/v1/picking_lists/{id}/activate`,method: "POST"},
+  GET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "GET"},
+  SET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "POST"},
+
+
 }
 
 
