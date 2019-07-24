@@ -86,7 +86,7 @@ const AppNavigator = createStackNavigator(
 const AppContainer = createAppContainer(AppNavigator);
 
 
-export default class App extends React.Component {
+export default class AppRoot extends React.Component {
   render() {
     return (
       <Root>

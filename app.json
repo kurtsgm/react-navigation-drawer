@@ -7,7 +7,7 @@
       "versionCode": 18,
       "permissions":["CAMERA"]
     },
-    "sdkVersion": "32.0.0",
+    "sdkVersion": "33.0.0",
     "platforms": [
       "ios",
       "android"
