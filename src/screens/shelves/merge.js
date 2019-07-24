@@ -26,7 +26,7 @@ import {
 
 import styles from "./styles"
 import { apiFetch, GET_SHELVES, GET_SHELF_INFO, MERGE_SHELVES } from "../../api"
-import { normalize_shelf_barcode ,boxText} from '../../sdj_common'
+import { normalize_shelf_barcode, boxText } from '../../sdj_common'
 import { Grid, Row, Col } from "react-native-easy-grid";
 
 const INIT_STATE = {
@@ -188,12 +188,17 @@ class ShelfMerge extends Component {
                   </Body>
                   <Right>
                     <Text>{high_layer.shelf_quantity}</Text>
-                    <Text>(
-                      {
-                        boxText(high_layer.product_box_pcs,high_layer.shelf_quantity)
-                      }
-                      )
-                    </Text>
+                    {
+                      boxText(high_layer.product_box_pcs, high_layer.shelf_quantity) ?
+                        <Text>
+                        (
+                          {
+                            boxText(high_layer.product_box_pcs, high_layer.shelf_quantity)
+                          }
+                        )
+                      </Text> : null
+
+                    }
                   </Right>
 
                 </CardItem> : null
@@ -247,8 +252,8 @@ class ShelfMerge extends Component {
                 <CardItem bordered>
 
                   <Row>
-                  <Col size={5}>
-                  </Col>
+                    <Col size={5}>
+                    </Col>
                     <Col size={1}>
                       <CheckBox checked={this.state.set_for_picking}
                         onPress={() => {
