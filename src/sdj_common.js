@@ -27,3 +27,12 @@ export function normalize_shelf_barcode(barcode){
   return tokens.filter(t=>t).join('-')
 
 }
+
+export function boxText(box_pcs, quantity) {
+  if (box_pcs && box_pcs > 0) {
+    let box_text = Math.floor(quantity / box_pcs) > 0 ? `${Math.floor(quantity / box_pcs)}箱` : ''
+    let pcs_text = (quantity % box_pcs) > 0 ? `${(quantity % box_pcs)}個` : ''
+    return box_text + pcs_text
+  }
+  return null
+}

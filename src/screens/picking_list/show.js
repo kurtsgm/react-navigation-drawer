@@ -28,6 +28,8 @@ import { store } from '../../redux/stores/store'
 
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST, ACTIVATE_PICKING } from "../../api"
+import { boxText } from '../../sdj_common'
+
 import styles from "./styles";
 
 const PRODUCT_MODE = "product_mode"
@@ -112,6 +114,7 @@ class ShowPickingList extends Component {
         shelves.push(Object.assign({}, shelf, {
           item_id: item.id,
           product_barcode: item.product_barcode,
+          product_box_pcs: item.product_box_pcs,
           product_expiration_date: item.product_expiration_date,
           product_name: item.product_name,
           product_storage_id: item.product_storage_id,
@@ -127,6 +130,7 @@ class ShowPickingList extends Component {
       if (quantity_remain > 0) {
         shortages.push({
           product_barcode: item.product_barcode,
+          product_box_pcs: item.product_box_pcs,
           product_expiration_date: item.product_expiration_date,
           product_name: item.product_name,
           product_storage_id: item.product_storage_id,
@@ -142,6 +146,7 @@ class ShowPickingList extends Component {
         shelves.push({
           item_id: item.id,
           product_barcode: item.product_barcode,
+          product_box_pcs: item.product_box_pcs,
           product_expiration_date: item.product_expiration_date,
           product_name: item.product_name,
           product_storage_id: item.product_storage_id,
@@ -210,6 +215,7 @@ class ShowPickingList extends Component {
               storage_shelf_id: shelf.storage_shelf_id,
               shelves: element.shelves,
               product_type_name: element.product_type_name,
+              product_box_pcs: element.product_box_pcs,
               batch: element.batch,
               product_storage_id: element.product_storage_id,
               pcs: shelf.pcs,
@@ -288,6 +294,7 @@ class ShowPickingList extends Component {
     })
   }
 
+
   changeQuantity(storage_shelf_id, quantity) {
     let items = this.state.items
     let target = null
@@ -347,13 +354,29 @@ class ShowPickingList extends Component {
                           break
                         }
                       }
-                      this.setState(items)
+                      this.setState({ items: items })
                     }
                   }
                   onEndEditing={(event) => {
                     let value = this.changeQuantity(data.storage_shelf_id, event.nativeEvent.text)
                     event.nativeEvent.text = value
                   }} value={`${data.ready_to_pick}`} returnKeyType="done" />
+
+              }
+              {
+
+                data.done && boxText(data.product_box_pcs, data.ready_to_pick) ? null :
+                  <Badge
+                    style={{
+                      borderRadius: 3,
+                      height: 25,
+                      width: 100,
+                      backgroundColor: "#c3c3d5"
+                    }}
+                    textStyle={{ color: "white" }}
+                  >
+                    <Text>{boxText(data.product_box_pcs, data.ready_to_pick)}</Text>
+                  </Badge>
 
               }
 
@@ -402,6 +425,7 @@ class ShowPickingList extends Component {
           product_name: item.product_name,
           product_uid: item.product_uid,
           product_barcode: item.product_barcode,
+          product_box_pcs: item.product_box_pcs,
           product_expiration_date: item.product_expiration_date,
           product_stroage_type: item.product_type_name,
           batch: item.batch,
@@ -589,7 +613,7 @@ class ShowPickingList extends Component {
 
       }
     } else {
-      list_items = this.state.shelf_items.sort((a,b)=>{
+      list_items = this.state.shelf_items.sort((a, b) => {
         return parseInt(a.token.substring(0, 5).replace('-', '')) - parseInt(b.token.substring(0, 5).replace('-', ''))
       }).sort((a, b) => {
         // SDJ SORTING RULE
@@ -629,6 +653,10 @@ class ShowPickingList extends Component {
                 shelf_item.batch,
                 ].filter(e => e).map(info => <Text style={styles.extra_info}>{info}</Text>)
 
+                }
+                {boxText(shelf_item.product_box_pcs, shelf_item.to_pick) ?
+
+                  <Text>({boxText(shelf_item.product_box_pcs, shelf_item.to_pick)} )</Text> : null
                 }
               </Col>
               <Col size={2}>

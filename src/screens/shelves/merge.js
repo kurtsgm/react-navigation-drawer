@@ -26,7 +26,7 @@ import {
 
 import styles from "./styles"
 import { apiFetch, GET_SHELVES, GET_SHELF_INFO, MERGE_SHELVES } from "../../api"
-import { normalize_shelf_barcode } from '../../sdj_common'
+import { normalize_shelf_barcode ,boxText} from '../../sdj_common'
 import { Grid, Row, Col } from "react-native-easy-grid";
 
 const INIT_STATE = {
@@ -159,6 +159,7 @@ class ShelfMerge extends Component {
 
   render() {
     let high_layer = this.state.high_layer
+    console.log(this.props)
     return (
       <Container style={styles.container}>
         <Header searchBar rounded>
@@ -186,7 +187,13 @@ class ShelfMerge extends Component {
                     <Text>{[high_layer.storage_type_name, high_layer.expiration_date, high_layer.batch].filter(e => e).join("\n")}</Text>
                   </Body>
                   <Right>
-                    <Text>{high_layer.shelf_quantity}(個)</Text>
+                    <Text>{high_layer.shelf_quantity}</Text>
+                    <Text>(
+                      {
+                        boxText(high_layer.product_box_pcs,high_layer.shelf_quantity)
+                      }
+                      )
+                    </Text>
                   </Right>
 
                 </CardItem> : null
