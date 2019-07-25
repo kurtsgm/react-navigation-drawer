@@ -1,5 +1,5 @@
 import Expo from "expo";
-import { Constants } from 'expo';
+import Constants from 'expo-constants'
 
 import * as AppActions from './redux/actions/AppAction'
 import {store} from './redux/stores/store'

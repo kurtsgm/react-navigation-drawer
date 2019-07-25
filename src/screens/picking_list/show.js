@@ -254,18 +254,7 @@ class ShowPickingList extends Component {
       quantity: quantity
     }, data => {
       if (data.status == "success") {
-        let items = this.state.items
-        for (let item of this.state.items) {
-          if (item.shelf_token == shelf_token && item.item_id == item_id) {
-            item.done = true
-            break
-          }
-        }
-        this.setState({
-          items: items,
-          picking_list: data.picking_list,
-        })
-        this.sortByShelf(data.picking_list.items)
+        this.reload()
         this.onConfirmed()
 
       } else {
@@ -549,7 +538,7 @@ class ShowPickingList extends Component {
       for (let _sector of sectors) {
         let is_done = _sector.picked_quantity == _sector.quantity
         list_items.push(
-          <ListItem itemDivider style={is_done ? styles.item_done : ''} key={`divider-${_sector.product_storage_id}`}>
+          <ListItem itemDivider style={is_done ? styles.item_done : {}} key={`divider-${_sector.product_storage_id}`}>
             <Grid>
               <Row>
                 <Col>
