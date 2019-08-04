@@ -100,11 +100,11 @@ class ShowPickingList extends Component {
     for (let item of items) {
       let quantity_remain = item.quantity - item.picked_quantity
       for (let shelf of item.shelves.filter(shelf => {
-        for (let picked_item of item.picked) {
-          if (shelf.token == picked_item.token) {
-            return false
-          }
-        }
+        // for (let picked_item of item.picked) {
+        //   if (shelf.token == picked_item.token) {
+        //     return false
+        //   }
+        // }
         return true
       })) {
         if (quantity_remain <= 0) {
@@ -193,7 +193,8 @@ class ShowPickingList extends Component {
     for (let element of original_items) {
       let quantity = element.quantity - element.picked_quantity
       for (let shelf of element.shelves.filter(shelf => {
-        return !element.picked || !element.picked.map(e => e.token).includes(shelf.token)
+        return true
+        // return !element.picked || !element.picked.map(e => e.token).includes(shelf.token)
       })) {
         if (quantity > 0 && shelf.pcs > 0) {
           let found_item = null
@@ -612,7 +613,8 @@ class ShowPickingList extends Component {
         let layer_b = parseInt(b.token.substring(6, 7))
         return layer_a == PICK_LAYER && layer_b != PICK_LAYER ? -1 : 0
       }).filter(item => {
-        return this.state.show_picked || !item.picked
+        return true
+        // return this.state.show_picked || !item.picked
       }).map(shelf_item => {
         return <ListItem itemDivider style={shelf_item.picked ? styles.item_done : ''} key={`${shelf_item.key}`}>
           <Grid>
