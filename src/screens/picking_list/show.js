@@ -157,7 +157,7 @@ class ShowPickingList extends Component {
           token: picked_item.token,
           picked_quantity: picked_item.quantity,
           created_at: picked_item.created_at,
-          key: `${item.id}-${picked_item.created_at}`
+          key: `${picked_item.id}-${picked_item.created_at}`
         })
       }
     }
@@ -301,9 +301,6 @@ class ShowPickingList extends Component {
     others_quantity = this.state.items.reduce((value, i) => {
       return i.product_storage_id == target.product_storage_id && i.storage_shelf_id != target.storage_shelf_id ? value + i.ready_to_pick : value
     }, 0)
-    // console.log(total_quantity)
-    // console.log(others_quantity)
-    // console.log(this.state.items)
 
     target.ready_to_pick = Math.min(quantity, total_quantity - others_quantity, target.pcs)
     target.manual_set = true
@@ -406,7 +403,6 @@ class ShowPickingList extends Component {
     let done = false
     let list_items = []
     this.firstButton = null
-    console.log(this.state.picking_list.items)
     if (this.state.sorting_mode == PRODUCT_MODE) {
       let sectors = this.state.picking_list.items.map(item => {
         return {
@@ -611,10 +607,9 @@ class ShowPickingList extends Component {
         let PICK_LAYER = 1
         let layer_a = parseInt(a.token.substring(6, 7))
         let layer_b = parseInt(b.token.substring(6, 7))
-        return layer_a == PICK_LAYER && layer_b != PICK_LAYER ? -1 : 0
+        return layer_a <= PICK_LAYER && layer_b != PICK_LAYER ? -1 : 0
       }).filter(item => {
-        return true
-        // return this.state.show_picked || !item.picked
+        return this.state.show_picked || !item.picked
       }).map(shelf_item => {
         return <ListItem itemDivider style={shelf_item.picked ? styles.item_done : ''} key={`${shelf_item.key}`}>
           <Grid>
@@ -714,8 +709,8 @@ class ShowPickingList extends Component {
           </ListItem>
         )
       }
-
     }
+
     return (
       <Container style={styles.container} >
         <Header>
@@ -745,9 +740,9 @@ class ShowPickingList extends Component {
           </Right>
         </Header>
         <Content disableKBDismissScroll={true}>
-          <List>
+          <List key="picking-list">
             {
-              ["admin", "manager"].includes(store.getState().role) ?
+              [ "manager"].includes(store.getState().role) ?
                 <ListItem>
                   <Grid>
                     <Col size={4} style={styles.vertical_center} >
