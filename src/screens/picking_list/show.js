@@ -614,7 +614,7 @@ class ShowPickingList extends Component {
       }).filter(item => {
         return this.state.show_picked || !item.picked
       }).map(shelf_item => {
-        return <ListItem style={shelf_item.picked ? styles.item_done : ''} key={`${shelf_item.key}`}>
+        return <ListItem itemDivider style={shelf_item.picked ? styles.item_done : ''} key={`${shelf_item.key}`}>
           <Grid>
             <Row>
               <Col size={3}>
