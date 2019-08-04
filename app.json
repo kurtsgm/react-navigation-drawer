@@ -4,7 +4,7 @@
     "version": "1.0.60",
     "android":{
       "package": "com.ibiza.sdj",
-      "versionCode": 18,
+      "versionCode": 19,
       "permissions":["CAMERA"]
     },
     "sdkVersion": "33.0.0",

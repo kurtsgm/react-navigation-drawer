@@ -74,18 +74,20 @@ class ShelfShow extends Component {
                     }}>
                       <Left>
                         <Text>
-                          {
-                            [
-                              storage.product_storage.product.name,
-                              storage.product_storage.storage_type_name,
-                              storage.product_storage.expiration_date
-                            ].filter(e => e).join("/")
-                          }
+                            {`${storage.product_storage.product.name}\n${storage.product_storage.product.barcode}\n${[
+                                storage.product_storage.storage_type_name,
+                                storage.product_storage.expiration_date,
+                                storage.product_storage.batch
+                              ].filter(e => e).join("/")
+                            }`}                          
                         </Text>
                       </Left>
+                      <Body>
                       <Text style={styles.blue}>
                         {storage.pcs}
                       </Text>
+
+                      </Body>
                       <Right>
                       <Icon name="arrow-forward" style={{ color: "#999" }} />
                       </Right>

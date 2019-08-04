@@ -56,12 +56,16 @@ class ProductSearch extends Component {
       }>
         <Left>
           <Text>
-            {product.shop_name}
+            {
+              `${product.shop_name}\n${product.uid}`
+            }
           </Text>
         </Left>
         <Body>
           <Text>
-            {product.name}
+            {
+              `${product.name}\n${product.barcode}`
+            }
           </Text>
         </Body>
         <Right>
