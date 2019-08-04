@@ -643,9 +643,10 @@ class ShowPickingList extends Component {
                 ].filter(e => e).map(info => <Text style={styles.extra_info}>{info}</Text>)
 
                 }
-                {boxText(shelf_item.product_box_pcs, shelf_item.to_pick) ?
-
-                  <Text>({boxText(shelf_item.product_box_pcs, shelf_item.to_pick)} )</Text> : null
+                {
+                  <Text>
+                    {boxText(shelf_item.product_box_pcs, shelf_item.picked ? shelf_item.picked_quantity : shelf_item.to_pick) }
+                  </Text>
                 }
               </Col>
               <Col size={2}>
