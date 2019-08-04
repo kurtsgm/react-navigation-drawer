@@ -33,6 +33,7 @@ export function boxText(box_pcs, quantity) {
     let box_text = Math.floor(quantity / box_pcs) > 0 ? `${Math.floor(quantity / box_pcs)}箱` : ''
     let pcs_text = (quantity % box_pcs) > 0 ? `${(quantity % box_pcs)}個` : ''
     return box_text + pcs_text
+  }else{
+    return `${quantity}個`
   }
-  return null
 }
