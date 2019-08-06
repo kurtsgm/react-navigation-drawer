@@ -68,7 +68,7 @@ class ShelfSearch extends Component {
           </Left>
           <Item>
             <Input placeholder="Search" placeholder="請輸入或者掃描條碼"
-              keyboardType='email-address'
+              keyboardType='default'
               returnKeyType="done"
               value={this.state.barcode}
               onChangeText={(text) => this.setState({ barcode: normalize_shelf_barcode(text.toUpperCase()) })}
