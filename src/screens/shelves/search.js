@@ -23,7 +23,7 @@ import styles from "./styles"
 import { apiFetch, GET_SHELF_INFO } from "../../api"
 
 import ShelfShow from './show'
-import { normalize_shelf_barcode } from '../../sdj_common'
+import { normalize_shelf_barcode } from '../../common'
 
 class ShelfSearch extends Component {
   constructor() {
@@ -31,6 +31,24 @@ class ShelfSearch extends Component {
     this.state = {
       barcode: ''
     }
+    this.onSearch = this.onSearch.bind(this)
+  }
+
+  onSearch(barcode){
+    if (barcode) {
+      apiFetch(GET_SHELF_INFO, { token: barcode }, data => {
+        console.log(data)
+        if (data) {
+          this.props.navigation.navigate("ShelfShow", data)
+        } else {
+          Toast.show({
+            text: "查無此儲位",
+            buttonText: "OK"
+          })
+        }
+      })
+    }
+
   }
   render() {
     return (
@@ -59,22 +77,27 @@ class ShelfSearch extends Component {
               onEndEditing={
                 (event) => {
                   let barcode = normalize_shelf_barcode(event.nativeEvent.text.trim())
-                  if (barcode) {
-                    apiFetch(GET_SHELF_INFO, { token: barcode }, data => {
-                      console.log(data)
-                      if (data) {
-                        this.props.navigation.navigate("ShelfShow", data)
-                      } else {
-                        Toast.show({
-                          text: "查無此儲位",
-                          buttonText: "OK"
-                        })
-                      }
-                    })
-                  }
+                  this.onSearch(barcode)
                 }
               } />
           </Item>
+          <Right>
+            <Button
+              transparent
+              onPress={() =>
+                this.props.navigation.navigate("BarcodeScanner", {
+                  onBarcodeScanned: (barcode) => {
+                    this.setState({ barcode: barcode })
+                    this.onSearch(barcode)
+                  }
+                }
+                )
+              }
+            >
+              <Icon name="camera" />
+            </Button>
+          </Right>
+
         </Header>
         <Content>
         </Content>

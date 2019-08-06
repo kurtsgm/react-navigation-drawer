@@ -26,7 +26,7 @@ import {
 
 import styles from "./styles"
 import { apiFetch, GET_SHELVES, GET_SHELF_INFO, MERGE_SHELVES } from "../../api"
-import { normalize_shelf_barcode, boxText } from '../../sdj_common'
+import { normalize_shelf_barcode, boxText } from '../../common'
 import { Grid, Row, Col } from "react-native-easy-grid";
 
 const INIT_STATE = {
