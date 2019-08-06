@@ -20,11 +20,11 @@ export function normalize_shelf_barcode(barcode){
   }
 
   console.log(barcode)
-  tokens[0] = barcode.substring(0,2)
-  tokens[1] = barcode.substring(2,4)
-  tokens[2] = barcode.substring(4,5)
-  tokens[3] = barcode.substring(5,6)
-  return tokens.filter(t=>t).join('-')
+  tokens[0] = barcode.substring(0,1)
+  tokens[1] = barcode.substring(1,3)
+  tokens[2] = barcode.substring(3,4)
+  tokens[3] = barcode.substring(4,5)
+  return tokens.filter(t=>t).join('-').toUpperCase()
 
 }
 

@@ -23,7 +23,7 @@ import Dialog from "react-native-dialog";
 import { Grid, Col } from "react-native-easy-grid";
 import { apiFetch, RECEIVE_RECEIPT } from "../../api"
 import styles from "./styles";
-import { normalize_shelf_barcode } from '../../sdj_common'
+import { normalize_shelf_barcode } from '../../common'
 
 
 class RecommendShelf extends Component {

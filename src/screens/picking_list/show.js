@@ -28,7 +28,7 @@ import { store } from '../../redux/stores/store'
 
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST, ACTIVATE_PICKING } from "../../api"
-import { boxText } from '../../sdj_common'
+import { boxText } from '../../common'
 
 import styles from "./styles";
 

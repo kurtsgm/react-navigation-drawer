@@ -60,7 +60,7 @@ export function apiFetch(action,data={},callback_function){
     host = "http://"+Constants.manifest.debuggerHost.split(":").shift().concat(":3000")
 
   }else{
-    host = "https://wms-api.ibiza.com.tw"
+    host = "https://chuanyin-api.ibiza.com.tw"
 
   }
   let _action = Actions[action]
