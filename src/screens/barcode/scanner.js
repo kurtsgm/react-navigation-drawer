@@ -50,6 +50,9 @@ export default class BarcodeScanner extends React.Component {
 
   handleBarCodeScanned = ({ type, data }) => {
     this.setState({ scanned: true });
+    if( type && type.split('.').pop() =='EAN-13'){
+      data = data.replace(/^0/, '')
+    }
     const { params } = this.props.navigation.state;
     params.onBarcodeScanned(data)
     this.props.navigation.goBack()
