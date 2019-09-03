@@ -106,7 +106,7 @@ class RecommendShelf extends Component {
               </Text>
               </Left>
               <Input placeholder='請指定儲位'
-                keyboardType='numeric'
+                keyboardType='default'
                 returnKeyType="done"
                 value={this.state.shelf_token}
                 onChangeText={(text) => this.setState({ shelf_token: normalize_shelf_barcode(text.toUpperCase()) })}
@@ -135,7 +135,7 @@ class RecommendShelf extends Component {
                 <Right>
                   <Item success >
 
-                    <Input keyboardType='numeric'
+                    <Input keyboardType='default'
                       value={`${data.total_quantity}`}
                       onChangeText={
                         (text) => {
@@ -159,7 +159,7 @@ class RecommendShelf extends Component {
           </List>
           <Dialog.Container visible={this.state.isModalVisible}>
             <Dialog.Title>請掃描儲位</Dialog.Title>
-            <Dialog.Input keyboardType='numeric' value={this.state.confirm_shelf}
+            <Dialog.Input keyboardType='default' value={this.state.confirm_shelf}
               placeholder='請掃描儲位'
               autoFocus={true}
               onFocus={()=>this.setState({confirm_shelf:null})}

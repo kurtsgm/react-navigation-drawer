@@ -14,6 +14,9 @@ export function normalize_shelf_barcode(barcode){
       if(tokens[1] && tokens[1].length == 1){
         tokens[1] = `0${tokens[1]}`
       }
+      if(tokens[2] && tokens[2].length == 1){
+        tokens[2] = `0${tokens[2]}`
+      }
     }else{
       barcode = barcode.replace(/-/g,'')
     }
