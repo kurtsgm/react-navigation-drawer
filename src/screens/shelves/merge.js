@@ -191,11 +191,11 @@ class ShelfMerge extends Component {
                     {
                       boxText(high_layer.product_box_pcs, high_layer.shelf_quantity) ?
                         <Text>
-                        (
+                          (
                           {
                             boxText(high_layer.product_box_pcs, high_layer.shelf_quantity)
                           }
-                        )
+                          )
                       </Text> : null
 
                     }
@@ -220,12 +220,27 @@ class ShelfMerge extends Component {
                           }
                           onChangeText={
                             (text) => {
-                              console.log(normalize_shelf_barcode(text))
                               this.setState({ source_shelf: normalize_shelf_barcode(text) })
                             }
                           }
                           onEndEditing={(event) => { this.onSourceSelected(normalize_shelf_barcode(event.nativeEvent.text)) }}
                           returnKeyType="done" />
+                    }
+                    {
+                      high_layer ? null :
+                        <Button
+                          transparent
+                          onPress={() =>
+                            this.props.navigation.navigate("BarcodeScanner", {
+                              onBarcodeScanned: (barcode) => {
+                                this.onSourceSelected(normalize_shelf_barcode(barcode))
+                              }
+                            }
+                            )
+                          }
+                        >
+                          <Icon name="camera" />
+                        </Button>
                     }
                   </Col>
                   <Col size={1}>
@@ -243,6 +258,19 @@ class ShelfMerge extends Component {
                         }
                       }
                       returnKeyType="done" />
+                        <Button
+                          transparent
+                          onPress={() =>
+                            this.props.navigation.navigate("BarcodeScanner", {
+                              onBarcodeScanned: (barcode) => {
+                                this.setState({ destination_shelf: normalize_shelf_barcode(barcode) })
+                              }
+                            }
+                            )
+                          }
+                        >
+                          <Icon name="camera" />
+                        </Button>                      
                   </Col>
                 </Row>
               </Grid>
