@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Text, View, StyleSheet, Button } from 'react-native';
-import { Constants, Permissions, BarCodeScanner } from 'expo';
+import { Constants } from 'expo';
+import { BarCodeScanner } from 'expo-barcode-scanner'
+import * as Permissions from 'expo-permissions'
 
 export default class BarcodeScanner extends React.Component {
   constructor(props) {
@@ -50,8 +52,12 @@ export default class BarcodeScanner extends React.Component {
 
   handleBarCodeScanned = ({ type, data }) => {
     this.setState({ scanned: true });
-    if( type && type.split('.').pop() =='EAN-13'){
-      data = data.replace(/^0/, '')
+    try{
+      // for IOS
+      if( type && type.split('.').pop() =='EAN-13'){
+        data = data.replace(/^0/, '')
+      }  
+    }catch(e){
     }
     const { params } = this.props.navigation.state;
     params.onBarcodeScanned(data)
