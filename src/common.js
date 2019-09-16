@@ -14,18 +14,15 @@ export function normalize_shelf_barcode(barcode){
       if(tokens[1] && tokens[1].length == 1){
         tokens[1] = `0${tokens[1]}`
       }
-      if(tokens[2] && tokens[2].length == 1){
-        tokens[2] = `0${tokens[2]}`
-      }
     }else{
       barcode = barcode.replace(/-/g,'')
     }
   }
 
   console.log(barcode)
-  tokens[0] = barcode.substring(0,1)
-  tokens[1] = barcode.substring(1,3)
-  tokens[2] = barcode.substring(3,5)
+  tokens[0] = barcode.substring(0,2)
+  tokens[1] = barcode.substring(2,4)
+  tokens[2] = barcode.substring(4,5)
   tokens[3] = barcode.substring(5,6)
   return tokens.filter(t=>t).join('-').toUpperCase()
 
