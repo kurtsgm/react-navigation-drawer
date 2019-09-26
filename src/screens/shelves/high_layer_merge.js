@@ -9,6 +9,7 @@ import {
   CardItem
 } from "native-base";
 
+
 class HighLayerShelfMerge extends ShelfMerge {
   backButton() {
     return <Button
@@ -42,7 +43,7 @@ class HighLayerShelfMerge extends ShelfMerge {
   componentDidMount() {
     if (this.props.navigation.state.params.high_layer) {
       this.setState({ high_layer: this.props.navigation.state.params.high_layer })
-      this.onSourceSelected(this.props.navigation.state.params.high_layer.shelf_token)
+      this.onSourceSelected(this.props.navigation.state.params.high_layer.shelf_token.nu)
     }
   }
 

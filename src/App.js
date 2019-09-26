@@ -32,6 +32,7 @@ import HighLayerPickingLists from './screens/shelves/high_layer_picking_lists'
 import HighLayerShopIndex from './screens/shelves/high_layer_shops'
 import SettingShops from './screens/settings/shops'
 import WarehouseCheckout from './screens/shelves/warehouse_checkout'
+import WarehouseShelfMerge from './screens/shelves/warehouse_merge'
 
 import HighLayerShelfMerge from './screens/shelves/high_layer_merge'
 import Welcome from './screens/welcome/index'
@@ -47,6 +48,7 @@ const Drawer = createDrawerNavigator(
     ShelfMerge: {screen: ShelfMerge},
     HighLayerShopIndex: {screen: HighLayerShopIndex},
     WarehouseCheckout: {screen: WarehouseCheckout},
+    WarehouseShelfMerge: {screen: WarehouseShelfMerge},
     SettingShops: {screen: SettingShops},
     Welcome: { screen: Welcome},
   },

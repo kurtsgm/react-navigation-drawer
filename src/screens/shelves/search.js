@@ -42,7 +42,7 @@ class ShelfSearch extends Component {
           this.props.navigation.navigate("ShelfShow", data)
         } else {
           Toast.show({
-            text: "查無此儲位",
+            text: "查無此儲位或已鎖定",
             buttonText: "OK"
           })
         }

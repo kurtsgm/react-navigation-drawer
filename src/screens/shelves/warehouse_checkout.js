@@ -20,7 +20,7 @@ import {
 
 import { Keyboard } from 'react-native'
 import styles from "./styles"
-import { apiFetch, GET_SHELF_INFO } from "../../api"
+import { apiFetch, GET_SHELF_INFO ,CHECKOUT_SHELF } from "../../api"
 import { View } from 'react-native'
 
 
@@ -41,7 +41,22 @@ class WarehouseCheckout extends Component {
   }
 
   submit() {
-
+    apiFetch(CHECKOUT_SHELF, { 
+      shelves: this.state.shelves.map(shelf=>shelf.id)
+     }, data => {
+       if(data.success){
+         this.setState({shelves:[]})
+         Toast.show({
+          text: "已成功登記移出並鎖定儲位",
+          buttonText: "OK"
+          })
+        }else{
+          Toast.show({
+            text: "移出失敗",
+            buttonText: "OK"
+            })  
+        }
+    })
   }
 
   onSearch(barcode) {
@@ -64,7 +79,7 @@ class WarehouseCheckout extends Component {
           console.log(this.state.shelves)
         } else {
           Toast.show({
-            text: "查無此儲位",
+            text: "查無此儲位或已鎖定",
             buttonText: "OK"
           })
         }

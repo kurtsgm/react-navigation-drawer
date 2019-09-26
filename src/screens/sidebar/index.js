@@ -69,12 +69,20 @@ const datas = [
 
   },
   { 
-    name: '調撥移倉',
+    name: '調撥出庫',
     route: 'WarehouseCheckout',
-    icon: 'exchange',
+    icon: 'expand',
     bg: "#C5F442",
     roles: ['admin','manager','staff','parttime']
   },
+  { 
+    name: '調撥接收',
+    route: 'WarehouseShelfMerge',
+    icon: 'compress',
+    bg: "#C5F442",
+    roles: ['admin','manager','staff','parttime']
+  },
+
   { 
     name: '設定',
     route: 'SettingShops',
