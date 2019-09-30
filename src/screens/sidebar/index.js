@@ -23,6 +23,7 @@ const drawerCover = require("../../../assets/drawer-cover.png");
 const drawerImage = require("../../../assets/logo-wms.png");
 const datas = [
   {
+    // FontAwesome icons
     name: '入倉作業',
     route: 'Receipt',
     icon: 'truck',
@@ -67,6 +68,21 @@ const datas = [
     roles: ['admin','manager','staff','parttime']
 
   },
+  { 
+    name: '調撥出庫',
+    route: 'WarehouseCheckout',
+    icon: 'expand',
+    bg: "#C5F442",
+    roles: ['admin','manager','staff','parttime']
+  },
+  { 
+    name: '調撥接收',
+    route: 'WarehouseShelfMerge',
+    icon: 'compress',
+    bg: "#C5F442",
+    roles: ['admin','manager','staff','parttime']
+  },
+
   { 
     name: '設定',
     route: 'SettingShops',

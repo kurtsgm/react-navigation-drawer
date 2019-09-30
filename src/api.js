@@ -14,6 +14,7 @@ export const GET_SHELVES = "GET_SHELVES"
 export const GET_RECEIPT = "GET_RECEIPT"
 export const GET_PRODUCTS = "GET_PRODUCTS"
 export const GET_SHELF_INFO = "GET_SHELF_INFO"
+export const CHECKOUT_SHELF = "CHECKOUT_SHELF"
 export const ADJUST_SHELF_QUANTITY = "ADJUST_SHELF_QUANTITY"
 
 export const GET_PICKING_LISTS = 'GET_PICKING_LISTS'
@@ -22,6 +23,8 @@ export const MERGE_SHELVES = 'MERGE_SHELVES'
 export const CONFIRM_PICKING = 'CONFIRM_PICKING'
 export const GET_HIGH_LAYER = 'GET_HIGH_LAYER'
 export const ACTIVATE_PICKING = "ACTIVATE_PICKING"
+
+export const GET_WAREHOUSES = "GET_WAREHOUSES"
 
 export const GET_SHOPS = "GET_SHOPS"
 export const SET_SHOPS = "SET_SHOPS"
@@ -39,6 +42,7 @@ const Actions = {
   GET_SHELVES: {path: `${API_PATH}/v1/shelves/`, method: "GET"},
   GET_PRODUCTS: {path: `${API_PATH}/v1/products/{barcode}`, method: "GET"},
   GET_SHELF_INFO: {path: `${API_PATH}/v1/shelves/{token}`, method: "GET"},
+  CHECKOUT_SHELF: {path: `${API_PATH}/v1/shelves/checkout`,method: "POST"},
   GET_PICKING_LISTS: {path: `${API_PATH}/v1/picking_lists/`, method: "GET"},
   GET_HIGH_LAYER: {path: `${API_PATH}/v1/shelves/high_layer`, method: "GET"},
   GET_PICKING_LIST: {path: `${API_PATH}/v1/picking_lists/{id}`, method: "GET"},
@@ -48,7 +52,7 @@ const Actions = {
   ACTIVATE_PICKING: {path: `${API_PATH}/v1/picking_lists/{id}/activate`,method: "POST"},
   GET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "GET"},
   SET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "POST"},
-
+  GET_WAREHOUSES: {path:`${API_PATH}/v1/warehouses`, method: "GET"},
 
 }
 
