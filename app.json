@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "詮盈智慧倉儲系統",
+    "name": "SDJ智慧倉儲系統",
     "version": "1.0.60",
     "android":{
-      "package": "com.ibiza.chuanyin",
+      "package": "com.ibiza.sdj",
       "versionCode": 19,
       "permissions":["CAMERA"]
     },
@@ -13,7 +13,7 @@
       "android"
     ],
     "icon": "./assets/icon.png",
-    "slug": "ibiza_chuanyin",
+    "slug": "ibiza_sdj",
     "loading": {
       "hideExponentText": true,
       "backgroundImage": "./assets/splashscreen.png"
@@ -27,7 +27,7 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.ibiza.chuanyin",
+      "bundleIdentifier": "com.ibiza.sdj",
       "icon":"./assets/icon-ios.png"
     },
     "androidStatusBarColor": "#334393",

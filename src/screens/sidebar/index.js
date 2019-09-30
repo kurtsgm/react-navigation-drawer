@@ -49,7 +49,7 @@ const datas = [
     route: 'ShelfSearch',
     icon: 'search',
     bg: "#C5F442",
-    roles: ['admin','manager','staff']
+    roles: ['admin','manager','staff','parttime']
   },
   {
     name: '儲位移動',
