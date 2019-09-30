@@ -17,8 +17,6 @@ import { apiFetch, GET_WAREHOUSES, GET_SHELF_INFO } from "../../api"
 class WarehouseShelfMerge extends ShelfMerge {
   constructor(props) {
     super(props)
-    this.state.warehouses = []
-    this.state.warehouse_id = null
     this.get_warehouses = this.get_warehouses.bind(this)
     this.onWarehouseChange = this.onWarehouseChange.bind(this)
     this.title = '調撥接收'
@@ -30,6 +28,10 @@ class WarehouseShelfMerge extends ShelfMerge {
     }
     )
   }
+  mergeOptions(){
+    return {from_warehouse_id:this.state.warehouse_id,unlock_shelf:true}
+  }
+
   onWarehouseChange(id) {
     this.setState({
       warehouse_id: id
@@ -64,20 +66,22 @@ class WarehouseShelfMerge extends ShelfMerge {
   extra_info() {
     return <CardItem bordered>
         <Picker mode="dropdown"
+          headerBackButtonText="退回"
+          iosHeader="選擇來源倉"
           placeholder="請選擇來源倉"
           iosIcon={<Icon name="arrow-down" />}
           selectedValue={this.state.warehouse_id}
           onValueChange={this.onWarehouseChange}>
           {
-            this.state.warehouses.map(warehouse => {
-              return <Picker.Item label={warehouse.title} value={warehouse.id}></Picker.Item>
-            })
+            this.state.warehouses ? this.state.warehouses.map(warehouse => {
+              return <Picker.Item key={warehouse.id} label={warehouse.title} value={warehouse.id}></Picker.Item>
+            }) : null
           }
         </Picker>
     </CardItem>
   }
 
-  componentDidMount() {
+  componentWillMount() {
     this.get_warehouses()
   }
 

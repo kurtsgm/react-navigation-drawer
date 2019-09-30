@@ -44,6 +44,7 @@ class WarehouseCheckout extends Component {
     apiFetch(CHECKOUT_SHELF, { 
       shelves: this.state.shelves.map(shelf=>shelf.id)
      }, data => {
+       console.log(data)
        if(data.success){
          this.setState({shelves:[]})
          Toast.show({
@@ -52,7 +53,7 @@ class WarehouseCheckout extends Component {
           })
         }else{
           Toast.show({
-            text: "移出失敗",
+            text: `移出失敗\n${data.message}`,
             buttonText: "OK"
             })  
         }
@@ -124,7 +125,7 @@ class WarehouseCheckout extends Component {
         <Content padder>
           <List>
             {
-              this.state.shelves.map((shelf) => <ListItem>
+              this.state.shelves.map((shelf) => <ListItem key={shelf.id}>
                 <Left>
                   <Button
                     transparent

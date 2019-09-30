@@ -26,7 +26,7 @@ import {
 
 import styles from "./styles"
 import { apiFetch, GET_SHELVES, GET_SHELF_INFO, MERGE_SHELVES } from "../../api"
-import { normalize_shelf_barcode, boxText } from '../../common'
+import { normalize_shelf_barcode, boxText,getShelfLayer } from '../../common'
 import { Grid, Row, Col } from "react-native-easy-grid";
 
 const INIT_STATE = {
@@ -36,7 +36,8 @@ const INIT_STATE = {
   products: [],
   high_layer: null,
   all_checked: false,
-  set_for_picking: false
+  set_for_picking: false,
+  sending:false
 }
 
 
@@ -52,11 +53,12 @@ class ShelfMerge extends Component {
     this.extra_info = this.extra_info.bind(this)
     this.toggleAll = this.toggleAll.bind(this)
     this.isLayerOne = this.isLayerOne.bind(this)
+    this.mergeOptions = this.mergeOptions.bind(this)
     this.title = '合併／移動儲位'
   }
-
+  
   valid() {
-    return this.state.source_shelf && this.state.destination_shelf && this.state.products.filter(p => p.checked).length > 0
+    return !this.state.sending && this.state.source_shelf && this.state.destination_shelf && this.state.products.filter(p => p.checked).length > 0
   }
   setSourceData(data){
     let products = data.storages.map(shelf_storage => {
@@ -122,15 +124,20 @@ class ShelfMerge extends Component {
     this.setState({ products: products, all_checked: !this.state.all_checked })
   }
 
+  mergeOptions(){
+    return {}
+  }
+
   merge() {
-    apiFetch(MERGE_SHELVES, {
+    this.setState({sending: true})
+    apiFetch(MERGE_SHELVES,Object.assign({}, this.mergeOptions(),{
       from: this.state.source_shelf,
       to: this.state.destination_shelf,
       set_for_picking: this.state.set_for_picking,
       shelf_storages: this.state.products.filter(p => p.checked).map(p => {
         return { id: p.id, pcs: p.pcs }
       })
-    }, data => {
+    }), data => {
       if (data.status == "success") {
         this.setState(INIT_STATE)
         Toast.show({
@@ -159,7 +166,7 @@ class ShelfMerge extends Component {
   }
 
   isLayerOne(shelf) {
-    return shelf && shelf[6] == "1" && !this.is_warehouse_merge
+    return shelf && getShelfLayer(shelf) == "1" && !this.is_warehouse_merge
   }
 
   render() {

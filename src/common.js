@@ -28,6 +28,11 @@ export function normalize_shelf_barcode(barcode){
 
 }
 
+export function getShelfLayer(token){
+  tokens = token.split('-').filter(e=>e)
+  return parseInt(tokens[2])
+}
+
 export function boxText(box_pcs, quantity) {
   if (box_pcs && box_pcs > 0) {
     let box_text = Math.floor(quantity / box_pcs) > 0 ? `${Math.floor(quantity / box_pcs)}箱` : ''
