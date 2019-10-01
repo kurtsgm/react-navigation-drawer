@@ -59,7 +59,7 @@ class PickingLists extends Component {
             </Col>
             <Col size={8}>
               <Text>
-                {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders_length}]`}
+                {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders_length}] ${picking_list.parent_id ? "\n(母批次: "+ picking_list.parent_id + ")" :''}`}
               </Text>
 
             </Col>
