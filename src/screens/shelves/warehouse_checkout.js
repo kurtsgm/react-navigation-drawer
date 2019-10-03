@@ -22,6 +22,7 @@ import { Keyboard } from 'react-native'
 import styles from "./styles"
 import { apiFetch, GET_SHELF_INFO ,CHECKOUT_SHELF } from "../../api"
 import { View } from 'react-native'
+import {normalize_shelf_barcode} from '../../common'
 
 
 class WarehouseCheckout extends Component {
@@ -110,7 +111,7 @@ class WarehouseCheckout extends Component {
                 this.props.navigation.navigate("BarcodeScanner", {
                   onBarcodeScanned: (barcode) => {
                     console.log(`SCAN callback ${barcode}`)
-                    this.setState({ barcode: barcode })
+                    this.setState({ barcode: normalize_shelf_barcode(barcode) })
                     this.onSearch(barcode)
                   }
                 }
