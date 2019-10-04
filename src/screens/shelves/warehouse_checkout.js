@@ -109,7 +109,6 @@ class WarehouseCheckout extends Component {
               onPress={() =>
                 this.props.navigation.navigate("BarcodeScanner", {
                   onBarcodeScanned: (barcode) => {
-                    console.log(`SCAN callback ${barcode}`)
                     this.onSearch(normalize_shelf_barcode(barcode) )
                   }
                 }
