@@ -28,7 +28,7 @@ import { store } from '../../redux/stores/store'
 
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST, ACTIVATE_PICKING } from "../../api"
-import { boxText } from '../../common'
+import { boxText,getShelfLayer,shelfSorter } from '../../common'
 
 import styles from "./styles";
 
@@ -239,8 +239,7 @@ class ShowPickingList extends Component {
       }
     }
     results = results.sort((a, b) => {
-      return parseInt(a.shelves[0].token.substring(0, 4)) - parseInt(b.shelves[0].token.substring(0, 4))
-
+      return shelfSorter(a.shelves[0].token,b.shelves[0].token)
     })
     return {
       items: results,
@@ -439,13 +438,7 @@ class ShowPickingList extends Component {
       }
 
       sectors = sectors.sort((a, b) => {
-        try {
-
-          // NORMAL SORTING
-          return parseInt(a.items[0].props.shelf.substring(0, 5).replace('-', '')) - parseInt(b.items[0].props.shelf.substring(0, 5).replace('-', ''))
-        } catch (e) {
-          return 1
-        }
+        return shelfSorter(a.items[0].props.shelf,b.items[0].props.shelf)
       })
       for (let sector of sectors) {
         for (let shortage of this.state.shortage) {
@@ -600,13 +593,13 @@ class ShowPickingList extends Component {
       }
     } else {
       list_items = this.state.shelf_items.sort((a, b) => {
-        return parseInt(a.token.substring(0, 5).replace('-', '')) - parseInt(b.token.substring(0, 5).replace('-', ''))
+        return shelfSorter(a.token,b.token)
       }).sort((a, b) => {
         // SDJ SORTING RULE
         // SORT are now stable
         let PICK_LAYER = 1
-        let layer_a = parseInt(a.token.substring(6, 7))
-        let layer_b = parseInt(b.token.substring(6, 7))
+        let layer_a = getShelfLayer(a.token)
+        let layer_b = getShelfLayer(b.token)
         return layer_a <= PICK_LAYER && layer_b != PICK_LAYER ? -1 : 0
       }).filter(item => {
         return this.state.show_picked || !item.picked
