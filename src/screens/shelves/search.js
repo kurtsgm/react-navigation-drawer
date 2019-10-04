@@ -87,8 +87,9 @@ class ShelfSearch extends Component {
               onPress={() =>
                 this.props.navigation.navigate("BarcodeScanner", {
                   onBarcodeScanned: (barcode) => {
-                    this.setState({ barcode: normalize_shelf_barcode(barcode) })
-                    this.onSearch(barcode)
+                    let _barcode = normalize_shelf_barcode(barcode)
+                    this.setState({ barcode: _barcode})
+                    this.onSearch(_barcode)
                   }
                 }
                 )

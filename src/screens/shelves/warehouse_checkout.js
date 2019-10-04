@@ -29,7 +29,6 @@ class WarehouseCheckout extends Component {
   constructor() {
     super()
     this.state = {
-      barcode: '',
       shelves: [],
     }
     this.submit = this.submit.bind(this)
@@ -111,8 +110,7 @@ class WarehouseCheckout extends Component {
                 this.props.navigation.navigate("BarcodeScanner", {
                   onBarcodeScanned: (barcode) => {
                     console.log(`SCAN callback ${barcode}`)
-                    this.setState({ barcode: normalize_shelf_barcode(barcode) })
-                    this.onSearch(barcode)
+                    this.onSearch(normalize_shelf_barcode(barcode) )
                   }
                 }
                 )
