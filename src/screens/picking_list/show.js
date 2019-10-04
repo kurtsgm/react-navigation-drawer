@@ -438,7 +438,11 @@ class ShowPickingList extends Component {
       }
 
       sectors = sectors.sort((a, b) => {
-        return shelfSorter(a.items[0].props.shelf,b.items[0].props.shelf)
+        try{
+          return shelfSorter(a.items[0].props.shelf,b.items[0].props.shelf)
+        }catch(e){
+          return 1
+        }
       })
       for (let sector of sectors) {
         for (let shortage of this.state.shortage) {
