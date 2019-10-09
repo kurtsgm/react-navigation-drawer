@@ -67,6 +67,7 @@ class WarehouseShelfMerge extends ShelfMerge {
     return <CardItem bordered>
         <Picker mode="dropdown"
           headerBackButtonText="退回"
+          style={{width: 100}}
           iosHeader="選擇來源倉"
           placeholder="請選擇來源倉"
           iosIcon={<Icon name="arrow-down" />}
