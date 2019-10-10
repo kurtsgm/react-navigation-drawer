@@ -16,6 +16,10 @@ export function normalize_shelf_barcode(barcode){
     if(tokens[0] < 100 ){
       tokens[0] = `00${tokens[0]}`.slice(-3);
     }
+    if(tokens[0] < 10 ){
+      tokens[1] = `0${tokens[1]}`.slice(-2);
+    }
+
     barcode = tokens.join('')
   }
   tokens[0] = barcode.substring(0,3)
