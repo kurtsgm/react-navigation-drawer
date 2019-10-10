@@ -9,19 +9,17 @@ export function normalize_shelf_barcode(barcode){
       barcode = barcode.replace(SDJ_SHELF_PREFIX,"")
     }
     tokens = barcode.split('-').filter(e=> {
-      return e && !isNaN(parseInt(e))
-    }).map(e=> parseInt(e))
-    // for strange character scanned (android problem)
-    // SET LEADING ZERO , Then merge to string
-    if(tokens[0] < 100 ){
-      tokens[0] = `00${tokens[0]}`.slice(-3);
+      return e
+    }).map(e=> e.replace(/\D/g,''))
+    if(tokens[0].length == 1){
+      tokens[0] = `00${tokens[0]}`
+    }else if(tokens[0].length == 2){
+      tokens[0] = `0${tokens[0]}`
     }
-    if(tokens[0] < 10 ){
-      tokens[1] = `0${tokens[1]}`.slice(-2);
-    }
-
+  
     barcode = tokens.join('')
   }
+
   tokens[0] = barcode.substring(0,3)
   tokens[1] = barcode.substring(3,5)
   tokens[2] = barcode.substring(5,6)
