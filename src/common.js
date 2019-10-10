@@ -9,8 +9,9 @@ export function normalize_shelf_barcode(barcode){
     if(barcode.includes(SDJ_SHELF_PREFIX)){
       barcode = barcode.replace(SDJ_SHELF_PREFIX,"")
     }
-    tokens = barcode.split('-').filter(e=>e)
+    tokens = barcode.split('-').filter(e=> e && !isNaN(parseInt(e)))
     // SET LEADING ZERO , Then merge to string
+    console.log(tokens)
     if(tokens[0].length == 1){
       tokens[0] = `00${tokens[0]}`
     }else if(tokens[0].length == 2){

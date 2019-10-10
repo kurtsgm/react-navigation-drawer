@@ -63,7 +63,7 @@ class WarehouseCheckout extends Component {
   onSearch(barcode) {
     if (barcode) {
       console.log(`barcode: ${barcode}`)
-      apiFetch(GET_SHELF_INFO, { token: barcode, with_warehouse: true }, data => {
+      apiFetch(GET_SHELF_INFO, { token: barcode }, data => {
         console.log(data)
         if (data) {
           let shelves = this.state.shelves
@@ -80,7 +80,7 @@ class WarehouseCheckout extends Component {
           console.log(this.state.shelves)
         } else {
           Toast.show({
-            text: "查無此儲位或已鎖定",
+            text: `查無儲位${barcode}或已鎖定`,
             buttonText: "OK"
           })
         }
