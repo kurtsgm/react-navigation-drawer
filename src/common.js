@@ -4,7 +4,6 @@ const SDJ_SHELF_PREFIX = "SDJ-1-"
 
 export function normalize_shelf_barcode(barcode){
   let tokens =[]
-  let result = barcode
   if(barcode.includes('-')){
     if(barcode.includes(SDJ_SHELF_PREFIX)){
       barcode = barcode.replace(SDJ_SHELF_PREFIX,"")
