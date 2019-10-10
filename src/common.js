@@ -9,23 +9,23 @@ export function normalize_shelf_barcode(barcode){
     if(barcode.includes(SDJ_SHELF_PREFIX)){
       barcode = barcode.replace(SDJ_SHELF_PREFIX,"")
     }
-    tokens = barcode.split('-').filter(e=> e && !isNaN(parseInt(e)))
+    tokens = barcode.split('-').filter(e=> {
+      return e && !isNaN(parseInt(e))
+    }).map(e=> parseInt(e))
+    // for strange character scanned (android problem)
     // SET LEADING ZERO , Then merge to string
-    console.log(tokens)
-    if(tokens[0].length == 1){
-      tokens[0] = `00${tokens[0]}`
-    }else if(tokens[0].length == 2){
-      tokens[0] = `0${tokens[0]}`
+    if(tokens[0] < 100 ){
+      tokens[0] = `00${tokens[0]}`.slice(-3);
     }
     barcode = tokens.join('')
   }
   tokens[0] = barcode.substring(0,3)
   tokens[1] = barcode.substring(3,5)
   tokens[2] = barcode.substring(5,6)
-  tokens[3] = barcode.substring(6,7)  
-  result = tokens.filter(t=>t).join('-').toUpperCase()
-  console.log(result)
-  return result
+  if(barcode.length>6){
+    tokens[3] = barcode.substring(6,7)
+  }
+  return tokens.filter(t=>t).join('-').toUpperCase()
 }
 
 export function getShelfLayer(token){
