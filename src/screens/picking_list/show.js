@@ -634,8 +634,7 @@ class ShowPickingList extends Component {
                 shelf_item.product_type_name,
                 shelf_item.product_expiration_date,
                 shelf_item.batch,
-                ].filter(e => e).map(info => <Text style={styles.extra_info}>{info}</Text>)
-
+                ].filter(e => e).map(info => <Text key={info} style={styles.extra_info}>{info}</Text>)
                 }
                 {
                   <Text>
