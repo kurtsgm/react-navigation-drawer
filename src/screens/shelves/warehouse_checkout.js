@@ -103,6 +103,21 @@ class WarehouseCheckout extends Component {
               <Icon name="menu" />
             </Button>
           </Left>
+          <Item>
+            <Input placeholder="Search" placeholder="請輸入或者掃描條碼"
+              keyboardType='numeric'
+              returnKeyType="done"
+              value={this.state.barcode}
+              onChangeText={(text) => this.setState({ barcode: normalize_shelf_barcode(text.toUpperCase()) })}
+              onFocus={()=>this.setState({ barcode:null})}
+              autoFocus={true}
+              onEndEditing={
+                (event) => {
+                  let barcode = normalize_shelf_barcode(event.nativeEvent.text.trim())
+                  this.onSearch(barcode)
+                }
+              } />
+          </Item>
           <Right>
             <Button
               transparent
