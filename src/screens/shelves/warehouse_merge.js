@@ -53,10 +53,11 @@ class WarehouseShelfMerge extends ShelfMerge {
   onWarehouseChange(id) {
     this.setState({
       warehouse_id: id
-    }, () => {
+    })
+    setTimeout(()=>{
       this.reloadProgress()
-    });
-
+      // workaround for blocked overlay, strange issue (IOS Picker+Overlay),maybe animation
+    },1000)
   }
   onSourceSelected(token) {
     token = token.trim()
@@ -71,8 +72,6 @@ class WarehouseShelfMerge extends ShelfMerge {
     if (token) {
       apiFetch(GET_SHELF_INFO, { token: token, warehouse_id: this.state.warehouse_id, locked: true }, data => {
         if (data) {
-          console.log("GET DATA")
-          console.log(data)
           this.setSourceData(data)
         } else {
           Toast.show({
