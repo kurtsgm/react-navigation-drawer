@@ -25,6 +25,7 @@ export const GET_HIGH_LAYER = 'GET_HIGH_LAYER'
 export const ACTIVATE_PICKING = "ACTIVATE_PICKING"
 
 export const GET_WAREHOUSES = "GET_WAREHOUSES"
+export const GET_TRANSFER_SHELVES = 'GET_TRANSFER_SHELVES'
 
 export const GET_SHOPS = "GET_SHOPS"
 export const SET_SHOPS = "SET_SHOPS"
@@ -53,7 +54,7 @@ const Actions = {
   GET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "GET"},
   SET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "POST"},
   GET_WAREHOUSES: {path:`${API_PATH}/v1/warehouses`, method: "GET"},
-
+  GET_TRANSFER_SHELVES: {path:`${API_PATH}/v1/transfer_receipts/today`, method: "GET"},
 }
 
 
@@ -101,7 +102,6 @@ export function apiFetch(action,data={},callback_function){
       return response.json();
     }
   }).then(response=>{
-    console.log(response)
     store.dispatch(AppActions.onLoadingEnd())
     callback_function(response)
   }).catch(function(error) {

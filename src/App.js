@@ -25,6 +25,7 @@ import BarcodeScanner from './screens/barcode/scanner'
 
 import ShelfSearch from './screens/shelves/search'
 import ShelfShow from './screens/shelves/show'
+import ShelfIndex from './screens/shelves/index'
 import ShelfMerge from './screens/shelves/merge'
 import ShelfProduct from './screens/shelves/product'
 import HighLayerShelf from './screens/shelves/high_layer_shelf'
@@ -78,6 +79,7 @@ const AppNavigator = createStackNavigator(
     HighLayerPickingLists: {screen: HighLayerPickingLists},
 
     ShelfShow: {screen: ShelfShow},
+    ShelfIndex: {screen: ShelfIndex},
     ShelfProduct: {screen: ShelfProduct},
 
   },

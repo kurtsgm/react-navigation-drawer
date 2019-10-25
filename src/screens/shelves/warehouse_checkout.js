@@ -44,7 +44,6 @@ class WarehouseCheckout extends Component {
     apiFetch(CHECKOUT_SHELF, { 
       shelves: this.state.shelves.map(shelf=>shelf.id)
      }, data => {
-       console.log(data)
        if(data.success){
          this.setState({shelves:[]})
          Toast.show({
@@ -62,9 +61,7 @@ class WarehouseCheckout extends Component {
 
   onSearch(barcode) {
     if (barcode) {
-      console.log(`barcode: ${barcode}`)
       apiFetch(GET_SHELF_INFO, { token: barcode }, data => {
-        console.log(data)
         if (data) {
           let shelves = this.state.shelves
           let collected_ids = this.state.shelves.map(shelf => shelf.id)
@@ -77,7 +74,6 @@ class WarehouseCheckout extends Component {
             shelves = shelves
             this.setState({ shelves: shelves })
           }
-          console.log(this.state.shelves)
         } else {
           Toast.show({
             text: `查無儲位${barcode}或已鎖定`,

@@ -17,7 +17,6 @@ const appReducer = (state = initialState, action)=>{
     case SET_SHELVES:
       return Object.assign({}, state,{shelves : action.shelves})
     case LOADING_START:
-      console.log('yoyo dispatch')
       return Object.assign({}, state,{loading: true})
     case LOADING_END:
       return Object.assign({}, state,{loading: false})
