@@ -34,7 +34,6 @@ class ProductSearch extends Component {
   onSearch(barcode) {
     if (barcode) {
       apiFetch(GET_PRODUCTS, { barcode: barcode }, data => {
-        console.log(data)
         if (data.length == 0) {
           Toast.show({
             text: "查無此商品",

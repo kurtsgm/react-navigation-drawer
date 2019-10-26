@@ -24,7 +24,6 @@ class ProductStorages extends Component {
     let rows = []
     let previous_type = null
     const { params: storages } = this.props.navigation.state;
-    console.log(storages)
     let sorted_storages = storages.sort((a,b)=>{
       return a.product_storage_type_id - b.product_storage_type_id
     })

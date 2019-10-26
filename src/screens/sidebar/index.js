@@ -125,7 +125,6 @@ class SideBar extends Component {
     }
   }
   render() {
-    console.log(this.props)
     return (
       <Container>
         <Spinner visible={this.props.loading} textContent={"資料讀取中"} textStyle={{color: '#FFF'}} />

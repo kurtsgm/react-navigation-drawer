@@ -78,7 +78,6 @@ class RecommendShelf extends Component {
   }
   render() {
     const { back } = this.props.navigation;
-    console.log(this.state)
     return (
       <Container style={styles.container}>
         <Header>

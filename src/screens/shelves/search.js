@@ -37,7 +37,6 @@ class ShelfSearch extends Component {
   onSearch(barcode){
     if (barcode) {
       apiFetch(GET_SHELF_INFO, { token: barcode }, data => {
-        console.log(data)
         if (data) {
           this.props.navigation.navigate("ShelfShow", data)
         } else {

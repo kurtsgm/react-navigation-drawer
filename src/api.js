@@ -92,8 +92,6 @@ export function apiFetch(action,data={},callback_function){
       data
     )
   }
-  console.log(url)
-  console.log(data)
   store.dispatch(AppActions.onLoadingStart())
   return fetch(url, options).then((response)=>{
     if(!response.ok){

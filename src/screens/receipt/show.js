@@ -113,7 +113,6 @@ class ShowReceipt extends Component {
     });
   }
   render() {
-    console.log(this.state)
     return (
       <Container style={styles.container}>
         <Header>
@@ -146,7 +145,6 @@ class ShowReceipt extends Component {
               autoFocus={true}
               onEndEditing={(event) => {
                 this.setState({ isModalVisible: false })
-                console.log(event.nativeEvent.text)
                 let items = this.state.items
                 for (item of items) {
                   if (item.id == this.state.currentItemId) {

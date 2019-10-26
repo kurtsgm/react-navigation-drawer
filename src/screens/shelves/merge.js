@@ -171,7 +171,6 @@ class ShelfMerge extends Component {
 
   render() {
     let high_layer = this.state.high_layer
-    console.log(this.props)
     return (
       <Container style={styles.container}>
         <Header searchBar rounded>

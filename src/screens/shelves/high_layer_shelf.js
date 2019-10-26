@@ -35,7 +35,6 @@ class HighLayerShelf extends Component {
   }
   reload() {
     apiFetch(GET_HIGH_LAYER, {shop_id: this.state.shop_id,picking_list_ids:this.state.picking_list_ids}, (_data) => {
-      console.log(_data)
       this.setState({ high_layers: _data })
     })
   }

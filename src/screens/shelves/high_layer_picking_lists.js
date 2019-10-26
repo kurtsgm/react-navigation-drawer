@@ -37,7 +37,6 @@ class HighLayerPickingLists extends Component {
   }
   reload() {
     apiFetch(GET_PICKING_LISTS, { shop_id: this.state.shop_id,ready_to_pick: true}, (_data) => {
-      console.log(_data)
       this.setState({ picking_lists: _data })
     })
   }

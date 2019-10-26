@@ -1,6 +1,7 @@
 import React from "react";
-import { createStackNavigator, createDrawerNavigator ,createAppContainer} from "react-navigation";
-
+import { createAppContainer} from "react-navigation";
+import { createDrawerNavigator } from 'react-navigation-drawer'; 
+import {createStackNavigator} from 'react-navigation-stack'
 import { Root } from "native-base";
 import Home from "./screens/home/";
 

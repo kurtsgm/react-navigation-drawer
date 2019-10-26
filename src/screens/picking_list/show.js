@@ -165,7 +165,6 @@ class ShowPickingList extends Component {
   }
 
   changeShelfItem(storage_shelf_id, quantity) {
-    console.log(quantity)
     shelf_items = this.state.shelf_items
     for (let item of shelf_items) {
       if (item.storage_shelf_id == storage_shelf_id) {

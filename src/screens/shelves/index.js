@@ -26,7 +26,6 @@ class ShelfIndex extends Component {
 
   render() {
     const { params } = this.props.navigation.state;
-    console.log(params)
     return <Container style={styles.container} >
     <Header>
       <Left>
