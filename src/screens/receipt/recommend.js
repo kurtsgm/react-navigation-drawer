@@ -37,10 +37,12 @@ class RecommendShelf extends Component {
       confirm_shelf: null,
       receipt_id: params.receipt_id,
       items: params.items.map(item => {
-        item.total_quantity = item.ready_to_receive * item.pcs_per_box
+        item.total_quantity = Math.min(item.ready_to_receive * item.pcs_per_box,item.verified_pcs-item.received_pcs)
         return item
       })
     }
+    console.log("here")
+    console.log(params.items)
     this.onShelfSelected = this.onShelfSelected.bind(this)
     this._toggleModal = this._toggleModal.bind(this)
   }
