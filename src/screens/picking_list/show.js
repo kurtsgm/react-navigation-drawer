@@ -181,7 +181,6 @@ class ShowPickingList extends Component {
         this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items.sort((a, b) => a.is_done ? 0 : -1)), {
           picking_list: _data,
           storage_orders: this.normalize_order(_data.orders),
-          auto_confirming: false,
         }))
         this.sortByShelf(_data.items)
         resolve()
