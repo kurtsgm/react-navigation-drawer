@@ -10,6 +10,11 @@ import Receipt from './screens/receipt'
 import ShowReceipt from './screens/receipt/show'
 import RecommendShelf from './screens/receipt/recommend'
 
+import ReceiptVerifyShops from './screens/receipt_verify/shops'
+import ReceiptVerifyIndex from './screens/receipt_verify/index'
+import ShowVerifyReceipt from './screens/receipt_verify/show'
+import ReceiptVerifyItem from './screens/receipt_verify/item'
+
 // PickingLists
 import PickingLists from './screens/picking_list'
 import ShowPickingList from './screens/picking_list/show'
@@ -44,6 +49,7 @@ const Drawer = createDrawerNavigator(
   {
     Home: { screen: Home },
     Receipt: {screen: Receipt},
+    ReceiptVerifyShops: {screen: ReceiptVerifyShops},
     PickingLists: {screen:PickingLists},
     ProductSearch: {screen: ProductSearch},
     ShelfSearch: {screen: ShelfSearch},
@@ -68,6 +74,9 @@ const AppNavigator = createStackNavigator(
     Drawer: { screen: Drawer },
 
     ShowReceipt: {screen: ShowReceipt},
+    ReceiptVerifyIndex: {screen: ReceiptVerifyIndex},
+    ShowVerifyReceipt: {screen: ShowVerifyReceipt},
+    ReceiptVerifyItem: {screen: ReceiptVerifyItem},
     RecommendShelf: {screen: RecommendShelf},
 
     ShowPickingList: {screen: ShowPickingList},

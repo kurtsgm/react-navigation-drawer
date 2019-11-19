@@ -8,6 +8,9 @@ import {store} from './redux/stores/store'
 
 export const API_OAUTH = "OAUTH"
 export const GET_RECEIPTS = "GET_RECEIPTS"
+export const GET_RECEIPTS_SHOPS = 'GET_RECEIPTS_SHOPS'
+export const GET_RECEIPT_ITEM = 'GET_RECEIPT_ITEM'
+
 export const RECEIVE_RECEIPT = "RECEIVE_RECEIPT"
 export const RECOMMEND_SHELF = "RECOMMEND_SHELF"
 export const GET_SHELVES = "GET_SHELVES"
@@ -37,7 +40,9 @@ const API_PATH = __DEV__ ? "/api" : ''
 const Actions = {
   OAUTH: {path: `/oauth/token`,method: "POST"},
   GET_RECEIPTS: {path: `${API_PATH}/v1/receipts`,method: "GET"},
+  GET_RECEIPTS_SHOPS: {path: `${API_PATH}/v1/receipts/shops`,method: "GET"},
   GET_RECEIPT: {path: `${API_PATH}/v1/receipts/{id}`, method: "GET"},
+  GET_RECEIPT_ITEM: {path: `${API_PATH}/v1/receipts/{receipt_id}/items/{id}`, method: "GET"},
   RECEIVE_RECEIPT: {path: `${API_PATH}/v1/receipts/{id}/receive`, method: "POST"},
   RECOMMEND_SHELF: {path: `${API_PATH}/v1/receipts/{id}/recommend`, method: "POST"},
   GET_SHELVES: {path: `${API_PATH}/v1/shelves/`, method: "GET"},

@@ -24,6 +24,13 @@ const drawerImage = require("../../../assets/logo-wms.png");
 const datas = [
   {
     // FontAwesome icons
+    name: '入倉驗收',
+    route: 'ReceiptVerifyShops',
+    icon: 'check-circle',
+    bg: "#C5F442",
+    roles: ['admin','manager','staff','parttime']
+  },
+  {
     name: '入倉作業',
     route: 'Receipt',
     icon: 'truck',
