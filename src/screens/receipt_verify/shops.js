@@ -42,7 +42,7 @@ class ReceiptVerifyShops extends Component {
   }
   render() {
     let rows = []
-    this.state.shops.forEach((shop) => {
+    for(let shop of this.state.shops) {
       rows.push(
         <ListItem key={shop.id} button onPress={() =>{
           this.props.navigation.navigate("ReceiptVerifyIndex",{shop:shop,onBack:this.onBack})
@@ -58,7 +58,7 @@ class ReceiptVerifyShops extends Component {
           </Right>
         </ListItem>)
 
-    })
+    }
 
     return (
       <Container style={styles.container}>
