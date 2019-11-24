@@ -51,7 +51,7 @@ class ShowReceipt extends Component {
   toggleAll() {
     let items = this.state.items
     for (let item of items) {
-      item.ready_to_receive = this.state.all_checked ? 0 : item.box_count - item.received_count
+      item.ready_to_receive = this.state.all_checked ? 0 : item.verified_box_count - item.received_count
     }
     this.setState({ items: items, all_checked: !this.state.all_checked })
   }
@@ -149,8 +149,8 @@ class ShowReceipt extends Component {
                 for (item of items) {
                   if (item.id == this.state.currentItemId) {
                     item.ready_to_receive = parseInt(event.nativeEvent.text)
-                    if (item.ready_to_receive > (item.box_count - item.received_count)) {
-                      item.ready_to_receive = item.box_count - item.received_count
+                    if (item.ready_to_receive > (item.verified_box_count - item.received_count)) {
+                      item.ready_to_receive = item.verified_box_count - item.received_count
                       Toast.show({
                         text: `最多可輸入${item.ready_to_receive}箱`,
                         duration: 2500,
@@ -235,11 +235,11 @@ class ShowReceipt extends Component {
                   </Col>
                   <Col size={2} style={styles.vertical_center} >
                     <Text>
-                      {data.received_count + "/" + data.box_count}
+                      {data.received_count + "/" + data.verified_box_count}
                     </Text>
                   </Col>
                   <Col size={2} style={styles.vertical_center} >
-                    {data.received_count == data.box_count ?
+                    {data.received_count == data.verified_box_count ?
                       null
                       :
                       <Button bordered light block primary onPress={() => {
