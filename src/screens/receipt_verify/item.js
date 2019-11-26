@@ -153,6 +153,40 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Left>
+                  <Text>材積</Text>
+                </Left>
+                <Right>
+                <Text>
+                  {`長：${item.box_length ? item.box_length : '(無資料)'}`}
+                </Text>
+                <Text>
+                  {`寬：${item.box_width ? item.box_width : '(無資料)'}`}
+                </Text>
+                <Text>
+                  {`高：${item.box_height ? item.box_height : '(無資料)'}`}
+                </Text>
+                <Text>
+                  {`重：${item.box_weight ? item.box_weight : '(無資料)'}`}
+                </Text>
+
+                </Right>
+              </CardItem>
+              <CardItem>
+                <Left>
+                  <Text>堆疊</Text>
+                </Left>
+                <Right>
+                <Text>
+                  {`底：${item.stack_base ? item.stack_base : '(無資料)'}`}
+                </Text>
+                <Text>
+                  {`高：${item.stack_level ? item.stack_level : '(無資料)'}`}
+                </Text>
+                </Right>
+              </CardItem>
+
+              <CardItem>
+                <Left>
                   <Text>應收</Text>
                 </Left>
                 <Right>
@@ -206,7 +240,7 @@ class ReceiptVerifyItem extends Component {
                   this.verify()
                 }
               }}>
-                <Text>確認</Text>
+                <Text>確認驗收</Text>
               </Button> : null
              }
           </View> 
