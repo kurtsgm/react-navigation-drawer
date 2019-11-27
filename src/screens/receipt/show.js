@@ -39,6 +39,7 @@ class ShowReceipt extends Component {
         return Object.assign({}, item, { ready_to_receive: 0 })
       }),
       barcode: null,
+      batch_mode: false,
       all_checked: false
     }
     this.recommend = this.recommend.bind(this)
@@ -46,6 +47,9 @@ class ShowReceipt extends Component {
     this.onReceived = this.onReceived.bind(this)
     this.item_count = this.item_count.bind(this)
     this.toggleAll = this.toggleAll.bind(this)
+  }
+  toggleMode(){
+
   }
 
   toggleAll() {
@@ -170,19 +174,6 @@ class ShowReceipt extends Component {
             <ListItem>
               <Grid>
                 <Col size={6} style={styles.vertical_center} >
-                  <Text>選擇全部</Text>
-                </Col>
-                <Col size={1} style={styles.vertical_center} >
-                  <CheckBox checked={this.state.all_checked}
-                    onPress={() => {
-                      this.toggleAll()
-                    }} />
-                </Col>
-              </Grid>
-            </ListItem>
-            <ListItem>
-              <Grid>
-                <Col size={6} style={styles.vertical_center} >
                   <Input placeholder="請輸入或者掃描條碼" autoFocus={false}
                     value={this.state.barcode}
                     returnKeyType="done"
@@ -209,6 +200,19 @@ class ShowReceipt extends Component {
                   >
                     <Icon name="camera" />
                   </Button>
+                </Col>
+              </Grid>
+            </ListItem>
+            <ListItem>
+              <Grid>
+                <Col size={6} style={styles.vertical_center} >
+                  <Text>選擇全部</Text>
+                </Col>
+                <Col size={1} style={styles.vertical_center} >
+                  <CheckBox checked={this.state.all_checked}
+                    onPress={() => {
+                      this.toggleAll()
+                    }} />
                 </Col>
               </Grid>
             </ListItem>
@@ -269,6 +273,20 @@ class ShowReceipt extends Component {
             : null
 
         }
+                <Footer>
+          <FooterTab>
+            <Button active={!this.state.batch_mode} onPress={this.toggleMode}>
+              <Text>
+                紀錄
+              </Text>
+            </Button>
+            <Button active={this.state.batch_mode} onPress={this.toggleMode}>
+              <Text>
+                訂單
+              </Text>
+            </Button>
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }
