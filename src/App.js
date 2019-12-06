@@ -9,6 +9,7 @@ import Home from "./screens/home/";
 import Receipt from './screens/receipt'
 import ShowReceipt from './screens/receipt/show'
 import RecommendShelf from './screens/receipt/recommend'
+import BatchReceipt from './screens/receipt/batch'
 
 import ReceiptVerifyShops from './screens/receipt_verify/shops'
 import ReceiptVerifyIndex from './screens/receipt_verify/index'
@@ -74,6 +75,7 @@ const AppNavigator = createStackNavigator(
     Drawer: { screen: Drawer },
 
     ShowReceipt: {screen: ShowReceipt},
+    BatchReceipt: {screen: BatchReceipt},
     ReceiptVerifyIndex: {screen: ReceiptVerifyIndex},
     ShowVerifyReceipt: {screen: ShowVerifyReceipt},
     ReceiptVerifyItem: {screen: ReceiptVerifyItem},

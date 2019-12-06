@@ -25,5 +25,8 @@ export default {
   },
   footer: {
     bottom: 0
+  },
+  text_dark_red:{
+    color: 'darkred'
   }
 };
