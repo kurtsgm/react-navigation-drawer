@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Picker } from 'react-native';
+import { View } from 'react-native';
 import {
   Container,
   Header,

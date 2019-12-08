@@ -1,7 +1,6 @@
 import React, { Component } from "react";
-// import { ScrollView } from 'react-native';
-import InputScrollView from 'react-native-input-scroll-view';
-import {normalize_shelf_barcode} from '../../common'
+import {normalize_shelf_barcode,MIN_SHELF_TOKEN_LENGTH} from '../../common'
+import { View } from 'react-native';
 import {
   Container,
   Header,
@@ -27,7 +26,7 @@ import {
 import Dialog from "react-native-dialog";
 
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { apiFetch } from "../../api"
+import { apiFetch,BATCH_SUBMIT_SHELVES } from "../../api"
 import styles from "./styles";
 
 class BatchReceipt extends Component {
@@ -48,32 +47,60 @@ class BatchReceipt extends Component {
       remain -= pcs
     }
     this.state = {
-      shelves:shelves
+      shelves:shelves,
+      isModalVisible: false
     }
     this.checkValid = this.checkValid.bind(this)
+    this.checkUniqueness = this.checkUniqueness.bind(this)
+    this.submitShelf = this.submitShelf.bind(this)
+  }
+  
+  submitShelf(){
+    let { item } = this.props.navigation.state.params
+    return new Promise((resolve, reject) => {
+      apiFetch(BATCH_SUBMIT_SHELVES, {
+        receipt_id: item.receipt_id,
+        id: item.id,
+        shelves: this.state.shelves.map(s=>{
+          return {token: s.token,pcs: s.pcs,boxes: s.boxes}
+        })
+      }, (data) => {
+        if(data.success){
+          resolve()
+        }else{
+          Toast.show({
+            text: data.message,
+            duration: 2500,
+            type: 'danger',
+            textStyle: { textAlign: "center" },
+          })
+          reject()
+        }
+      })
+    })
   }
 
-  checkValid(){
+  checkUniqueness(){
     let tokens = this.state.shelves.filter(s=> s.token).map(shelf=>shelf.token)
     if(new Set(tokens).size !== tokens.length ){
-      Toast.show({
-        text: '錯誤，儲位重複',
-        duration: 2500,
-        type: 'danger',
-        textStyle: { textAlign: "center" },
-      })
       return false
     }
-    
+    return true
+  }
+  checkValid(){
+    if(!this.checkUniqueness()){
+      return false
+    }
     for(let shelf of this.state.shelves){
-      if(!shelf.token || shelf.token.length < 6){
+      if(!shelf.token || shelf.token.length < MIN_SHELF_TOKEN_LENGTH){
         return false
       }
     }
-
+    return true
   }
   render() {
     let { item } = this.props.navigation.state.params
+    console.log(item)
     return <Container style={styles.container}>
       <Header>
         <Left>
@@ -93,8 +120,20 @@ class BatchReceipt extends Component {
         </Body>
         <Right></Right>
       </Header>
-      <InputScrollView>
-        {/* <Card style={styles.mb}>
+      <Dialog.Container visible={this.state.isModalVisible}>
+            <Dialog.Title>確認批次上架</Dialog.Title>            
+            <Dialog.Button label="確認" onPress={() => this.submitShelf().then(()=>{
+              this.setState({ isModalVisible: false })
+              this.props.navigation.state.params.onBack()
+              this.props.navigation.goBack()
+             },()=>{
+              this.setState({ isModalVisible: false })
+             })} />
+            <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+          </Dialog.Container>
+
+      <Content disableKBDismissScroll={true}>
+        {<Card style={styles.mb}>
           <CardItem>
             <Left>
               <Text>品名</Text>
@@ -151,7 +190,7 @@ class BatchReceipt extends Component {
               <Text>{item.stack_base} X {item.stack_level} </Text>
             </Right>
           </CardItem>
-        </Card> */}
+        </Card> }
         <List>
           <ListItem itemDivider key='header'>
             <Grid>
@@ -198,7 +237,14 @@ class BatchReceipt extends Component {
                     }
                   }
                   this.setState({shelves:shelves})
-                  this.checkValid()
+                  if(!this.checkUniqueness()){
+                    Toast.show({
+                      text: '錯誤，儲位重複',
+                      duration: 2500,
+                      type: 'danger',
+                      textStyle: { textAlign: "center" },
+                    })
+                  }
                 }
               } />
                 </Col>
@@ -206,11 +252,21 @@ class BatchReceipt extends Component {
             </ListItem>
 
             })
-          }
-
-          
+          } 
         </List>
-      </InputScrollView>
+      </Content>    
+      {
+          this.checkValid() ?
+            <View style={styles.footer}>
+              <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
+                this.setState({ isModalVisible: true })
+              }}>
+                <Text>上架</Text>
+              </Button>
+            </View>
+            : null
+
+        }          
     </Container>
   }
 }

@@ -121,13 +121,15 @@ class ShowReceipt extends Component {
           let valid_stack = false
           if (item.stack_base && item.stack_level) {
             valid_stack = true
-            stack_count = Math.ceil((item.verified_pcs-item.received_pcs) / (item.pcs_per_box * item.stack_base * item.stack_level))
+            stack_count = Math.ceil((item.verified_pcs - item.received_pcs) / (item.pcs_per_box * item.stack_base * item.stack_level))
           }
           return <ListItem key={item.id} onPress={() => valid_stack ?
-            this.props.navigation.navigate("BatchReceipt", { onBack: this.reload,item: item }) : null}>
+            this.props.navigation.navigate("BatchReceipt", { onBack: this.reload, item: item }) : null}>
             <Grid>
               <Col size={5} style={styles.vertical_center} >
                 <Row>
+                  {item.verified_pcs == item.received_pcs ?
+                    <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null}
                   <Text style={styles.storage_title} >
                     {item.product_name + " " + item.storage_type_name + " [" + item.pcs_per_box + "入]"}
                   </Text>
