@@ -26,7 +26,7 @@ import {
 import Dialog from "react-native-dialog";
 
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { apiFetch,BATCH_SUBMIT_SHELVES } from "../../api"
+import { apiFetch,BATCH_SUBMIT_SHELVES,GET_RECEIPT_ITEM } from "../../api"
 import styles from "./styles";
 
 class BatchReceipt extends Component {
@@ -47,14 +47,21 @@ class BatchReceipt extends Component {
       remain -= pcs
     }
     this.state = {
+      item: item,
       shelves:shelves,
       isModalVisible: false
     }
     this.checkValid = this.checkValid.bind(this)
     this.checkUniqueness = this.checkUniqueness.bind(this)
     this.submitShelf = this.submitShelf.bind(this)
+    this.reload = this.reload.bind(this)
   }
-  
+  reload(){
+    let { item } = this.props.navigation.state.params
+    apiFetch(GET_RECEIPT_ITEM, { receipt_id: item.receipt_id,id: item.id}, (_data) => {
+      this.setState({ item: _data })
+    })    
+  }
   submitShelf(){
     let { item } = this.props.navigation.state.params
     return new Promise((resolve, reject) => {
@@ -100,7 +107,6 @@ class BatchReceipt extends Component {
   }
   render() {
     let { item } = this.props.navigation.state.params
-    console.log(item)
     return <Container style={styles.container}>
       <Header>
         <Left>
@@ -118,7 +124,12 @@ class BatchReceipt extends Component {
         <Body>
           <Title>批次入庫</Title>
         </Body>
-        <Right></Right>
+        <Right>
+            <Button transparent>
+              <Icon name="refresh" onPress={() => this.reload()} />
+            </Button>
+          </Right>
+
       </Header>
       <Dialog.Container visible={this.state.isModalVisible}>
             <Dialog.Title>確認批次上架</Dialog.Title>            
@@ -127,8 +138,9 @@ class BatchReceipt extends Component {
               this.props.navigation.state.params.onBack()
               this.props.navigation.goBack()
              },()=>{
-              this.setState({ isModalVisible: false })
-             })} />
+               this.setState({ isModalVisible: false })
+               this.reload()
+              })} />
             <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
           </Dialog.Container>
 

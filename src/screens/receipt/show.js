@@ -239,11 +239,11 @@ class ShowReceipt extends Component {
               </Col>
               <Col size={2} style={styles.vertical_center} >
                 <Text>
-                  {data.received_count + "/" + data.box_count}
+                  {data.received_count + "/" + data.verified_box_count}
                 </Text>
               </Col>
               <Col size={2} style={styles.vertical_center} >
-                {data.received_count == data.box_count ?
+                {data.received_count == data.verified_box_count ?
                   null
                   :
                   <Button bordered light block primary onPress={() => {
