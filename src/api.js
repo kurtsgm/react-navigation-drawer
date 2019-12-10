@@ -8,8 +8,15 @@ import {store} from './redux/stores/store'
 
 export const API_OAUTH = "OAUTH"
 export const GET_RECEIPTS = "GET_RECEIPTS"
+export const GET_RECEIPTS_SHOPS = 'GET_RECEIPTS_SHOPS'
+export const GET_RECEIPT_ITEM = 'GET_RECEIPT_ITEM'
+export const VERIFY_RECEIPT_ITEM = 'VERIFY_RECEIPT_ITEM'
+
+
 export const RECEIVE_RECEIPT = "RECEIVE_RECEIPT"
 export const RECOMMEND_SHELF = "RECOMMEND_SHELF"
+export const BATCH_SUBMIT_SHELVES = "BATCH_SUBMIT_SHELVES"
+
 export const GET_SHELVES = "GET_SHELVES"
 export const GET_RECEIPT = "GET_RECEIPT"
 export const GET_PRODUCTS = "GET_PRODUCTS"
@@ -37,9 +44,13 @@ const API_PATH = __DEV__ ? "/api" : ''
 const Actions = {
   OAUTH: {path: `/oauth/token`,method: "POST"},
   GET_RECEIPTS: {path: `${API_PATH}/v1/receipts`,method: "GET"},
+  GET_RECEIPTS_SHOPS: {path: `${API_PATH}/v1/receipts/shops`,method: "GET"},
   GET_RECEIPT: {path: `${API_PATH}/v1/receipts/{id}`, method: "GET"},
+  GET_RECEIPT_ITEM: {path: `${API_PATH}/v1/receipts/{receipt_id}/items/{id}`, method: "GET"},
+  VERIFY_RECEIPT_ITEM: {path: `${API_PATH}/v1/receipts/{receipt_id}/items/{id}`, method: "POST"},
   RECEIVE_RECEIPT: {path: `${API_PATH}/v1/receipts/{id}/receive`, method: "POST"},
   RECOMMEND_SHELF: {path: `${API_PATH}/v1/receipts/{id}/recommend`, method: "POST"},
+  BATCH_SUBMIT_SHELVES: {path: `${API_PATH}/v1/receipts/{receipt_id}/items/{id}/shelves`, method: "POST"},
   GET_SHELVES: {path: `${API_PATH}/v1/shelves/`, method: "GET"},
   GET_PRODUCTS: {path: `${API_PATH}/v1/products/{barcode}`, method: "GET"},
   GET_SHELF_INFO: {path: `${API_PATH}/v1/shelves/{token}`, method: "GET"},

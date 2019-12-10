@@ -1,6 +1,7 @@
 
 
 const SDJ_SHELF_PREFIX = "SDJ-1-"
+export const MIN_SHELF_TOKEN_LENGTH = 8
 
 export function normalize_shelf_barcode(barcode){
   let tokens =[]
