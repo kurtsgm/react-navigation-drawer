@@ -172,7 +172,7 @@ class ReceiptVerifyItem extends Component {
                 <Right>
                   <Item success >
                     <Input textAlign={'right'}
-                      value={this.state.batch}
+                      value={`${this.state.batch ? this.state.batch : ''}`}
                       onChangeText={
                         (text) => {
                           this.setState({ batch: text })
@@ -192,7 +192,7 @@ class ReceiptVerifyItem extends Component {
                   <Item inlineLabel>
                     <Label>長：</Label>
                     <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.box_length}`}
+                      value={`${this.state.box_length ? this.state.box_length : ''}`}
                       onChangeText={
                         (text) => {
                           this.setState({ box_length: text })
@@ -204,7 +204,7 @@ class ReceiptVerifyItem extends Component {
                   <Item inlineLabel>
                     <Label>寬：</Label>
                     <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.box_width}`}
+                      value={`${this.state.box_width ? this.state.box_width : ''}`}
                       onChangeText={
                         (text) => {
                           this.setState({ box_width: text })
@@ -216,7 +216,7 @@ class ReceiptVerifyItem extends Component {
                   <Item inlineLabel>
                     <Label>高：</Label>
                     <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.box_height}`}
+                      value={`${this.state.box_height ? this.state.box_height : ''}`}
                       onChangeText={
                         (text) => {
                           this.setState({ box_height: text })
@@ -228,7 +228,7 @@ class ReceiptVerifyItem extends Component {
                   <Item inlineLabel>
                     <Label>重：</Label>
                     <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.box_weight}`}
+                      value={`${this.state.box_weight ? this.state.box_weight : ''}`}
                       onChangeText={
                         (text) => {
                           this.setState({ box_weight: text })
@@ -247,7 +247,7 @@ class ReceiptVerifyItem extends Component {
                   <Item inlineLabel>
                     <Label>底：</Label>
                     <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.stack_base}`}
+                      value={`${this.state.stack_base ? this.state.stack_base : ''}`}
                       onChangeText={
                         (text) => {
                           this.setState({ stack_base: text })
@@ -259,7 +259,7 @@ class ReceiptVerifyItem extends Component {
                   <Item inlineLabel>
                     <Label>高：</Label>
                     <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.stack_level}`}
+                      value={`${this.state.stack_level ? this.state.stack_level : ''}`}
                       onChangeText={
                         (text) => {
                           this.setState({ stack_level: text })
