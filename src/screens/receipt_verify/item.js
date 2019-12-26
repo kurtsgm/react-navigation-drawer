@@ -23,7 +23,7 @@ import styles from "./styles";
 
 import * as AppActions from '../../redux/actions/AppAction'
 import { apiFetch, GET_RECEIPT_ITEM, VERIFY_RECEIPT_ITEM } from "../../api"
-import {normalize_date} from '../../common'
+import { normalize_date } from '../../common'
 
 
 class ReceiptVerifyItem extends Component {
@@ -47,8 +47,9 @@ class ReceiptVerifyItem extends Component {
   }
   verify() {
     const { item_id, receipt_id } = this.props.navigation.state.params;
-    apiFetch(VERIFY_RECEIPT_ITEM, { receipt_id: receipt_id, 
-      id: item_id, 
+    apiFetch(VERIFY_RECEIPT_ITEM, {
+      receipt_id: receipt_id,
+      id: item_id,
       pcs: this.state.verified_pcs,
       batch: this.state.batch,
       expiration_date: this.state.expiration_date,
@@ -58,7 +59,8 @@ class ReceiptVerifyItem extends Component {
       box_width: this.state.box_width,
       stack_base: this.state.stack_base,
       stack_level: this.state.stack_level,
-      product_barcode: this.state.product_barcode
+      product_barcode: this.state.product_barcode,
+      product_default_pcs: this.state.product_default_pcs
     }, (_data) => {
       this.props.navigation.state.params.onBack()
       this.props.navigation.goBack()
@@ -95,7 +97,7 @@ class ReceiptVerifyItem extends Component {
         </Header>
 
         <Content padder>
-          { this.state.id ? 
+          {this.state.id ?
             <Card style={styles.mb}>
               <CardItem>
                 <Left>
@@ -123,19 +125,6 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Left>
-                  <Text>箱入</Text>
-                </Left>
-                <Right>
-                  <Text>
-                    {
-                      this.state.pcs_per_box
-                    }
-                  </Text>
-                </Right>
-              </CardItem>
-
-              <CardItem>
-                <Left>
                   <Text>倉別</Text>
                 </Left>
                 <Right>
@@ -144,6 +133,26 @@ class ReceiptVerifyItem extends Component {
                       `${this.state.storage_type}   ${this.state.storage_type_name}`
                     }
                   </Text>
+                </Right>
+              </CardItem>
+              <CardItem>
+                <Left>
+                  <Text>標準箱入數</Text>
+                </Left>
+                <Right>
+                  <Item success >
+                    <Input keyboardType='numeric' textAlign={'right'}
+                      value={`${this.state.product_default_pcs ? this.state.product_default_pcs : ''}`}
+                      onChangeText={
+                        (text) => {
+                          this.setState({ product_default_pcs: text })
+                        }
+                      }
+                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                      returnKeyType="done" />
+                  </Item>
+
+
                 </Right>
               </CardItem>
               <CardItem>
@@ -172,7 +181,7 @@ class ReceiptVerifyItem extends Component {
                         )
                       }
                     >
-                    <Icon name="camera" />
+                      <Icon name="camera" />
                     </Button>
                   </Item>
                 </Right>
@@ -183,7 +192,7 @@ class ReceiptVerifyItem extends Component {
                 </Left>
                 <Right>
                   <Item success >
-                    <Input textAlign={'right'} keyboardType='numeric' 
+                    <Input textAlign={'right'} keyboardType='numeric'
                       value={`${this.state.expiration_date ? this.state.expiration_date : ''}`}
                       onChangeText={
                         (text) => {
@@ -191,13 +200,13 @@ class ReceiptVerifyItem extends Component {
                         }
                       }
                       onEndEditing={(event) => {
-                          if(this.state.expiration_date && this.state.expiration_date.length < 10 ){
-                            this.setState({ expiration_date: null }) 
-                          }else{
-                            this.setState({ dirty: true }) 
-                          }
-                        }}
-                      returnKeyType="done" />                   
+                        if (this.state.expiration_date && this.state.expiration_date.length < 10) {
+                          this.setState({ expiration_date: null })
+                        } else {
+                          this.setState({ dirty: true })
+                        }
+                      }}
+                      returnKeyType="done" />
                   </Item>
                 </Right>
               </CardItem>
@@ -217,7 +226,6 @@ class ReceiptVerifyItem extends Component {
                       onEndEditing={(event) => { this.setState({ dirty: true }) }}
                       returnKeyType="done" />
                   </Item>
-
                 </Right>
               </CardItem>
               <CardItem>
