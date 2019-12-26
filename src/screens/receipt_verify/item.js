@@ -23,7 +23,7 @@ import styles from "./styles";
 
 import * as AppActions from '../../redux/actions/AppAction'
 import { apiFetch, GET_RECEIPT_ITEM, VERIFY_RECEIPT_ITEM } from "../../api"
-
+import {normalize_date} from '../../common'
 
 
 class ReceiptVerifyItem extends Component {
@@ -57,7 +57,8 @@ class ReceiptVerifyItem extends Component {
       box_weight: this.state.box_weight,
       box_width: this.state.box_width,
       stack_base: this.state.stack_base,
-      stack_level: this.state.stack_level
+      stack_level: this.state.stack_level,
+      product_barcode: this.state.product_barcode
     }, (_data) => {
       this.props.navigation.state.params.onBack()
       this.props.navigation.goBack()
@@ -122,16 +123,17 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Left>
-                  <Text>條碼</Text>
+                  <Text>箱入</Text>
                 </Left>
                 <Right>
                   <Text>
                     {
-                      this.state.product_barcode
+                      this.state.pcs_per_box
                     }
                   </Text>
                 </Right>
               </CardItem>
+
               <CardItem>
                 <Left>
                   <Text>倉別</Text>
@@ -144,27 +146,61 @@ class ReceiptVerifyItem extends Component {
                   </Text>
                 </Right>
               </CardItem>
-              {
-                this.state.expiration_date ? 
-                <CardItem>
+              <CardItem>
+                <Left>
+                  <Text>條碼</Text>
+                </Left>
+                <Right>
+                  <Item success >
+                    <Input textAlign={'right'}
+                      value={`${this.state.product_barcode ? this.state.product_barcode : ''}`}
+                      onChangeText={
+                        (text) => {
+                          this.setState({ product_barcode: text })
+                        }
+                      }
+                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                      returnKeyType="done" />
+                    <Button
+                      transparent
+                      onPress={() =>
+                        this.props.navigation.navigate("BarcodeScanner", {
+                          onBarcodeScanned: (barcode) => {
+                            this.setState({ product_barcode: barcode })
+                          }
+                        }
+                        )
+                      }
+                    >
+                    <Icon name="camera" />
+                    </Button>
+                  </Item>
+                </Right>
+              </CardItem>
+              <CardItem>
                 <Left>
                   <Text>效期</Text>
                 </Left>
                 <Right>
                   <Item success >
-                    <DatePicker textAlign={'right'}
-                      defaultDate={new Date(this.state.expiration_date) }
-                      onDateChange={
-                        (date) => {
-                          this.setState({ expiration_date: date ,dirty:true})
+                    <Input textAlign={'right'} keyboardType='numeric' 
+                      value={`${this.state.expiration_date ? this.state.expiration_date : ''}`}
+                      onChangeText={
+                        (text) => {
+                          this.setState({ expiration_date: normalize_date(text) })
                         }
                       }
-                    />
+                      onEndEditing={(event) => {
+                          if(this.state.expiration_date && this.state.expiration_date.length < 10 ){
+                            this.setState({ expiration_date: null }) 
+                          }else{
+                            this.setState({ dirty: true }) 
+                          }
+                        }}
+                      returnKeyType="done" />                   
                   </Item>
                 </Right>
-              </CardItem> : null
-              }
-
+              </CardItem>
               <CardItem>
                 <Left>
                   <Text>批號</Text>

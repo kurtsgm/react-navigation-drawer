@@ -3,6 +3,29 @@
 const SDJ_SHELF_PREFIX = "SDJ-1-"
 export const MIN_SHELF_TOKEN_LENGTH = 8
 
+export function normalize_date(text){
+  let tokens =[]
+
+  if(text.includes('-')){
+    tokens = text.split('-').filter(e=> {
+      return e
+    }).map(e=> e.replace(/\D/g,''))  
+    text = tokens.join('')
+  }
+
+  tokens[0] = text.substring(0,4)
+  tokens[1] = text.substring(4,6)
+  if(parseInt(tokens[1]) > 12 || (parseInt(tokens[1]) < 1 && tokens[1].length > 1)){
+    tokens[1] = ''
+  }
+  tokens[2] = text.substring(6,8)
+  if(parseInt(tokens[2]) > 31 || (parseInt(tokens[2]) < 1 && tokens[2].length > 1 ) ){
+    tokens[2] = ''
+  }
+  return tokens.filter(t=>t).join('-').toUpperCase()
+}
+
+
 export function normalize_shelf_barcode(barcode){
   let tokens =[]
   if(barcode.includes('-')){
