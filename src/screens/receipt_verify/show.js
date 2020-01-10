@@ -11,7 +11,9 @@ import {
   Body,
   Right,
   List,
-  ListItem
+  ListItem,
+  Item,
+  Input
 } from "native-base";
 import styles from "./styles";
 
@@ -23,7 +25,8 @@ class ShowVerifyReceipt extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      items: []
+      items: [],
+      barcode: null
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
@@ -45,12 +48,15 @@ class ShowVerifyReceipt extends Component {
   render() {
     let rows = []
     const { receipt } = this.props.navigation.state.params;
-    this.state.items.forEach((item) => {
-      console.log('item')
-      console.log(item)
+    this.state.items.filter(item=>{
+      if(this.state.barcode){
+        return item.product_uid.toUpperCase().includes(this.state.barcode) || (item.product_barcode &&item.product_barcode.toUpperCase().includes(this.state.barcode))
+      }
+      return true
+    }).forEach((item) => {
       rows.push(
         <ListItem key={item.id} button onPress={() => {
-          this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: receipt.id,item_id: item.id, onBack: this.onBack })
+          this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: receipt.id, item_id: item.id, onBack: this.onBack })
         }
         }>
           <Left>
@@ -58,13 +64,13 @@ class ShowVerifyReceipt extends Component {
               <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null}
             {item.verified_pcs ?
               <Text>
-                {`${[item.product_name,item.storage_type_name].filter(e=>e).join(" ")} [${item.pcs_per_box}入]`}
+                {`${[item.product_name, item.storage_type_name].filter(e => e).join(" ")} [${item.pcs_per_box}入]`}
                 {item.expiration_date ? item.expiration_date : ''}
                 {`\n應收:${item.scheduled_pcs} 實收:${item.verified_pcs} `}
               </Text>
               :
               <Text>
-                {`${[item.product_name,item.storage_type_name].filter(e=>e).join(" ")} [${item.pcs_per_box}入]`}
+                {`${[item.product_name, item.storage_type_name].filter(e => e).join(" ")} [${item.pcs_per_box}入]`}
                 {item.expiration_date ? item.expiration_date : ''}
                 {`\n應收:${item.scheduled_pcs}`}
               </Text>
@@ -102,11 +108,38 @@ class ShowVerifyReceipt extends Component {
             </Button>
           </Right>
         </Header>
-
         <Content>
           {
             this.state.items.length > 0 ?
               <List>
+                <ListItem>
+                  <Input placeholder="Search" placeholder="請輸入或者掃描條碼" autoFocus={true}
+                    value={this.state.barcode}
+                    onFocus={() => this.setState({ barcode: null })}
+                    onChangeText={(text) => this.setState({ barcode: text.toUpperCase() })}
+                    onEndEditing={
+                      (event) => {
+                        let barcode = event.nativeEvent.text.trim()
+                      }
+                    } />
+                  <Right>
+                    <Button
+                      transparent
+                      onPress={() =>
+                        this.props.navigation.navigate("BarcodeScanner", {
+                          onBarcodeScanned: (barcode) => {
+                            this.setState({ barcode: barcode })
+                          }
+                        }
+                        )
+                      }
+                    >
+                      <Icon name="camera" />
+                    </Button>
+                  </Right>
+                </ListItem>
+
+
                 {rows}
               </List> : null
           }
