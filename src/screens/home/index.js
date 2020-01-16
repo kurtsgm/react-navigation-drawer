@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { ImageBackground, View, StatusBar } from "react-native";
 import { H1, Container, Button, H3, Text, Form, Item, Label, Input, Content, Footer, Right } from "native-base";
 import styles from "./styles";
+import "react-native-gesture-handler";
 
 import * as AppActions from '../../redux/actions/AppAction'
 import { apiFetch, API_OAUTH } from "../../api"
