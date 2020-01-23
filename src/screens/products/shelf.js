@@ -15,6 +15,7 @@ import {
   ListItem
 } from "native-base";
 import styles from "./styles";
+import { shelfSorter } from '../../common'
 
 class ProductShelf extends Component {
   constructor(props) {
@@ -22,7 +23,9 @@ class ProductShelf extends Component {
   }
   render() {
     const { params: shelve_storages } = this.props.navigation.state;
-    let rows = shelve_storages.map((shelve_storage,index)=>{
+    let rows = shelve_storages.sort((a, b) => {
+      return shelfSorter(a.shelves[0].token,b.shelves[0].token)
+    }).map((shelve_storage,index)=>{
       return <ListItem key={index}>
         <Left>
           <Text>
