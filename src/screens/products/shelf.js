@@ -24,7 +24,7 @@ class ProductShelf extends Component {
   render() {
     const { params: shelve_storages } = this.props.navigation.state;
     let rows = shelve_storages.sort((a, b) => {
-      return shelfSorter(a.shelves[0].token,b.shelves[0].token)
+      return shelfSorter(a.shelf.token.token,b.shelf.token)
     }).map((shelve_storage,index)=>{
       return <ListItem key={index}>
         <Left>
