@@ -26,7 +26,7 @@ class ProductShelf extends Component {
     let rows = shelve_storages.sort((a, b) => {
       return a.shelf.token.localeCompare(b.shelf.token)
     }).map((shelve_storage,index)=>{
-      return <ListItem key={index}>
+      return <ListItem key={`${index}${shelve_storage.shelf.token}`}>
         <Left>
           <Text>
             {shelve_storage.shelf.token}

@@ -27,10 +27,10 @@ class ProductStorages extends Component {
     let sorted_storages = storages.sort((a,b)=>{
       return a.product_storage_type_id - b.product_storage_type_id
     })
-    sorted_storages.forEach(storage => {
+    sorted_storages.filter(s=>s.pcs != 0).forEach(storage => {
       let storage_title = "無批號"
       if (previous_type != storage.product_storage_type_id) {
-        rows.push(<ListItem itemDivider key={storage.product_storage_type_id}>
+        rows.push(<ListItem itemDivider key={`divider-${storage.product_storage_type_id}`}>
           <Text>{storage.storage_type_name}</Text>
         </ListItem>)
         previous_type = storage.product_storage_type_id
@@ -38,7 +38,6 @@ class ProductStorages extends Component {
       if(storage.batch || storage.expiration_date){
         storage_title= [storage.batch,storage.expiration_date].filter(e=>e).join("/")
       }
-
       rows.push(<ListItem key={storage.id} button onPress={() =>
         this.props.navigation.navigate("ProductShelf",storage.shelf_storages)}>
         <Left>
