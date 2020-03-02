@@ -25,8 +25,12 @@ import { Grid, Col, Row } from "react-native-easy-grid";
 class PickingLists extends Component {
   constructor(props) {
     super(props)
+    const { params } = this.props.navigation.state;
+    console.log(params)
     this.state = {
-      picking_lists: []
+      picking_lists: [],
+      shop_id: params.shop_id,
+      shop_name: params.shop_name
     }
     this.reload = this.reload.bind(this)
   }
@@ -34,7 +38,7 @@ class PickingLists extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(GET_PICKING_LISTS, {}, (_data) => {
+    apiFetch(GET_PICKING_LISTS, { shop_id: this.state.shop_id }, (_data) => {
       this.setState({ picking_lists: _data })
     })
   }
@@ -45,9 +49,8 @@ class PickingLists extends Component {
       picking_list.onBack = () => { this.reload() }
       return <ListItem key={picking_list.id} button onPress={() =>
         this.props.navigation.navigate("ShowPickingList", picking_list)}>
-        <Left>
           <Row>
-            <Col size={1}>
+            <Left>
               {
                 picking_list.status == "done" ?
                   <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null
@@ -56,24 +59,20 @@ class PickingLists extends Component {
                 picking_list.status == "processing" ?
                   <Icon name="flash" style={{ color: "orange" }} /> : null
               }
-            </Col>
-            <Col size={8}>
               <Text>
-                {`${picking_list.shop_name} ${picking_list.id} [${picking_list.orders_length}] ${picking_list.parent_id ? "\n(母批次: "+ picking_list.parent_id + ")" :''}`}
+                {`${picking_list.id} [${picking_list.orders_length}] ${picking_list.parent_id ? "\n(母批次: " + picking_list.parent_id + ")" : ''}`}
               </Text>
+            </Left>
+            <Body>
+              <Text>
+                {picking_list.created_date}
+              </Text>
+            </Body>
+            <Right>
+              <Icon name="arrow-forward" style={{ color: "#999" }} />
 
-            </Col>
+            </Right>
           </Row>
-
-        </Left>
-        <Body>
-          <Text>
-            {picking_list.created_date}
-          </Text>
-        </Body>
-        <Right>
-          <Icon name="arrow-forward" style={{ color: "#999" }} />
-        </Right>
       </ListItem>
     })
 
@@ -84,13 +83,18 @@ class PickingLists extends Component {
           <Left>
             <Button
               transparent
-              onPress={() => this.props.navigation.openDrawer()}
+              onPress={() => {
+                this.props.navigation.state.params.onBack()
+                this.props.navigation.goBack()
+              }
+            }
             >
-              <Icon name="menu" />
+              <Icon name="arrow-back" />
             </Button>
           </Left>
+
           <Body>
-            <Title>揀貨作業</Title>
+            <Title>{`揀貨-${this.state.shop_name}`}</Title>
           </Body>
           <Right>
             <Button transparent>

@@ -32,14 +32,14 @@ const datas = [
   },
   {
     name: '入倉作業',
-    route: 'Receipt',
+    route: 'ReceiptShops',
     icon: 'truck',
     bg: "#C5F442",
     roles: ['admin','manager','staff','parttime']
   },
   {
     name: '揀貨作業',
-    route: 'PickingLists',
+    route: 'PickingListShops',
     icon: 'clipboard',
     bg: "#C5F442",
     roles: ['admin','manager','staff','parttime']
@@ -91,7 +91,7 @@ const datas = [
   },
 
   { 
-    name: '設定',
+    name: '關聯客戶',
     route: 'SettingShops',
     icon: 'cog',
     bg: "#C5F442",

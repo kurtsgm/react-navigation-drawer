@@ -25,7 +25,8 @@ class Receipt extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      receipts: []
+      receipts: [],
+      shop: this.props.navigation.state.params.shop
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
@@ -35,7 +36,7 @@ class Receipt extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(GET_RECEIPTS,{},(_data) => {
+    apiFetch(GET_RECEIPTS,{shop_id:this.state.shop.id},(_data) => {
       this.setState({ receipts: _data })
     })
   }
@@ -76,7 +77,7 @@ class Receipt extends Component {
           onBack:this.onBack})}>
           <Left>
             <Text>
-              {receipt.shop_name + " " + receipt.title}
+              {receipt.title}
             </Text>
           </Left>
           <Right>
@@ -93,13 +94,17 @@ class Receipt extends Component {
           <Left>
             <Button
               transparent
-              onPress={() => this.props.navigation.openDrawer()}
+              onPress={() => {
+                this.props.navigation.state.params.onBack()
+                this.props.navigation.goBack()
+              }
+              }
             >
-              <Icon name="menu" />
+              <Icon name="arrow-back" />
             </Button>
           </Left>
           <Body>
-            <Title>入倉作業</Title>
+            <Title>{`入倉-${this.state.shop.name}`}</Title>
           </Body>
           <Right>
             <Button transparent>

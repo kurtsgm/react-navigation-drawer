@@ -6,6 +6,7 @@ import { Root } from "native-base";
 import Home from "./screens/home/";
 
 // Receipts and Shelves
+import ReceiptShops from './screens/receipt/shops'
 import Receipt from './screens/receipt'
 import ShowReceipt from './screens/receipt/show'
 import RecommendShelf from './screens/receipt/recommend'
@@ -18,6 +19,7 @@ import ReceiptVerifyItem from './screens/receipt_verify/item'
 
 // PickingLists
 import PickingLists from './screens/picking_list'
+import PickingListShops from './screens/picking_list/shops'
 import ShowPickingList from './screens/picking_list/show'
 
 
@@ -49,9 +51,9 @@ import SideBar from "./screens/sidebar";
 const Drawer = createDrawerNavigator(
   {
     Home: { screen: Home },
-    Receipt: {screen: Receipt},
+    ReceiptShops: {screen:ReceiptShops},
     ReceiptVerifyShops: {screen: ReceiptVerifyShops},
-    PickingLists: {screen:PickingLists},
+    PickingListShops: {screen: PickingListShops},
     ProductSearch: {screen: ProductSearch},
     ShelfSearch: {screen: ShelfSearch},
     ShelfMerge: {screen: ShelfMerge},
@@ -74,6 +76,7 @@ const AppNavigator = createStackNavigator(
   {
     Drawer: { screen: Drawer },
 
+    Receipt: {screen: Receipt},
     ShowReceipt: {screen: ShowReceipt},
     BatchReceipt: {screen: BatchReceipt},
     ReceiptVerifyIndex: {screen: ReceiptVerifyIndex},
@@ -81,7 +84,9 @@ const AppNavigator = createStackNavigator(
     ReceiptVerifyItem: {screen: ReceiptVerifyItem},
     RecommendShelf: {screen: RecommendShelf},
 
+    PickingLists: {screen: PickingLists},
     ShowPickingList: {screen: ShowPickingList},
+
     BarcodeScanner: {screen: BarcodeScanner},
 
     ProductStorages: {screen: ProductStorages},

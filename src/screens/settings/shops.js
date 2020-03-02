@@ -14,7 +14,8 @@ import {
   List,
   ListItem,
   CheckBox,
-  Toast
+  Toast,
+  Input
 } from "native-base";
 import { View } from 'react-native';
 import { Grid, Row, Col } from "react-native-easy-grid";
@@ -31,7 +32,8 @@ class SettingShops extends Component {
     super(props)
     this.state = {
       shops: [],
-      dirty: false
+      dirty: false,
+      keyword: null,
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
@@ -98,8 +100,22 @@ class SettingShops extends Component {
 
         <Content>
           <List>
+          <ListItem>
+          <Input placeholder="請輸入關鍵字" autoFocus={false}
+            value={this.state.keyword}
+            returnKeyType="done"
+            onChangeText={(text) => this.setState({ keyword: text })}
+            onEndEditing={
+              (event) => {
+                let keyword = event.nativeEvent.text.trim()
+                this.setState({ keyword: keyword })
+              }
+            } />
+            </ListItem>
             {
-              this.state.shops.map((shop) => {
+              this.state.shops.filter(shop=>{
+                return !this.state.keyword || shop.title.includes(this.state.keyword)
+              }).map((shop) => {
                 return <ListItem key={shop.id}>
                   <Grid>
                     <Col size={1}>
