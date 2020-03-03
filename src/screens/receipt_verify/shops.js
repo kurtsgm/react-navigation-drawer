@@ -29,7 +29,7 @@ class ReceiptVerifyShops extends Component {
     this.onBack = this.onBack.bind(this)
   }
   reload() {
-    apiFetch(GET_RECEIPTS_SHOPS,{},(_data) => {
+    apiFetch(GET_RECEIPTS_SHOPS,{to_be_verified: true},(_data) => {
       this.setState({ shops: _data })
     })
   }
