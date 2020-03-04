@@ -60,9 +60,9 @@ class ShowVerifyReceipt extends Component {
         }
         }>
           <Left>
-            {item.verified_pcs ?
+            {item.verified_pcs || item.verified_pcs == 0 ?
               <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null}
-            {item.verified_pcs ?
+            {item.verified_pcs || item.verified_pcs == 0 ?
               <Text>
                 {`${[item.product_name, item.storage_type_name].filter(e => e).join(" ")} [${item.pcs_per_box}入]`}
                 {item.expiration_date ? item.expiration_date : ''}
