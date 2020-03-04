@@ -39,8 +39,12 @@ class PickingListShops extends Component {
           shops[picking_list.shop_id] = {
             name: picking_list.shop_name,
             count: 1,
+            done_count: 0,
             id: picking_list.shop_id
           }
+        }
+        if (picking_list.status == "done") {
+          shops[picking_list.shop_id].done_count += 1
         }
       }
       console.log(shops)
@@ -61,22 +65,22 @@ class PickingListShops extends Component {
     for (let shop of this.state.shops) {
       rows.push(
         <ListItem key={shop.id} button onPress={() => {
-          this.props.navigation.navigate("PickingLists", { shop_id: shop.id,shop_name: shop.name, onBack: this.onBack })
+          this.props.navigation.navigate("PickingLists", { shop_id: shop.id, shop_name: shop.name, onBack: this.onBack })
         }
         }>
-            <Left>
-              <Text>
-                {shop.name}
-              </Text>
-            </Left>
-            <Body>
-              <Text>
-                {`[${shop.count}]`}
-              </Text>
-            </Body>
-            <Right>
-              <Icon name="arrow-forward" style={{ color: "#999" }} />
-            </Right>
+          <Left>
+            <Text>
+              {shop.name}
+            </Text>
+          </Left>
+          <Body>
+            <Text>
+              {`[${shop.done_count}/${shop.count}]`}
+            </Text>
+          </Body>
+          <Right>
+            <Icon name="arrow-forward" style={{ color: "#999" }} />
+          </Right>
 
         </ListItem>)
 
@@ -107,6 +111,20 @@ class PickingListShops extends Component {
           {
             this.state.shops.length > 0 ?
               <List>
+                <ListItem itemDivider>
+                  <Left>
+                    <Text>
+                      客戶
+              </Text>
+                  </Left>
+                  <Body>
+                    <Text>
+                      完成/全部
+              </Text>
+                  </Body>
+                  <Right>
+                  </Right>
+                </ListItem>
                 {rows}
               </List> : null
           }
