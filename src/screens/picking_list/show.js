@@ -62,6 +62,7 @@ class ShowPickingList extends Component {
     this.firstButton = null
     this.activate = this.activate.bind(this)
     this.sortByShelf = this.sortByShelf.bind(this)
+    this.processingOrders = this.processingOrders.bind(this)
     this.reload()
   }
 
@@ -397,12 +398,25 @@ class ShowPickingList extends Component {
       this.setState({ auto_confirming: false })
     }
   }
+  processingOrders(){
+    let picking_list = this.state.picking_list
+    let not_finished = new Set([]);
+    for(let item of picking_list.items){
+      if(item.picked_quantity != item.quantity){
+        for(let order of this.state.storage_orders[item.product_storage_id]){
+          not_finished.add(order.picking_index)
+        }
+      }
+    }
+    return not_finished
+  }
 
   render() {
     let picking_list = this.state.picking_list
     let item_g = this.item_generator(this.state.items.sort((a, b) => a.product_storage_id - b.product_storage_id))
     let done = false
     let list_items = []
+    let _processingOrders = this.processingOrders()
     this.firstButton = null
     if (this.state.sorting_mode == PRODUCT_MODE) {
       let sectors = this.state.picking_list.items.map(item => {
@@ -512,7 +526,7 @@ class ShowPickingList extends Component {
                         borderRadius: 3,
                         height: 25,
                         width: 72,
-                        backgroundColor: "black"
+                        backgroundColor: _processingOrders.has(order.picking_index) ? "black" : '#00cc00'
                       }}
                       textStyle={{ color: "white" }}
                     >
