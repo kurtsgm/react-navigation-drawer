@@ -17,7 +17,8 @@ import {
   Toast,
   Footer,
   FooterTab,
-  CheckBox
+  CheckBox,
+  Badge
 } from "native-base";
 
 import Dialog from "react-native-dialog";
@@ -37,9 +38,7 @@ class ShowReceipt extends Component {
       receipt_title: receipt.title,
       isModalVisible: false,
       currentItemId: null,
-      items: receipt.items.map((item) => {
-        return Object.assign({}, item, { ready_to_receive: 0 })
-      }),
+      items: [],
       barcode: null,
       batch_mode: false,
       all_checked: false
@@ -56,6 +55,9 @@ class ShowReceipt extends Component {
   }
   setBatchMode(isBatch) {
     this.setState({ batch_mode: isBatch })
+  }
+  componentWillMount() {
+    this.reload()
   }
 
   barcodeInput() {
@@ -236,6 +238,34 @@ class ShowReceipt extends Component {
                     {[data.product_uid, data.expiration_date, data.batch].filter(e => e).join('/')}
                   </Text>
                 </Row>
+                <Row>
+                  <Text>
+                    {data.product_barcode}
+                  </Text>
+                </Row>
+                {
+                  console.log(data)
+                }
+                {
+                  data.existing_shelves ?                 <Row>
+                  { 
+                    data.existing_shelves.map(shelf=>{
+                      return <Badge
+                      style={{
+                        borderRadius: 3,
+                        height: 25,
+                        width: 100,
+                        backgroundColor: "#c3c3d5"
+                      }}
+                      textStyle={{ color: "white" }}>
+                        <Text>{shelf}</Text>
+                      </Badge>
+                    })
+                  }
+                
+                </Row> : null
+                }
+
               </Col>
               <Col size={2} style={styles.vertical_center} >
                 <Text>
