@@ -12,8 +12,11 @@ import {
   Body,
   Right,
   List,
+  Badge,
   ListItem
 } from "native-base";
+
+import {hashColor} from '../../common'
 
 import styles from "./styles";
 
@@ -26,7 +29,6 @@ class PickingLists extends Component {
   constructor(props) {
     super(props)
     const { params } = this.props.navigation.state;
-    console.log(params)
     this.state = {
       picking_lists: [],
       shop_id: params.shop_id,
@@ -49,6 +51,7 @@ class PickingLists extends Component {
       picking_list.onBack = () => { this.reload() }
       return <ListItem key={picking_list.id} button onPress={() =>
         this.props.navigation.navigate("ShowPickingList", picking_list)}>
+          {console.log(picking_list)}
           <Row>
             <Left>
               {
@@ -62,11 +65,25 @@ class PickingLists extends Component {
               <Text>
                 {`${picking_list.id} [${picking_list.orders_length}] ${picking_list.parent_id ? "\n(母批次: " + picking_list.parent_id + ")" : ''}`}
               </Text>
+
             </Left>
             <Body>
-              <Text>
+            <Text>
                 {picking_list.created_date}
               </Text>
+              
+              {
+                picking_list.shipping_types.map(shipping_type=>{
+                  return <Badge key={shipping_type}
+                    style={{
+                      height: 25,
+                      backgroundColor: hashColor(shipping_type)
+                    }}
+                  textStyle={{ color: "white" }}>
+                    <Text>{shipping_type}</Text>
+                  </Badge>
+                })
+              }
             </Body>
             <Right>
               <Icon name="arrow-forward" style={{ color: "#999" }} />
