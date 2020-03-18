@@ -118,6 +118,7 @@ class ShowReceipt extends Component {
           return this.state.barcode ?
             item.product_barcode && item.product_barcode.toUpperCase().includes(this.state.barcode.toUpperCase())
             || item.product_uid && item.product_uid.toUpperCase().includes(this.state.barcode.toUpperCase())
+            || item.product_name && item.product_name.toUpperCase().includes(this.state.barcode.toUpperCase())
             : true
         }).map(item => {
           let valid_stack = false
@@ -223,6 +224,7 @@ class ShowReceipt extends Component {
           return this.state.barcode ?
             item.product_barcode && item.product_barcode.toUpperCase().includes(this.state.barcode.toUpperCase())
             || item.product_uid && item.product_uid.toUpperCase().includes(this.state.barcode.toUpperCase())
+            || item.product_name && item.product_name.toUpperCase().includes(this.state.barcode.toUpperCase())
             : true
         }).map(data => {
           return <ListItem key={data.id}>

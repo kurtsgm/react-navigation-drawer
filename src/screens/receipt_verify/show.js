@@ -50,7 +50,9 @@ class ShowVerifyReceipt extends Component {
     const { receipt } = this.props.navigation.state.params;
     this.state.items.filter(item=>{
       if(this.state.barcode){
-        return item.product_uid.toUpperCase().includes(this.state.barcode) || (item.product_barcode &&item.product_barcode.toUpperCase().includes(this.state.barcode))
+        return item.product_uid.toUpperCase().includes(this.state.barcode) 
+        || (item.product_barcode &&item.product_barcode.toUpperCase().includes(this.state.barcode.toUpperCase()))
+        || item.product_name && item.product_name.toUpperCase().includes(this.state.barcode.toUpperCase())        
       }
       return true
     }).forEach((item) => {
