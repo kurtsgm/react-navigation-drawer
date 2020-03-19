@@ -151,6 +151,7 @@ class ShelfMerge extends Component {
           duration: 2500,
           textStyle: { textAlign: "center" }
         })
+        this.setState({sending: false})
       }
       this.afterMerge()
     })
