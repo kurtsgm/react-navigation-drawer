@@ -139,7 +139,7 @@ class RecommendShelf extends Component {
                 <Right>
                   <Item success >
                     <Input keyboardType='numeric'
-                      style={this.checkItemValid(item) ? {} : styles.text_red}
+                      style={this.checkItemValid(data) ? {} : styles.text_red}
                       value={`${data.total_quantity}`}
                       onEndEditing={
                         (event)=>{
