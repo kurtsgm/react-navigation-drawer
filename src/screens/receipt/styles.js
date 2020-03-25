@@ -28,5 +28,9 @@ export default {
   },
   text_dark_red:{
     color: 'darkred'
+  },
+  text_red:{
+    color: 'red'
   }
+
 };

@@ -41,10 +41,9 @@ class RecommendShelf extends Component {
         return item
       })
     }
-    console.log("here")
-    console.log(params.items)
     this.onShelfSelected = this.onShelfSelected.bind(this)
     this._toggleModal = this._toggleModal.bind(this)
+    this.checkItemValid = this.checkItemValid.bind(this)
   }
   onShelfSelected(token) {
     this.setState({ shelf_token: token, show_picker: false })
@@ -77,6 +76,10 @@ class RecommendShelf extends Component {
         })
       }
     });
+  }
+  checkItemValid(item){
+    let _original_quantity = item.ready_to_receive * item.pcs_per_box 
+    return _original_quantity- item.total_quantity < item.pcs_per_box && _original_quantity >= item.total_quantity
   }
   render() {
     const { back } = this.props.navigation;
@@ -135,9 +138,25 @@ class RecommendShelf extends Component {
                 </Body>
                 <Right>
                   <Item success >
-
                     <Input keyboardType='numeric'
+                      style={this.checkItemValid(item) ? {} : styles.text_red}
                       value={`${data.total_quantity}`}
+                      onEndEditing={
+                        (event)=>{
+                          let items = this.state.items
+                          for (let item of items) {
+                            if(!this.checkItemValid(item)){
+                              Toast.show({
+                                text: "數值錯誤，數量差異過大",
+                                duration: 2500,
+                                type: 'danger',
+                                position: "top",
+                                textStyle: { textAlign: "center" }
+                              })
+                            }
+                          }
+                        }
+                      }
                       onChangeText={
                         (text) => {
                           let items = this.state.items
@@ -145,7 +164,7 @@ class RecommendShelf extends Component {
                             if (item.id == data.id) {
                               item.total_quantity = text
                               break
-                            }
+                            }  
                           }
                           this.setState({ items: items })
                         }
