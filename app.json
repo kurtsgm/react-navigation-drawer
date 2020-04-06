@@ -2,12 +2,14 @@
   "expo": {
     "name": "SDJ智慧倉儲系統",
     "version": "1.0.60",
-    "android":{
+    "android": {
       "package": "com.ibiza.sdj",
       "versionCode": 19,
-      "permissions":["CAMERA"]
+      "permissions": [
+        "CAMERA"
+      ]
     },
-    "sdkVersion": "33.0.0",
+    "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android"
@@ -19,7 +21,7 @@
       "backgroundImage": "./assets/splashscreen.png"
     },
     "updates": {
-      "enabled": true,  
+      "enabled": true,
       "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 0
     },
@@ -28,7 +30,7 @@
     ],
     "ios": {
       "bundleIdentifier": "com.ibiza.sdj",
-      "icon":"./assets/icon-ios.png"
+      "icon": "./assets/icon-ios.png"
     },
     "androidStatusBarColor": "#334393",
     "androidStatusBar": {

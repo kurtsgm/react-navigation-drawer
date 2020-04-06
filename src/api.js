@@ -34,6 +34,8 @@ export const ACTIVATE_PICKING = "ACTIVATE_PICKING"
 export const GET_WAREHOUSES = "GET_WAREHOUSES"
 export const GET_TRANSFER_SHELVES = 'GET_TRANSFER_SHELVES'
 
+export const GET_SHOP_PRODUCT_STORAGE_TYPES = 'GET_SHOP_PRODUCT_STORAGE_TYPES'
+
 export const GET_SHOPS = "GET_SHOPS"
 export const SET_SHOPS = "SET_SHOPS"
 
@@ -62,6 +64,7 @@ const Actions = {
   MERGE_SHELVES: {path:`${API_PATH}/v1/shelves/merge`, method: "POST"},
   ADJUST_SHELF_QUANTITY: {path: `${API_PATH}/v1/shelves/{token}/adjust`,method: "POST"},
   ACTIVATE_PICKING: {path: `${API_PATH}/v1/picking_lists/{id}/activate`,method: "POST"},
+  GET_SHOP_PRODUCT_STORAGE_TYPES: {path: `${API_PATH}/v1/shops/{shop_id}/product_storage_types`,method: "GET"},
   GET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "GET"},
   SET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "POST"},
   GET_WAREHOUSES: {path:`${API_PATH}/v1/warehouses`, method: "GET"},

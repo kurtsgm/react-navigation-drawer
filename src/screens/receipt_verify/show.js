@@ -13,12 +13,13 @@ import {
   List,
   ListItem,
   Item,
-  Input
+  Input,
+  Toast
 } from "native-base";
 import styles from "./styles";
-
+import Dialog from "react-native-dialog";
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_RECEIPT } from "../../api"
+import { apiFetch, GET_RECEIPT, GET_PRODUCTS } from "../../api"
 
 
 class ShowVerifyReceipt extends Component {
@@ -26,10 +27,13 @@ class ShowVerifyReceipt extends Component {
     super(props)
     this.state = {
       items: [],
-      barcode: null
+      barcode: null,
+      isModalVisible: false,
+      new_item_uid: null,
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
+    this.addNewItem = this.addNewItem.bind(this)
   }
   reload() {
     const { receipt } = this.props.navigation.state.params;
@@ -39,6 +43,25 @@ class ShowVerifyReceipt extends Component {
     })
   }
 
+  addNewItem(){
+    const { receipt } = this.props.navigation.state.params;
+    apiFetch(GET_PRODUCTS, { barcode: this.state.new_item_uid,shop_id: receipt.shop_id }, (_data) => {
+      if(_data.length > 0){
+        product = _data[0]
+        this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: receipt.id,new_item: product, onBack: this.onBack })
+      }
+      else{
+        Toast.show({
+          text: '錯誤，查無此品項',
+          duration: 2500,
+          type: 'danger',
+          position: "top",
+          textStyle: { textAlign: "center" }
+        })
+      }
+    })
+
+  }
   componentWillMount() {
     this.reload()
   }
@@ -145,6 +168,29 @@ class ShowVerifyReceipt extends Component {
                 {rows}
               </List> : null
           }
+          <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
+              this.setState({ isModalVisible: true })            
+          }}>
+            <Text>新增項目</Text>
+          </Button>          
+          <Dialog.Container visible={this.state.isModalVisible}>
+            <Dialog.Title>請輸入品號或條碼</Dialog.Title>
+            <Dialog.Input value={this.state.new_item_uid}
+              placeholder='請輸入品號或條碼'
+              autoFocus={true}
+              onFocus={()=>this.setState({new_item_uid:null})}
+              onChangeText={
+                (text) => {
+                  this.setState({ new_item_uid: text })
+                }
+              }
+              onEndEditing={(event) => {
+                this.setState({ isModalVisible: false })
+                this.addNewItem()
+              }}
+              returnKeyType="done" />
+            <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+          </Dialog.Container>          
         </Content>
       </Container>
     );

@@ -17,12 +17,12 @@ import {
   Input,
   Item,
   Label,
-  DatePicker
+  Picker
 } from "native-base";
 import styles from "./styles";
 
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_RECEIPT_ITEM, VERIFY_RECEIPT_ITEM } from "../../api"
+import { apiFetch, GET_RECEIPT_ITEM, GET_SHOP_PRODUCT_STORAGE_TYPES, VERIFY_RECEIPT_ITEM } from "../../api"
 import { normalize_date } from '../../common'
 
 
@@ -31,19 +31,34 @@ class ReceiptVerifyItem extends Component {
     super(props)
     this.reload = this.reload.bind(this)
     this.verify = this.verify.bind(this)
-    this.state = { dirty: false, previous_set: false }
+    this.state = { dirty: false, previous_set: false ,product_storage_types:[]}
   }
   reload() {
-    const { item_id, receipt_id } = this.props.navigation.state.params;
-    apiFetch(GET_RECEIPT_ITEM, { receipt_id: receipt_id, id: item_id }, (_data) => {
-      this.setState(_data)
-      if (_data.verified_pcs) {
+    const { item_id, receipt_id, new_item } = this.props.navigation.state.params;
+    console.log(new_item)
+    if (item_id) {
+      apiFetch(GET_RECEIPT_ITEM, { receipt_id: receipt_id, id: item_id }, (_data) => {
+        this.setState(_data)
+        if (_data.verified_pcs) {
+          this.setState({
+            previous_set: true,
+            verified_pcs: parseInt(_data.verified_pcs),
+          })
+        }
+      })
+    } else if (new_item) {
+      apiFetch(GET_SHOP_PRODUCT_STORAGE_TYPES, { shop_id: new_item.shop_id }, (_data) => {
+        console.log(_data)
         this.setState({
-          previous_set: true,
-          verified_pcs: parseInt(_data.verified_pcs),
+          product_storage_types: _data.product_storage_types
         })
-      }
-    })
+      })
+      this.setState({
+        product_barcode: new_item.barcode,
+        product_name: new_item.name,
+        product_uid: new_item.uid
+      })
+    }
   }
   verify() {
     const { item_id, receipt_id } = this.props.navigation.state.params;
@@ -71,6 +86,7 @@ class ReceiptVerifyItem extends Component {
     this.reload()
   }
   render() {
+    const { item_id, new_item } = this.props.navigation.state.params;
     return (
       <Container style={styles.container}>
         <Header>
@@ -90,14 +106,17 @@ class ReceiptVerifyItem extends Component {
             <Title>品項驗收</Title>
           </Body>
           <Right>
-            <Button transparent>
-              <Icon name="refresh" onPress={() => this.reload()} />
-            </Button>
+            {
+              item_id ?
+                <Button transparent>
+                  <Icon name="refresh" onPress={() => this.reload()} />
+                </Button> : null
+            }
           </Right>
         </Header>
 
         <Content padder>
-          {this.state.id ?
+          {this.state.id || new_item ?
             <Card style={styles.mb}>
               <CardItem>
                 <Left>
@@ -128,11 +147,29 @@ class ReceiptVerifyItem extends Component {
                   <Text>倉別</Text>
                 </Left>
                 <Right>
-                  <Text>
-                    {
-                      `${this.state.storage_type}   ${this.state.storage_type_name}`
-                    }
-                  </Text>
+                  {
+                    this.state.storage_type && this.state.storage_type_name ?
+                      <Text>
+                        {
+                          `${this.state.storage_type}   ${this.state.storage_type_name}`
+                        }
+                      </Text> : <Picker mode="dropdown"
+                        headerBackButtonText="返回"
+                        style={{ width: 200 }}
+                        iosHeader="選擇倉別"
+                        placeholder="選擇倉別"
+                        iosIcon={<Icon name="arrow-down" />}
+                        onValueChange={(id)=>{this.setState({product_storage_type_id:id})}}
+                        selectedValue={this.state.product_storage_type_id}
+                        >
+                        {
+                          this.state.product_storage_types.length > 0  ? this.state.product_storage_types.map(product_storage_type => {
+                            return <Picker.Item key={product_storage_type.id} label={`${product_storage_type.name} ${product_storage_type.code}`} value={product_storage_type.id}></Picker.Item>
+                          }) : null
+                        }
+                      </Picker>
+
+                  }
                 </Right>
               </CardItem>
               <CardItem>
