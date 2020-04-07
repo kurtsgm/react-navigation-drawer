@@ -31,11 +31,11 @@ class ReceiptVerifyItem extends Component {
     super(props)
     this.reload = this.reload.bind(this)
     this.verify = this.verify.bind(this)
+    this.valid = this.valid.bind(this)
     this.state = { dirty: false, previous_set: false ,product_storage_types:[]}
   }
   reload() {
     const { item_id, receipt_id, new_item } = this.props.navigation.state.params;
-    console.log(new_item)
     if (item_id) {
       apiFetch(GET_RECEIPT_ITEM, { receipt_id: receipt_id, id: item_id }, (_data) => {
         this.setState(_data)
@@ -48,7 +48,6 @@ class ReceiptVerifyItem extends Component {
       })
     } else if (new_item) {
       apiFetch(GET_SHOP_PRODUCT_STORAGE_TYPES, { shop_id: new_item.shop_id }, (_data) => {
-        console.log(_data)
         this.setState({
           product_storage_types: _data.product_storage_types
         })
@@ -56,15 +55,28 @@ class ReceiptVerifyItem extends Component {
       this.setState({
         product_barcode: new_item.barcode,
         product_name: new_item.name,
-        product_uid: new_item.uid
+        product_uid: new_item.uid,
+        product_id: new_item.id,
+        product_default_pcs: new_item.default_pcs,
+        box_height: new_item.box_height,
+        box_length: new_item.box_length,
+        box_weight: new_item.box_weight,
+        box_width: new_item.box_width,
+        stack_base: new_item.stack_base,
+        stack_level: new_item.stack_level,
       })
     }
+  }
+
+  valid(){
+    const { item_id} = this.props.navigation.state.params;
+    return this.state.dirty && this.state.verified_pcs && (item_id || (this.state.product_storage_type_id))
   }
   verify() {
     const { item_id, receipt_id } = this.props.navigation.state.params;
     apiFetch(VERIFY_RECEIPT_ITEM, {
       receipt_id: receipt_id,
-      id: item_id,
+      id: item_id ? item_id : 'new',
       pcs: this.state.verified_pcs,
       batch: this.state.batch,
       expiration_date: this.state.expiration_date,
@@ -74,8 +86,11 @@ class ReceiptVerifyItem extends Component {
       box_width: this.state.box_width,
       stack_base: this.state.stack_base,
       stack_level: this.state.stack_level,
+      product_uid: this.state.product_uid,
+      product_id: this.state.product_id,
       product_barcode: this.state.product_barcode,
-      product_default_pcs: this.state.product_default_pcs
+      product_default_pcs: this.state.product_default_pcs,
+      product_storage_type_id: this.state.product_storage_type_id
     }, (_data) => {
       this.props.navigation.state.params.onBack()
       this.props.navigation.goBack()
@@ -155,7 +170,8 @@ class ReceiptVerifyItem extends Component {
                         }
                       </Text> : <Picker mode="dropdown"
                         headerBackButtonText="返回"
-                        style={{ width: 200 }}
+                        style={{ width: 200}}
+                        textStyle={ this.state.product_storage_type_id ? {} : { color: "red" }  }
                         iosHeader="選擇倉別"
                         placeholder="選擇倉別"
                         iosIcon={<Icon name="arrow-down" />}
@@ -387,7 +403,7 @@ class ReceiptVerifyItem extends Component {
             </Card> : null
           }
           <View style={styles.footer}>
-            {this.state.dirty && this.state.verified_pcs ?
+            {this.valid() ?
               <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
                 if (this.state.previous_set) {
                   Alert.alert(
