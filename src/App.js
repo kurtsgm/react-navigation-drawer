@@ -1,5 +1,5 @@
 import React from "react";
-import { createAppContainer} from "react-navigation";
+import { createAppContainer,SafeAreaView} from "react-navigation";
 import { createDrawerNavigator } from 'react-navigation-drawer'; 
 import {createStackNavigator} from 'react-navigation-stack'
 import { Root } from "native-base";
@@ -113,11 +113,14 @@ export default class AppRoot extends React.Component {
   render() {
     return (
       <Root>
-        <AppContainer
+          <SafeAreaView style={{flex:1}}>
+          <AppContainer
           ref={nav => {
             this.navigator = nav;
           }}
         />
+
+          </SafeAreaView>
       </Root>
     );
   }

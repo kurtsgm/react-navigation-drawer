@@ -370,7 +370,7 @@ class ReceiptVerifyItem extends Component {
 
               <CardItem>
                 <Left>
-                  <Text>應收</Text>
+                  <Text>應收PCS</Text>
                 </Left>
                 <Right>
                   <Text>
@@ -380,7 +380,7 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Left>
-                  <Text>實收</Text>
+                  <Text>實收PCS</Text>
                 </Left>
                 <Right>
                   <Item success >
