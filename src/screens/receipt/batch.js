@@ -133,14 +133,15 @@ class BatchReceipt extends Component {
       </Header>
       <Dialog.Container visible={this.state.isModalVisible}>
             <Dialog.Title>確認批次上架</Dialog.Title>            
-            <Dialog.Button label="確認" onPress={() => this.submitShelf().then(()=>{
+            <Dialog.Button label="確認" onPress={() => {
               this.setState({ isModalVisible: false })
+              this.submitShelf().then(()=>{
               this.props.navigation.state.params.onBack()
               this.props.navigation.goBack()
              },()=>{
                this.setState({ isModalVisible: false })
                this.reload()
-              })} />
+              })}} />
             <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
           </Dialog.Container>
 
