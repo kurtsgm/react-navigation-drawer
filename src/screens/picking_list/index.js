@@ -69,7 +69,7 @@ class PickingLists extends Component {
             </Left>
             <Body>
             <Text>
-                {picking_list.created_date}
+                {picking_list.close_date}
               </Text>
               
               {
@@ -126,7 +126,7 @@ class PickingLists extends Component {
               <List>
                 <ListItem itemDivider>
                   <Left><Text>單號</Text></Left>
-                  <Body><Text>日期</Text></Body>
+                  <Body><Text>出倉日</Text></Body>
                   <Right></Right>
                 </ListItem>
                 {rows}

@@ -111,33 +111,12 @@ class ShelfProduct extends Component {
               </Left>
               <Right>
               <Item success >
-              <Input keyboardType='numeric' textAlign={'right'}
-              value={`${this.state.pcs}`}
-              onChangeText={
-                (text) => {
-                  this.setState({pcs:text})
-                }
-              }
-              onEndEditing={(event) => {this.setState({dirty:true})}}
-              returnKeyType="done" />
-
+                <Text>{this.state.pcs}</Text>
               </Item>
-
-
               </Right>
             </CardItem>
-
           </Card>
         </Content>
-        <View style={styles.footer}>
-          { this.state.dirty ?
-            <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
-              this.adjust()
-            }}>
-              <Text>確認修改</Text>
-            </Button> : null
-           }
-        </View>
       </Container>
     );
   }
