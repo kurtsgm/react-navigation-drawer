@@ -190,6 +190,35 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Left>
+                  <Text>應收PCS</Text>
+                </Left>
+                <Right>
+                  <Text>
+                    {this.state.scheduled_pcs}
+                  </Text>
+                </Right>
+              </CardItem>
+              <CardItem>
+                <Left>
+                  <Text>實收PCS</Text>
+                </Left>
+                <Right>
+                  <Item success >
+                    <Input keyboardType='numeric' textAlign={'right'}
+                      value={`${this.state.verified_pcs ? this.state.verified_pcs : ''}`}
+                      onChangeText={
+                        (text) => {
+                          this.setState({ verified_pcs: text })
+                        }
+                      }
+                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                      returnKeyType="done" />
+
+                  </Item>
+                </Right>
+              </CardItem>
+              <CardItem>
+                <Left>
                   <Text>標準箱入數</Text>
                 </Left>
                 <Right>
@@ -367,39 +396,6 @@ class ReceiptVerifyItem extends Component {
                   </Item>
                 </Right>
               </CardItem>
-
-              <CardItem>
-                <Left>
-                  <Text>應收PCS</Text>
-                </Left>
-                <Right>
-                  <Text>
-                    {this.state.scheduled_pcs}
-                  </Text>
-                </Right>
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Text>實收PCS</Text>
-                </Left>
-                <Right>
-                  <Item success >
-                    <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.verified_pcs ? this.state.verified_pcs : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ verified_pcs: text })
-                        }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-
-                  </Item>
-
-
-                </Right>
-              </CardItem>
-
             </Card> : null
           }
           <View style={styles.footer}>
