@@ -61,7 +61,7 @@ export function shelfSorter(shelf_a,shelf_b){
   try {
     let shelf_a_tokens = shelf_a.split('-')
     let shelf_b_tokens = shelf_b.split('-')
-    let result = parseInt(`${shelf_a_tokens[0]}${shelf_a_tokens[1]}`) - parseInt(`${shelf_b_tokens[0]}${shelf_b_tokens[1]}`)
+    let result = parseInt(`${shelf_a_tokens[0]}${shelf_a_tokens[1]}${shelf_a_tokens[2]}`) - parseInt(`${shelf_b_tokens[0]}${shelf_b_tokens[1]}${shelf_b_tokens[2]}`)
     return result
   } catch (e) {
     return 1
