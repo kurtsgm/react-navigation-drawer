@@ -226,7 +226,7 @@ class ShowReceipt extends Component {
             || item.product_uid && item.product_uid.toUpperCase().includes(this.state.barcode.toUpperCase())
             || item.product_name && item.product_name.toUpperCase().includes(this.state.barcode.toUpperCase())
             : true
-        }).map(data => {
+        }).filter(item=>item.verified_pcs != 0).map(data => {
           return <ListItem key={data.id}>
             <Grid>
               <Col size={4} style={styles.vertical_center} >
@@ -246,13 +246,11 @@ class ShowReceipt extends Component {
                   </Text>
                 </Row>
                 {
-                  console.log(data)
-                }
-                {
                   data.existing_shelves ?                 <Row>
                   { 
                     data.existing_shelves.map(shelf=>{
                       return <Badge
+                      key={shelf}
                       style={{
                         borderRadius: 3,
                         height: 25,
