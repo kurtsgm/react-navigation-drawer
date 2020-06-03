@@ -63,6 +63,8 @@ class ShelfMerge extends Component {
   setSourceData(data){
     let products = data.storages.map(shelf_storage => {
       return {
+        shop_id: shelf_storage.product_storage.shop_id,
+        shop_name: shelf_storage.product_storage.shop_name,
         checked: !this.state.high_layer || shelf_storage.product_storage.id == this.state.high_layer.product_storage_id,
         id: shelf_storage.id,
         pcs: shelf_storage.pcs,
@@ -172,6 +174,67 @@ class ShelfMerge extends Component {
 
   render() {
     let high_layer = this.state.high_layer
+    let product_rows = []
+    let previous_shop = null
+
+    for(let product of this.state.products.sort((a,b)=>a.shop_id - b.shop_id)){
+      if (previous_shop != product.shop_id) {
+        product_rows.push(<ListItem itemDivider key={`divider-${product.shop_id}`}>
+          <Text>{product.shop_name}</Text>
+        </ListItem>)
+        previous_shop = product.shop_id
+      }      
+      product_rows.push(<ListItem key={product.id}
+        onPress={() => {
+          this.toggleProduct(product.id)
+        }}
+      >
+        <Grid>
+          <Col size={1} >
+            <CheckBox checked={product.checked} onPress={() => {
+              this.toggleProduct(product.id)
+            }
+            } />
+          </Col>
+          <Col size={4} >
+            <Text style={high_layer && product.storage_id == high_layer.product_storage_id ? styles.target_product : null}>
+              {product.product_uid}
+            </Text>
+            <Text style={high_layer && product.storage_id == high_layer.product_storage_id ? styles.target_product : null}>
+              {product.product_title} {[product.storage_type_name, product.expiration_date, product.batch].filter(e => e).join("\n")}
+            </Text>
+          </Col>
+
+          <Col size={2} >
+            <Item success >
+              <Input keyboardType='numeric'
+                value={`${product.pcs}`}
+                onChangeText={
+                  (text) => {
+                    let products = this.state.products
+                    for (let p of products) {
+                      if (p.id == product.id) {
+                        p.pcs = text
+                        if (!parseInt(text) > 0) {
+                          p.checked = false
+                        } else {
+                          p.checked = true
+                        }
+                        break
+                      }
+                    }
+                    this.setState({ products: products })
+                  }
+                }
+                returnKeyType="done" />
+            </Item>
+          </Col>
+        </Grid>
+      </ListItem>)
+    }
+
+
+
     return (
       <Container style={styles.container}>
         <Header searchBar rounded>
@@ -326,56 +389,7 @@ class ShelfMerge extends Component {
               </Grid>
             </ListItem>
             {
-              this.state.products.map(product => {
-                return <ListItem key={product.id}
-                  onPress={() => {
-                    this.toggleProduct(product.id)
-                  }}
-                >
-                  <Grid>
-                    <Col size={1} >
-                      <CheckBox checked={product.checked} onPress={() => {
-                        this.toggleProduct(product.id)
-                      }
-                      } />
-                    </Col>
-                    <Col size={4} >
-                      <Text style={high_layer && product.storage_id == high_layer.product_storage_id ? styles.target_product : null}>
-                        {product.product_uid}
-                      </Text>
-                      <Text style={high_layer && product.storage_id == high_layer.product_storage_id ? styles.target_product : null}>
-                        {product.product_title} {[product.storage_type_name, product.expiration_date, product.batch].filter(e => e).join("\n")}
-                      </Text>
-                    </Col>
-
-                    <Col size={2} >
-                      <Item success >
-                        <Input keyboardType='numeric'
-                          value={`${product.pcs}`}
-                          onChangeText={
-                            (text) => {
-                              let products = this.state.products
-                              for (let p of products) {
-                                if (p.id == product.id) {
-                                  p.pcs = text
-                                  if (!parseInt(text) > 0) {
-                                    p.checked = false
-                                  } else {
-                                    p.checked = true
-                                  }
-                                  break
-                                }
-                              }
-                              this.setState({ products: products })
-                            }
-                          }
-                          returnKeyType="done" />
-                      </Item>
-                    </Col>
-                  </Grid>
-                </ListItem>
-
-              })
+              product_rows
             }
           </List>
 

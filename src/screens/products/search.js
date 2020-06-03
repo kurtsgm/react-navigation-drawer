@@ -49,29 +49,37 @@ class ProductSearch extends Component {
   }
   render() {
     let rows = []
-    rows = this.state.products.map(product => {
-      return <ListItem key={product.id} button onPress={() =>
+    let previous_shop = null
+
+    for(let product of this.state.products.sort((a,b)=>a.shop_id - b.shop_id)){
+      if (previous_shop != product.shop_id) {
+        rows.push(<ListItem itemDivider key={`divider-${product.shop_id}`}>
+          <Text>{product.shop_name}</Text>
+        </ListItem>)
+        previous_shop = product.shop_id
+      }       
+      rows.push(<ListItem key={product.id} button onPress={() =>
         this.props.navigation.navigate("ProductStorages", product.storages)
       }>
         <Left>
           <Text>
             {
-              `${product.shop_name}\n${product.uid}`
+              `${product.name}\n${product.uid}`
             }
           </Text>
         </Left>
         <Body>
           <Text>
             {
-              `${product.name}\n${product.barcode}`
+              product.barcode
             }
           </Text>
         </Body>
         <Right>
           <Icon name="arrow-forward" style={{ color: "#999" }} />
         </Right>
-      </ListItem>
-    })
+      </ListItem>)
+    }
     return (
       <Container style={styles.container}>
         <Header searchBar rounded>

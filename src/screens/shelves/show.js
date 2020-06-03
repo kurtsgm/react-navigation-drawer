@@ -38,6 +38,39 @@ class ShelfShow extends Component {
     })
   }
   render() {
+    let rows = []
+    let previous_shop = null
+    for(let storage of this.state.shelf.storages.sort((storage_a,storage_b)=>storage_a.product_storage.shop_id-storage_b.product_storage.shop_id)){
+      if (previous_shop != storage.product_storage.shop_id) {
+        rows.push(<ListItem itemDivider key={`divider-${storage.product_storage.shop_id}`}>
+          <Text>{storage.product_storage.shop_name}</Text>
+        </ListItem>)
+        previous_shop = storage.product_storage.shop_id
+      }      
+      rows.push(<ListItem key={storage.id} button onPress={() => {
+        this.props.navigation.navigate("ShelfProduct",{storage: storage, reload: this.reload,shelf_token:this.state.shelf.token})
+      }}>
+        <Left>
+          <Text>
+              {`${storage.product_storage.product.name}\n${storage.product_storage.product.barcode}\n${[
+                  storage.product_storage.storage_type_name,
+                  storage.product_storage.expiration_date,
+                  storage.product_storage.batch
+                ].filter(e => e).join("/")
+              }`}                          
+          </Text>
+        </Left>
+        <Body>
+        <Text style={styles.blue}>
+          {storage.pcs}
+        </Text>
+
+        </Body>
+        <Right>
+        <Icon name="arrow-forward" style={{ color: "#999" }} />
+        </Right>
+      </ListItem>)
+    }
     return (
       <Container style={styles.container}>
         <Header>
@@ -61,38 +94,12 @@ class ShelfShow extends Component {
 
           </Right>
         </Header>
-
         <Content>
           {
             this.state.shelf.storages.length > 0 ?
               <List>
                 {
-                  this.state.shelf.storages.map(storage => {
-
-                    return <ListItem key={storage.id} button onPress={() => {
-                      this.props.navigation.navigate("ShelfProduct",{storage: storage, reload: this.reload,shelf_token:this.state.shelf.token})
-                    }}>
-                      <Left>
-                        <Text>
-                            {`${storage.product_storage.product.name}\n${storage.product_storage.product.barcode}\n${[
-                                storage.product_storage.storage_type_name,
-                                storage.product_storage.expiration_date,
-                                storage.product_storage.batch
-                              ].filter(e => e).join("/")
-                            }`}                          
-                        </Text>
-                      </Left>
-                      <Body>
-                      <Text style={styles.blue}>
-                        {storage.pcs}
-                      </Text>
-
-                      </Body>
-                      <Right>
-                      <Icon name="arrow-forward" style={{ color: "#999" }} />
-                      </Right>
-                    </ListItem>
-                  })
+                  rows
                 }
               </List> : null
           }
