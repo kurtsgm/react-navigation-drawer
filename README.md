@@ -1,5 +1,9 @@
 # NativeBase KitchenSink v2.3.5
 
+## Install app ##
+
+Expo
+
 ## Install expo ##
 
 ```
