@@ -59,6 +59,11 @@ class PickingLists extends Component {
                   <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null
               }
               {
+                picking_list.status == "terminated" ?
+                  <Icon name="checkmark-circle" style={{ color: "red" }} /> : null
+              }
+
+              {
                 picking_list.status == "processing" ?
                   <Icon name="flash" style={{ color: "orange" }} /> : null
               }

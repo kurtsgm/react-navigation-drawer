@@ -24,7 +24,7 @@ import styles from "./styles";
 import * as AppActions from '../../redux/actions/AppAction'
 import { apiFetch, GET_RECEIPT_ITEM, GET_SHOP_PRODUCT_STORAGE_TYPES, VERIFY_RECEIPT_ITEM } from "../../api"
 import { normalize_date } from '../../common'
-
+import { Grid, Col, Row } from "react-native-easy-grid";
 
 class ReceiptVerifyItem extends Component {
   constructor(props) {
@@ -32,7 +32,7 @@ class ReceiptVerifyItem extends Component {
     this.reload = this.reload.bind(this)
     this.verify = this.verify.bind(this)
     this.valid = this.valid.bind(this)
-    this.state = { dirty: false, previous_set: false ,product_storage_types:[]}
+    this.state = { dirty: false, previous_set: false, product_storage_types: [] }
   }
   reload() {
     const { item_id, receipt_id, new_item } = this.props.navigation.state.params;
@@ -68,8 +68,8 @@ class ReceiptVerifyItem extends Component {
     }
   }
 
-  valid(){
-    const { item_id} = this.props.navigation.state.params;
+  valid() {
+    const { item_id } = this.props.navigation.state.params;
     return this.state.dirty && this.state.verified_pcs && (item_id || (this.state.product_storage_type_id))
   }
   verify() {
@@ -134,267 +134,274 @@ class ReceiptVerifyItem extends Component {
           {this.state.id || new_item ?
             <Card style={styles.mb}>
               <CardItem>
-                <Left>
-                  <Text>品名</Text>
-                </Left>
-                <Right>
-                  <Text>
-                    {
-                      this.state.product_name
-                    }
-                  </Text>
-                </Right>
+                <Row>
+                  <Col size={1}>
+                    <Text>品名</Text>
+                  </Col>
+                  <Col size={2}>
+                    <Text>
+                      {
+                        this.state.product_name
+                      }
+                    </Text>
+                  </Col>
+                </Row>
               </CardItem>
               <CardItem>
-                <Left>
-                  <Text>品號</Text>
-                </Left>
-                <Right>
-                  <Text>
-                    {
-                      this.state.product_uid
-                    }
-                  </Text>
-                </Right>
+                <Row>
+                  <Col size={1}>
+                    <Text>品號</Text>
+                  </Col>
+                  <Col size={2}>
+                    <Text>
+                      {
+                        this.state.product_uid
+                      }
+                    </Text>
+                  </Col>
+                </Row>
               </CardItem>
               <CardItem>
-                <Left>
-                  <Text>倉別</Text>
-                </Left>
-                <Right>
-                  {
-                    this.state.storage_type && this.state.storage_type_name ?
-                      <Text>
-                        {
-                          `${this.state.storage_type}   ${this.state.storage_type_name}`
-                        }
-                      </Text> : <Picker mode="dropdown"
-                        headerBackButtonText="返回"
-                        style={{ width: 200}}
-                        textStyle={ this.state.product_storage_type_id ? {} : { color: "red" }  }
-                        iosHeader="選擇倉別"
-                        placeholder="選擇倉別"
-                        iosIcon={<Icon name="arrow-down" />}
-                        onValueChange={(id)=>{this.setState({product_storage_type_id:id})}}
-                        selectedValue={this.state.product_storage_type_id}
+                <Row>
+                  <Col size={1}>
+                    <Text>倉別</Text>
+                  </Col>
+                  <Col size={2}>
+                    {
+                      this.state.storage_type && this.state.storage_type_name ?
+                        <Text>
+                          {
+                            `${this.state.storage_type}   ${this.state.storage_type_name}`
+                          }
+                        </Text> : <Picker mode="dropdown"
+                          headerBackButtonText="返回"
+                          style={{ width: 200 }}
+                          textStyle={this.state.product_storage_type_id ? {} : { color: "red" }}
+                          iosHeader="選擇倉別"
+                          placeholder="選擇倉別"
+                          iosIcon={<Icon name="arrow-down" />}
+                          onValueChange={(id) => { this.setState({ product_storage_type_id: id }) }}
+                          selectedValue={this.state.product_storage_type_id}
                         >
-                        {
-                          this.state.product_storage_types.length > 0  ? this.state.product_storage_types.map(product_storage_type => {
-                            return <Picker.Item key={product_storage_type.id} label={`${product_storage_type.name} ${product_storage_type.code}`} value={product_storage_type.id}></Picker.Item>
-                          }) : null
-                        }
-                      </Picker>
+                          {
+                            this.state.product_storage_types.length > 0 ? this.state.product_storage_types.map(product_storage_type => {
+                              return <Picker.Item key={product_storage_type.id} label={`${product_storage_type.name} ${product_storage_type.code}`} value={product_storage_type.id}></Picker.Item>
+                            }) : null
+                          }
+                        </Picker>
 
-                  }
-                </Right>
+                    }
+                  </Col></Row>
               </CardItem>
               <CardItem>
-                <Left>
+                <Row><Col size={1}>
                   <Text>應收PCS</Text>
-                </Left>
-                <Right>
-                  <Text>
-                    {this.state.scheduled_pcs}
-                  </Text>
-                </Right>
+                </Col>
+                  <Col size={2}>
+                    <Text>
+                      {this.state.scheduled_pcs}
+                    </Text>
+                  </Col></Row>
               </CardItem>
               <CardItem>
-                <Left>
-                  <Text>實收PCS</Text>
-                </Left>
-                <Right>
-                  <Item success >
-                    <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.verified_pcs ? this.state.verified_pcs : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ verified_pcs: text })
-                        }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-
-                  </Item>
-                </Right>
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Text>標準箱入數</Text>
-                </Left>
-                <Right>
-                  <Item success >
-                    <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.product_default_pcs ? this.state.product_default_pcs : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ product_default_pcs: text })
-                        }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-                  </Item>
-
-
-                </Right>
-              </CardItem>
-              <CardItem>
-                <Left>
-                  <Text>條碼</Text>
-                </Left>
-                <Right>
-                  <Item success >
-                    <Input textAlign={'right'}
-                      value={`${this.state.product_barcode ? this.state.product_barcode : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ product_barcode: text })
-                        }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-                    <Button
-                      transparent
-                      onPress={() =>
-                        this.props.navigation.navigate("BarcodeScanner", {
-                          onBarcodeScanned: (barcode) => {
-                            this.setState({ product_barcode: barcode })
+                <Row>
+                  <Col size={1}>
+                    <Text>實收PCS</Text>
+                  </Col>
+                  <Col size={2}>
+                    <Item success >
+                      <Input keyboardType='numeric' textAlign={'right'}
+                        value={`${this.state.verified_pcs ? this.state.verified_pcs : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ verified_pcs: text })
                           }
                         }
-                        )
-                      }
-                    >
-                      <Icon name="camera" />
-                    </Button>
-                  </Item>
-                </Right>
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+
+                    </Item>
+                  </Col>
+                </Row>
               </CardItem>
               <CardItem>
-                <Left>
+                <Row><Col size={1}>
+                  <Text>標準箱入數</Text>
+                </Col>
+                  <Col size={2}>
+                    <Item success >
+                      <Input keyboardType='numeric' textAlign={'right'}
+                        value={`${this.state.product_default_pcs ? this.state.product_default_pcs : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ product_default_pcs: text })
+                          }
+                        }
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+                    </Item>
+
+
+                  </Col></Row>
+              </CardItem>
+              <CardItem>
+                <Row><Col size={1}>
+                  <Text>條碼</Text>
+                </Col>
+                  <Col size={2}>
+                    <Item success >
+                      <Input textAlign={'right'}
+                        value={`${this.state.product_barcode ? this.state.product_barcode : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ product_barcode: text })
+                          }
+                        }
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+                      <Button
+                        transparent
+                        onPress={() =>
+                          this.props.navigation.navigate("BarcodeScanner", {
+                            onBarcodeScanned: (barcode) => {
+                              this.setState({ product_barcode: barcode })
+                            }
+                          }
+                          )
+                        }
+                      >
+                        <Icon name="camera" />
+                      </Button>
+                    </Item>
+                  </Col></Row>
+              </CardItem>
+              <CardItem>
+                <Row><Col size={1}>
                   <Text>效期</Text>
-                </Left>
-                <Right>
-                  <Item success >
-                    <Input textAlign={'right'} keyboardType='numeric'
-                      value={`${this.state.expiration_date ? this.state.expiration_date : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ expiration_date: normalize_date(text) })
+                </Col>
+                  <Col size={2}>
+                    <Item success >
+                      <Input textAlign={'right'} keyboardType='numeric'
+                        value={`${this.state.expiration_date ? this.state.expiration_date : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ expiration_date: normalize_date(text) })
+                          }
                         }
-                      }
-                      onEndEditing={(event) => {
-                        if (this.state.expiration_date && this.state.expiration_date.length < 10) {
-                          this.setState({ expiration_date: null })
-                        } else {
-                          this.setState({ dirty: true })
-                        }
-                      }}
-                      returnKeyType="done" />
-                  </Item>
-                </Right>
+                        onEndEditing={(event) => {
+                          if (this.state.expiration_date && this.state.expiration_date.length < 10) {
+                            this.setState({ expiration_date: null })
+                          } else {
+                            this.setState({ dirty: true })
+                          }
+                        }}
+                        returnKeyType="done" />
+                    </Item>
+                  </Col></Row>
               </CardItem>
               <CardItem>
-                <Left>
+                <Row><Col size={1}>
                   <Text>批號</Text>
-                </Left>
-                <Right>
-                  <Item success >
-                    <Input textAlign={'right'}
-                      value={`${this.state.batch ? this.state.batch : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ batch: text })
+                </Col>
+                  <Col size={2}>
+                    <Item success >
+                      <Input textAlign={'right'}
+                        value={`${this.state.batch ? this.state.batch : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ batch: text })
+                          }
                         }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-                  </Item>
-                </Right>
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+                    </Item>
+                  </Col></Row>
               </CardItem>
               <CardItem>
-                <Left>
+                <Row><Col size={1}>
                   <Text>材積</Text>
-                </Left>
-                <Right>
-                  <Item inlineLabel>
-                    <Label>長：</Label>
-                    <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.box_length ? this.state.box_length : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ box_length: text })
+                </Col>
+                  <Col size={2}>
+                    <Item inlineLabel>
+                      <Label>長：</Label>
+                      <Input keyboardType='numeric' textAlign={'right'}
+                        value={`${this.state.box_length ? this.state.box_length : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ box_length: text })
+                          }
                         }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-                  </Item>
-                  <Item inlineLabel>
-                    <Label>寬：</Label>
-                    <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.box_width ? this.state.box_width : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ box_width: text })
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+                    </Item>
+                    <Item inlineLabel>
+                      <Label>寬：</Label>
+                      <Input keyboardType='numeric' textAlign={'right'}
+                        value={`${this.state.box_width ? this.state.box_width : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ box_width: text })
+                          }
                         }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-                  </Item>
-                  <Item inlineLabel>
-                    <Label>高：</Label>
-                    <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.box_height ? this.state.box_height : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ box_height: text })
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+                    </Item>
+                    <Item inlineLabel>
+                      <Label>高：</Label>
+                      <Input keyboardType='numeric' textAlign={'right'}
+                        value={`${this.state.box_height ? this.state.box_height : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ box_height: text })
+                          }
                         }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-                  </Item>
-                  <Item inlineLabel>
-                    <Label>重：</Label>
-                    <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.box_weight ? this.state.box_weight : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ box_weight: text })
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+                    </Item>
+                    <Item inlineLabel>
+                      <Label>重：</Label>
+                      <Input keyboardType='numeric' textAlign={'right'}
+                        value={`${this.state.box_weight ? this.state.box_weight : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ box_weight: text })
+                          }
                         }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-                  </Item>
-                </Right>
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+                    </Item>
+                  </Col></Row>
               </CardItem>
               <CardItem>
-                <Left>
+                <Row><Col size={1}>
                   <Text>堆疊</Text>
-                </Left>
-                <Right>
-                  <Item inlineLabel>
-                    <Label>底：</Label>
-                    <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.stack_base ? this.state.stack_base : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ stack_base: text })
+                </Col>
+                  <Col size={2}>
+                    <Item inlineLabel>
+                      <Label>底：</Label>
+                      <Input keyboardType='numeric' textAlign={'right'}
+                        value={`${this.state.stack_base ? this.state.stack_base : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ stack_base: text })
+                          }
                         }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-                  </Item>
-                  <Item inlineLabel>
-                    <Label>高：</Label>
-                    <Input keyboardType='numeric' textAlign={'right'}
-                      value={`${this.state.stack_level ? this.state.stack_level : ''}`}
-                      onChangeText={
-                        (text) => {
-                          this.setState({ stack_level: text })
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+                    </Item>
+                    <Item inlineLabel>
+                      <Label>高：</Label>
+                      <Input keyboardType='numeric' textAlign={'right'}
+                        value={`${this.state.stack_level ? this.state.stack_level : ''}`}
+                        onChangeText={
+                          (text) => {
+                            this.setState({ stack_level: text })
+                          }
                         }
-                      }
-                      onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                      returnKeyType="done" />
-                  </Item>
-                </Right>
+                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                        returnKeyType="done" />
+                    </Item>
+                  </Col></Row>
               </CardItem>
             </Card> : null
           }
@@ -424,7 +431,7 @@ class ReceiptVerifyItem extends Component {
           </View>
 
         </Content>
-      </Container>
+      </Container >
     );
   }
 }
