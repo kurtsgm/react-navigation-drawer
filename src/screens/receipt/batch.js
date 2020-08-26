@@ -28,6 +28,7 @@ import Dialog from "react-native-dialog";
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { apiFetch,BATCH_SUBMIT_SHELVES,GET_RECEIPT_ITEM } from "../../api"
 import styles from "./styles";
+import {temperatureColor} from '../../common'
 
 class BatchReceipt extends Component {
   constructor(props) {
@@ -203,6 +204,17 @@ class BatchReceipt extends Component {
               <Text>{item.stack_base} X {item.stack_level} </Text>
             </Right>
           </CardItem>
+          <CardItem>
+            <Left>
+              <Text>溫層</Text>
+            </Left>
+            <Right>
+              <Text style={{color: temperatureColor(item.product_temperature)}}>
+                {item.product_temperature}
+              </Text>
+            </Right>
+          </CardItem>
+
         </Card> }
         <List>
           <ListItem itemDivider key='header'>

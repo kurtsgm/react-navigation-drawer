@@ -32,12 +32,13 @@ class RecommendShelf extends Component {
     const { params } = this.props.navigation.state;
     this.state = {
       shelf_token: params.shelf.token,
+      temperature: params.shelf.temperature_name,
       show_picker: false,
       isModalVisible: false,
       confirm_shelf: null,
       receipt_id: params.receipt_id,
       items: params.items.map(item => {
-        item.total_quantity = Math.min(item.ready_to_receive * item.pcs_per_box,item.verified_pcs-item.received_pcs)
+        item.total_quantity = Math.min(item.ready_to_receive * item.pcs_per_box, item.verified_pcs - item.received_pcs)
         return item
       })
     }
@@ -77,9 +78,9 @@ class RecommendShelf extends Component {
       }
     });
   }
-  checkItemValid(item){
-    let _original_quantity = item.ready_to_receive * item.pcs_per_box 
-    return _original_quantity- item.total_quantity < item.pcs_per_box && _original_quantity >= item.total_quantity
+  checkItemValid(item) {
+    let _original_quantity = item.ready_to_receive * item.pcs_per_box
+    return _original_quantity - item.total_quantity < item.pcs_per_box && _original_quantity >= item.total_quantity
   }
   render() {
     const { back } = this.props.navigation;
@@ -122,7 +123,18 @@ class RecommendShelf extends Component {
                   }
                 } />
             </ListItem>
-
+            <ListItem key="shelf">
+              <Left>
+                <Text>
+                  溫層
+              </Text>
+              </Left>
+              <Body>
+                <Text>
+                  {this.state.temperature}
+                </Text>
+              </Body>
+            </ListItem>
             {this.state.items.map(data => {
               return <ListItem key={data.id}>
                 <Left>
@@ -131,8 +143,8 @@ class RecommendShelf extends Component {
                   </Text>
                 </Left>
                 <Body>
-                <Text>
-                  {data.ready_to_receive}
+                  <Text>
+                    {data.ready_to_receive}
                   箱
                 </Text>
                 </Body>
@@ -142,10 +154,10 @@ class RecommendShelf extends Component {
                       style={this.checkItemValid(data) ? {} : styles.text_red}
                       value={`${data.total_quantity}`}
                       onEndEditing={
-                        (event)=>{
+                        (event) => {
                           let items = this.state.items
                           for (let item of items) {
-                            if(!this.checkItemValid(item)){
+                            if (!this.checkItemValid(item)) {
                               Toast.show({
                                 text: "數值錯誤，數量差異過大",
                                 duration: 2500,
@@ -164,7 +176,7 @@ class RecommendShelf extends Component {
                             if (item.id == data.id) {
                               item.total_quantity = text
                               break
-                            }  
+                            }
                           }
                           this.setState({ items: items })
                         }
@@ -182,7 +194,7 @@ class RecommendShelf extends Component {
             <Dialog.Input keyboardType='numeric' value={this.state.confirm_shelf}
               placeholder='請掃描儲位'
               autoFocus={true}
-              onFocus={()=>this.setState({confirm_shelf:null})}
+              onFocus={() => this.setState({ confirm_shelf: null })}
               ref={(input) => { this.confirm_input = input; }}
               onChangeText={
                 (text) => {

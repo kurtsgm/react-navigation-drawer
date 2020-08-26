@@ -81,6 +81,20 @@ export function hashColor(str){
   return colour;
 }
 
+export function temperatureColor(str){
+  switch(str){
+    case '常溫':
+      return 'black';
+    case '恆溫':
+      return 'green';
+    case '低溫':
+      return 'cyan';
+    case '冷凍':
+      return 'red';
+      
+  }
+}
+
 
 export function boxText(box_pcs, quantity) {
   if (box_pcs && box_pcs > 0) {

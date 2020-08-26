@@ -21,6 +21,7 @@ import {
   Badge
 } from "native-base";
 
+import {temperatureColor} from '../../common'
 import Dialog from "react-native-dialog";
 
 import { Grid, Col, Row } from "react-native-easy-grid";
@@ -96,7 +97,6 @@ class ShowReceipt extends Component {
   }
 
   batchModeRender() {
-    console.log(this.state)
     return <Content>
       <List>
         {this.barcodeInput()}
@@ -142,7 +142,11 @@ class ShowReceipt extends Component {
                     {[item.product_uid, item.expiration_date, item.batch].filter(e => e).join('/')}
                   </Text>
                 </Row>
-
+                <Row>
+                  <Text style={{color: temperatureColor(item.product_temperature)}}>
+                    {item.product_temperature}
+                  </Text>
+                </Row>
               </Col>
               <Col size={2} style={styles.vertical_center} >
                 <Text>
@@ -245,6 +249,12 @@ class ShowReceipt extends Component {
                     {data.product_barcode}
                   </Text>
                 </Row>
+                <Row>
+                  <Text style={{color: temperatureColor(data.product_temperature)}}>
+                    {data.product_temperature}
+                  </Text>
+                </Row>
+
                 {
                   data.existing_shelves ?                 <Row>
                   { 
