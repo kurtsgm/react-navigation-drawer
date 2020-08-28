@@ -201,6 +201,12 @@ class ReceiptVerifyItem extends Component {
                     <Text>
                       {this.state.scheduled_pcs}
                     </Text>
+                    {
+                      parseInt(this.state.product_default_pcs) > 0 ? 
+                      <Text>
+                        {`(${Math.ceil(this.state.scheduled_pcs/parseInt(this.state.product_default_pcs))} 箱)`}
+                      </Text> : null
+                    }
                   </Col></Row>
               </CardItem>
               <CardItem>
