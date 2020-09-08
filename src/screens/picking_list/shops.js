@@ -43,7 +43,7 @@ class PickingListShops extends Component {
             id: picking_list.shop_id
           }
         }
-        if (picking_list.status == "done") {
+        if (picking_list.status == "done" || picking_list.status == 'terminated') {
           shops[picking_list.shop_id].done_count += 1
         }
       }
