@@ -29,8 +29,6 @@ class ReceiptVerifyIndex extends Component {
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
-  }
-  componentWillMount() {
     this.reload()
   }
   reload() {

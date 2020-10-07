@@ -29,8 +29,6 @@ class HighLayerShopIndex extends Component {
       shops: []
     }
     this.reload = this.reload.bind(this)
-  }
-  componentWillMount() {
     this.reload()
   }
   reload() {

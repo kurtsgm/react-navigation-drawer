@@ -127,5 +127,3 @@ export default class AppRoot extends React.Component {
 }
 
 
-console.disableYellowBox = true;
-

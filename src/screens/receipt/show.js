@@ -53,12 +53,11 @@ class ShowReceipt extends Component {
     this.singleModeRender = this.singleModeRender.bind(this)
     this.batchModeRender = this.batchModeRender.bind(this)
     this.barcodeInput = this.barcodeInput.bind(this)
+    this.reload()
+
   }
   setBatchMode(isBatch) {
     this.setState({ batch_mode: isBatch })
-  }
-  componentWillMount() {
-    this.reload()
   }
 
   barcodeInput() {

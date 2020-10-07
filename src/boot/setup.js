@@ -12,8 +12,6 @@
 //     this.state = {
 //       isReady: false
 //     };
-//   }
-//   componentWillMount() {
 //     this.loadFonts();
 //   }
 //   async loadFonts() {

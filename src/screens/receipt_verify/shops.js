@@ -27,6 +27,8 @@ class ReceiptVerifyShops extends Component {
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
+    this.reload()
+
   }
   reload() {
     apiFetch(GET_RECEIPTS_SHOPS,{to_be_verified: true},(_data) => {
@@ -34,9 +36,6 @@ class ReceiptVerifyShops extends Component {
     })
   }
 
-  componentWillMount() {
-    this.reload()
-  }
   onBack(){
     this.reload()
   }

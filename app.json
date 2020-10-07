@@ -9,7 +9,6 @@
         "CAMERA"
       ]
     },
-    "sdkVersion": "35.0.0",
     "platforms": [
       "ios",
       "android"
@@ -36,7 +35,6 @@
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#334393",
-      "supportsTablet": true
     }
   }
 }

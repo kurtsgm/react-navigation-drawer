@@ -35,8 +35,6 @@ class PickingLists extends Component {
       shop_name: params.shop_name
     }
     this.reload = this.reload.bind(this)
-  }
-  componentWillMount() {
     this.reload()
   }
   reload() {
@@ -69,6 +67,8 @@ class PickingLists extends Component {
               }
               <Text>
                 {`${picking_list.id} [${picking_list.orders_length}] ${picking_list.parent_id ? "\n(母批次: " + picking_list.parent_id + ")" : ''}`}
+                {"\n"}
+                {picking_list.channels.join("/")}
               </Text>
 
             </Left>

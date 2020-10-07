@@ -34,6 +34,8 @@ class ShowVerifyReceipt extends Component {
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
     this.addNewItem = this.addNewItem.bind(this)
+    this.reload()
+
   }
   reload() {
     const { receipt } = this.props.navigation.state.params;
@@ -61,9 +63,6 @@ class ShowVerifyReceipt extends Component {
       }
     })
 
-  }
-  componentWillMount() {
-    this.reload()
   }
   onBack() {
     this.reload()

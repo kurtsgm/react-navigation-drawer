@@ -27,6 +27,7 @@ class PickingListShops extends Component {
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
+    this.reload()
   }
   reload() {
     apiFetch(GET_PICKING_LISTS, {}, (picking_lists) => {
@@ -54,9 +55,6 @@ class PickingListShops extends Component {
     })
   }
 
-  componentWillMount() {
-    this.reload()
-  }
   onBack() {
     this.reload()
   }

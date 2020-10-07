@@ -33,6 +33,8 @@ class ReceiptVerifyItem extends Component {
     this.verify = this.verify.bind(this)
     this.valid = this.valid.bind(this)
     this.state = { dirty: false, previous_set: false, product_storage_types: [] }
+    this.reload()
+
   }
   reload() {
     const { item_id, receipt_id, new_item } = this.props.navigation.state.params;
@@ -96,9 +98,6 @@ class ReceiptVerifyItem extends Component {
       this.props.navigation.goBack()
     })
 
-  }
-  componentWillMount() {
-    this.reload()
   }
   render() {
     const { item_id, new_item } = this.props.navigation.state.params;

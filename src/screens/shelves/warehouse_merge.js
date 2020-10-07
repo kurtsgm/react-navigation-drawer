@@ -25,6 +25,8 @@ class WarehouseShelfMerge extends ShelfMerge {
     this.reloadProgress = this.reloadProgress.bind(this)
     this.title = '調撥接收'
     this.is_warehouse_merge = true
+    this.getWarehouses()
+
   }
   getWarehouses() {
     apiFetch(GET_WAREHOUSES, {}, data => {
@@ -132,9 +134,6 @@ class WarehouseShelfMerge extends ShelfMerge {
     </View>
   }
 
-  componentWillMount() {
-    this.getWarehouses()
-  }
 
 }
 

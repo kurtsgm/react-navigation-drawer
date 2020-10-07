@@ -32,16 +32,13 @@ class HighLayerShelf extends Component {
       high_layers: []
     }
     this.reload = this.reload.bind(this)
+    this.reload()
   }
   reload() {
     apiFetch(GET_HIGH_LAYER, {shop_id: this.state.shop_id,picking_list_ids:this.state.picking_list_ids}, (_data) => {
       this.setState({ high_layers: _data })
     })
   }
-  componentWillMount() {
-    this.reload()
-  }
-
 
   render() {
     let rows = this.state.high_layers.map(shelf => {

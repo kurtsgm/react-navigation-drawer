@@ -38,10 +38,9 @@ class SettingShops extends Component {
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
     this.onSave = this.onSave.bind(this)
-  }
-  componentWillMount() {
     this.reload()
   }
+
   reload() {
     apiFetch(GET_SHOPS, {}, (_data) => {
       this.setState({ shops: _data.shops,dirty: false })

@@ -27,6 +27,7 @@ class ReceiptShops extends Component {
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
+    this.reload()
   }
   reload() {
     apiFetch(GET_RECEIPTS_SHOPS,{},(_data) => {
@@ -34,9 +35,6 @@ class ReceiptShops extends Component {
     })
   }
 
-  componentWillMount() {
-    this.reload()
-  }
   onBack(){
     this.reload()
   }

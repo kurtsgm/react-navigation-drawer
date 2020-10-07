@@ -65,8 +65,7 @@ class Home extends Component {
   }
 
   render() {
-    return (
-      <Container>
+    return <Container>
         <StatusBar barStyle="light-content" />
         <ImageBackground source={launchscreenBg} style={styles.imageContainer}>
           <Content>
@@ -111,11 +110,10 @@ class Home extends Component {
             </View>
           </Content>
           <Text style={{ backgroundColor: 'transparent',bottom: 0 ,textAlign:'right'}} >
-            版本: 1.1.20 (2020/09/08) 
+            版本: 1.1.20 (2020/09/08)
           </Text>
         </ImageBackground>
-      </Container>
-    );
+      </Container>    
   }
 }
 

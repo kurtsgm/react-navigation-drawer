@@ -31,8 +31,6 @@ class Receipt extends Component {
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
     this.onReceiptUpdate = this.onReceiptUpdate.bind(this)
-  }
-  componentWillMount() {
     this.reload()
   }
   reload() {
