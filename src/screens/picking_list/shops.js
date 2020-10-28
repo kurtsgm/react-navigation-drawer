@@ -31,7 +31,6 @@ class PickingListShops extends Component {
   }
   reload() {
     apiFetch(GET_PICKING_LISTS, {}, (picking_lists) => {
-      console.log(picking_lists)
       let shops = {}
       for (let picking_list of picking_lists) {
         if (shops[picking_list.shop_id]) {
@@ -48,7 +47,6 @@ class PickingListShops extends Component {
           shops[picking_list.shop_id].done_count += 1
         }
       }
-      console.log(shops)
       this.setState({
         shops: Object.keys(shops).map((shop_id) => shops[shop_id])
       })

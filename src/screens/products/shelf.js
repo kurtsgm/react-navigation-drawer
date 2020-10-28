@@ -22,19 +22,24 @@ class ProductShelf extends Component {
     super(props)    
   }
   render() {
-    const { params: shelve_storages } = this.props.navigation.state;
-    let rows = shelve_storages.sort((a, b) => {
+    const { params } = this.props.navigation.state;
+    const {shelf_storages ,product} = params
+    let rows = shelf_storages.sort((a, b) => {
       return a.shelf.token.localeCompare(b.shelf.token)
-    }).map((shelve_storage,index)=>{
-      return <ListItem key={`${index}${shelve_storage.shelf.token}`}>
+    }).map((shelf_storage,index)=>{
+      let box_count = product.default_pcs && product.default_pcs > 0 ? Math.floor(shelf_storage.pcs / product.default_pcs) : null
+      return <ListItem key={`${index}${shelf_storage.shelf.token}`}>
         <Left>
           <Text>
-            {shelve_storage.shelf.token}
+            {shelf_storage.shelf.token}
           </Text>
         </Left>
         <Right>
           <Text>
-            {shelve_storage.pcs}
+            {shelf_storage.pcs}
+            {
+              box_count ? `\n${box_count} 箱 / ${shelf_storage.pcs % product.default_pcs} 散` : ''
+            }
           </Text>
         </Right>
       </ListItem>

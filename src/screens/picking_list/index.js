@@ -49,7 +49,6 @@ class PickingLists extends Component {
       picking_list.onBack = () => { this.reload() }
       return <ListItem key={picking_list.id} button onPress={() =>
         this.props.navigation.navigate("ShowPickingList", picking_list)}>
-          {console.log(picking_list)}
           <Row>
             <Left>
               {

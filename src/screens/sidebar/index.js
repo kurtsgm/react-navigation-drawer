@@ -116,6 +116,9 @@ class SideBar extends Component {
       loading: false
     };
     this.route = this.route.bind(this)
+    if(this.props.auth_token == null){
+      this.props.navigation.navigate("Home")
+    }
   }
 
   route(route){
@@ -124,11 +127,6 @@ class SideBar extends Component {
       this.props.navigation.navigate("Home")
     }else{
       this.props.navigation.navigate(route)
-    }
-  }
-  componentWillUpdate(){
-    if(this.props.auth_token == null){
-      this.props.navigation.navigate("Home")
     }
   }
   render() {

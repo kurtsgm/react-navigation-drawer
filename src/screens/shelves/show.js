@@ -47,6 +47,8 @@ class ShelfShow extends Component {
         </ListItem>)
         previous_shop = storage.product_storage.shop_id
       }      
+      const { product } = storage.product_storage
+      let box_count = product.default_pcs && product.default_pcs > 0 ? Math.floor(storage.pcs / product.default_pcs) : null
       rows.push(<ListItem key={storage.id} button onPress={() => {
         this.props.navigation.navigate("ShelfProduct",{storage: storage, reload: this.reload,shelf_token:this.state.shelf.token})
       }}>
@@ -63,6 +65,10 @@ class ShelfShow extends Component {
         <Body>
         <Text style={styles.blue}>
           {storage.pcs}
+          {
+              box_count ? `\n${box_count} 箱 / ${storage.pcs % product.default_pcs} 散` : ''
+          }
+
         </Text>
 
         </Body>

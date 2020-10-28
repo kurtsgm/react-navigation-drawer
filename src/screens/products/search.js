@@ -59,7 +59,7 @@ class ProductSearch extends Component {
         previous_shop = product.shop_id
       }       
       rows.push(<ListItem key={product.id} button onPress={() =>
-        this.props.navigation.navigate("ProductStorages", product.storages)
+        this.props.navigation.navigate("ProductStorages",{product: product, storages: product.storages})
       }>
         <Left>
           <Text>

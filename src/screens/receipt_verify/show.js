@@ -41,7 +41,6 @@ class ShowVerifyReceipt extends Component {
     const { receipt } = this.props.navigation.state.params;
     apiFetch(GET_RECEIPT, { id: receipt.id }, (_data) => {
       this.setState({ items: _data.items })
-      console.log(_data)
     })
   }
 

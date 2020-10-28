@@ -23,7 +23,8 @@ class ProductStorages extends Component {
   render() {
     let rows = []
     let previous_type = null
-    const { params: storages } = this.props.navigation.state;
+    const { params } = this.props.navigation.state;
+    const {storages, product} = params
     let sorted_storages = storages.sort((a,b)=>{
       return a.product_storage_type_id - b.product_storage_type_id
     })
@@ -38,11 +39,12 @@ class ProductStorages extends Component {
       if(storage.batch || storage.expiration_date){
         storage_title= [storage.batch,storage.expiration_date].filter(e=>e).join("/")
       }
+      
       rows.push(<ListItem key={storage.id} button onPress={() =>
-        this.props.navigation.navigate("ProductShelf",storage.shelf_storages)}>
+        this.props.navigation.navigate("ProductShelf",{shelf_storages: storage.shelf_storages,product: product})}>
         <Left>
           <Text>
-            {storage_title+" ("+ storage.pcs+")"}
+            {`${storage_title} (${storage.pcs})`}
           </Text>
         </Left>
         <Right>
