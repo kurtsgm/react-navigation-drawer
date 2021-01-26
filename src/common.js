@@ -48,7 +48,7 @@ export function normalize_shelf_barcode(barcode){
   tokens[1] = barcode.substring(3,5)
   tokens[2] = barcode.substring(5,6)
   if(barcode.length>6){
-    tokens[3] = barcode.substring(6,7)
+    tokens[3] = barcode.substring(6,9)
   }
   return tokens.filter(t=>t).join('-').toUpperCase()
 }
