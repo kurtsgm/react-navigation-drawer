@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "SDJ智慧倉儲系統",
-    "version": "1.0.70",
+    "version": "1.1.20",
     "android": {
       "package": "com.ibiza.sdj",
-      "versionCode": 20,
+      "versionCode": 21,
       "permissions": [
         "CAMERA"
       ]
@@ -38,3 +38,4 @@
     }
   }
 }
+
