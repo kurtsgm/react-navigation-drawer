@@ -29,7 +29,7 @@ import { store } from '../../redux/stores/store'
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST, ACTIVATE_PICKING } from "../../api"
 import { boxText,getShelfLayer,shelfSorter } from '../../common'
-
+import Barcode from 'react-native-barcode-expo';
 import styles from "./styles";
 
 const PRODUCT_MODE = "product_mode"
@@ -752,6 +752,7 @@ class ShowPickingList extends Component {
           </Right>
         </Header>
         <Content disableKBDismissScroll={true}>
+          <Barcode value={`${picking_list.id}`} format="CODE128" />
           <List key="picking-list">
             {
               [ "manager"].includes(store.getState().role) ?
