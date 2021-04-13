@@ -39,6 +39,9 @@ export const GET_SHOP_PRODUCT_STORAGE_TYPES = 'GET_SHOP_PRODUCT_STORAGE_TYPES'
 export const GET_SHOPS = "GET_SHOPS"
 export const SET_SHOPS = "SET_SHOPS"
 
+// Amphenol
+export const AMPHENOL_GET_RECEIPTS = 'AMPHENOL_GET_RECEIPTS'
+
 import {Toast} from 'native-base'
 
 const API_PATH = __DEV__ ? "/api" : ''
@@ -69,6 +72,10 @@ const Actions = {
   SET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "POST"},
   GET_WAREHOUSES: {path:`${API_PATH}/v1/warehouses`, method: "GET"},
   GET_TRANSFER_SHELVES: {path:`${API_PATH}/v1/transfer_receipts/today`, method: "GET"},
+  
+  AMPHENOL_CREATE_BOX_ID:  {path:`${API_PATH}/v1/amphenol/box_id`, method: "POST"},
+  AMPHENOL_GET_RECEIPTS:  {path:`${API_PATH}/v1/amphenol/receipts`, method: "GET"},
+  
 }
 
 

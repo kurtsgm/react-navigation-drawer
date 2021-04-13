@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "SDJ智慧倉儲系統",
-    "version": "1.1.30",
+    "version": "1.1.31",
     "android": {
       "package": "com.ibiza.sdj",
-      "versionCode": 21,
+      "versionCode": 22,
       "permissions": [
         "CAMERA"
       ]
@@ -34,7 +34,7 @@
     "androidStatusBarColor": "#334393",
     "androidStatusBar": {
       "barStyle": "light-content",
-      "backgroundColor": "#334393",
+      "backgroundColor": "#334393"
     }
   }
 }
