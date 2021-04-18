@@ -88,6 +88,10 @@ class AmphenolReceipts extends Component {
           })}>
           <Left>
             <Text>
+              {
+                receipt.status == "done" ?
+                  <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null
+              }
               {receipt.title}
             </Text>
           </Left>

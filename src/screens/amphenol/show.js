@@ -21,12 +21,11 @@ import {
   Badge
 } from "native-base";
 
+import Dialog from "react-native-dialog";
 
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { apiFetch, AMPHENOL_SHOW_RECEIPT } from "../../api"
+import { apiFetch, AMPHENOL_SHOW_RECEIPT ,AMPHENOL_DONE_RECEIPT} from "../../api"
 import styles from "./styles";
-
-import { normalize_shelf_barcode, MIN_SHELF_TOKEN_LENGTH } from '../../common'
 
 class AmphenolShowReceipt extends Component {
   constructor(props) {
@@ -36,22 +35,24 @@ class AmphenolShowReceipt extends Component {
       receipt_id: receipt.id,
       receipt_title: receipt.title,
       items: [],
+      isModalVisible: false
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
+    this.done = this.done.bind(this)
   }
-  componentDidMount(){
+  componentDidMount() {
     this.reload()
   }
   reload() {
-    apiFetch(AMPHENOL_SHOW_RECEIPT, {receipt_id: this.state.receipt_id}, (_data) => {
+    apiFetch(AMPHENOL_SHOW_RECEIPT, { receipt_id: this.state.receipt_id }, (_data) => {
       let histories = _data.histories
       let items = []
-      for(let history of histories){
-        let shelf = items.filter(e=>e.shelf == history.to_shelf.token)[0]
-        if(shelf){
+      for (let history of histories) {
+        let shelf = items.filter(e => e.shelf == history.to_shelf.token)[0]
+        if (shelf) {
           shelf.quantity += history.quantity
-        }else{
+        } else {
           console.log('NOT FOUND')
           items.push({
             shelf: history.to_shelf.token,
@@ -60,7 +61,18 @@ class AmphenolShowReceipt extends Component {
           console.log(items)
         }
       }
-      this.setState({items: items})
+      this.setState({ items: items })
+    })
+  }
+
+  done(){
+    console.log('hERERE!')
+    apiFetch(AMPHENOL_DONE_RECEIPT, { receipt_id: this.state.receipt_id }, (_data) => {
+      Toast.show({
+        text: '已將此進貨單完結',
+        duration: 2500,
+        textStyle: { textAlign: "center" }
+      })
     })
   }
 
@@ -95,7 +107,7 @@ class AmphenolShowReceipt extends Component {
             <Title>{this.state.receipt_title}</Title>
           </Body>
           <Right>
-          <Button transparent>
+            <Button transparent>
               <Icon name="refresh" onPress={() => this.reload()} />
             </Button>
 
@@ -132,14 +144,36 @@ class AmphenolShowReceipt extends Component {
             }
           </List>
         </Content>
-        <Button success full style={[styles.mb15, styles.footer]} onPress={() => {
-          this.props.navigation.navigate("AmphenolReceiptShelf", {
-            receipt: this.props.navigation.state.params.receipt,
-            onBack: this.onBack})
+        <Footer>
+        <FooterTab>
+          <Button success full onPress={() => {
+            this.props.navigation.navigate("AmphenolReceiptShelf", {
+              receipt: this.props.navigation.state.params.receipt,
+              onBack: this.onBack
+            })
 
-        }}>
-          <Text>新增上架</Text>
-        </Button>
+          }}>
+            <Text style={styles.text_white} >新增上架</Text>
+          </Button>
+          <Button primary full onPress={() => {
+            this.setState({isModalVisible:true})
+          }}>
+            <Text style={styles.text_white} >結單</Text>
+          </Button>
+        </FooterTab>
+        </Footer>
+        <Dialog.Container visible={this.state.isModalVisible}>
+            <Dialog.Title>確認此單已經完成</Dialog.Title>            
+            <Dialog.Button label="確認" onPress={() => {
+              this.done()
+              this.props.navigation.state.params.onBack()
+              this.props.navigation.goBack()
+          
+              this.setState({isModalVisible:false})
+            }}></Dialog.Button>
+            <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+          </Dialog.Container>
+
 
       </Container>
     );
