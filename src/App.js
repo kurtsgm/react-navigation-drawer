@@ -46,6 +46,8 @@ import WarehouseShelfMerge from './screens/shelves/warehouse_merge'
 
 // Amphenol
 import AmphenolReceipts from './screens/amphenol/receipts'
+import AmphenolShowReceipt from './screens/amphenol/show'
+import AmphenolReceiptShelf from './screens/amphenol/shelf'
 
 import HighLayerShelfMerge from './screens/shelves/high_layer_merge'
 import Welcome from './screens/welcome/index'
@@ -103,6 +105,8 @@ const AppNavigator = createStackNavigator(
     ShelfIndex: {screen: ShelfIndex},
     ShelfProduct: {screen: ShelfProduct},
 
+    AmphenolShowReceipt: {screen: AmphenolShowReceipt},
+    AmphenolReceiptShelf: {screen: AmphenolReceiptShelf}
   },
   {
     initialRouteName: "Drawer",

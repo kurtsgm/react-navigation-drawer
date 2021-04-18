@@ -40,7 +40,11 @@ export const GET_SHOPS = "GET_SHOPS"
 export const SET_SHOPS = "SET_SHOPS"
 
 // Amphenol
+export const AMPHENOL_CREATE_BOX_ID ='AMPHENOL_CREATE_BOX_ID'
 export const AMPHENOL_GET_RECEIPTS = 'AMPHENOL_GET_RECEIPTS'
+export const AMPHENOL_CREATE_RECEIPT = 'AMPHENOL_CREATE_RECEIPT'
+export const AMPHENOL_SHOW_RECEIPT = 'AMPHENOL_SHOW_RECEIPT'
+export const AMPHENOL_RECEIVE_SHELF = 'AMPHENOL_RECEIVE_SHELF'
 
 import {Toast} from 'native-base'
 
@@ -75,7 +79,9 @@ const Actions = {
   
   AMPHENOL_CREATE_BOX_ID:  {path:`${API_PATH}/v1/amphenol/box_id`, method: "POST"},
   AMPHENOL_GET_RECEIPTS:  {path:`${API_PATH}/v1/amphenol/receipts`, method: "GET"},
-  
+  AMPHENOL_SHOW_RECEIPT:  {path:`${API_PATH}/v1/amphenol/receipts/{receipt_id}`, method: "GET"},
+  AMPHENOL_CREATE_RECEIPT:  {path:`${API_PATH}/v1/amphenol/receipts`, method: "POST"},
+  AMPHENOL_RECEIVE_SHELF:  {path:`${API_PATH}/v1/amphenol/receipts/{receipt_id}/receive_shelf`, method: "POST"},  
 }
 
 

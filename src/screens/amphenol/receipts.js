@@ -19,7 +19,7 @@ import {
 import Dialog from "react-native-dialog";
 import styles from "./styles";
 
-import { apiFetch, AMPHENOL_GET_RECEIPTS } from "../../api"
+import { apiFetch, AMPHENOL_GET_RECEIPTS, AMPHENOL_CREATE_RECEIPT } from "../../api"
 import { Grid, Col, Row } from "react-native-easy-grid";
 
 
@@ -35,25 +35,31 @@ class AmphenolReceipts extends Component {
     this.reload()
   }
   reload() {
-    apiFetch(AMPHENOL_GET_RECEIPTS,{},(_data) => {
+    apiFetch(AMPHENOL_GET_RECEIPTS, {}, (_data) => {
       this.setState({ receipts: _data })
     })
   }
 
-  onBack(){
+  onBack() {
     this.reload()
   }
 
-  addNewReceipt(){
-    
+  addNewReceipt(title) {
+    apiFetch(AMPHENOL_CREATE_RECEIPT, { title: title }, (_data) => {
+      this.props.navigation.navigate("AmphenolShowReceipt", {
+        receipt: _data,
+        onReceiptUpdate: this.onReceiptUpdate,
+        onBack: this.onBack
+      })
+    })
   }
 
-  onReceiptUpdate(receipt){
+  onReceiptUpdate(receipt) {
     let receipts = this.state.receipts
-    for(let _r of receipts){
-      if(_r.id == receipt.id){
+    for (let _r of receipts) {
+      if (_r.id == receipt.id) {
         _r.items = receipt.items
-        this.setState({receipts:receipts})
+        this.setState({ receipts: receipts })
         return
       }
     }
@@ -75,9 +81,11 @@ class AmphenolReceipts extends Component {
       }
       rows.push(
         <ListItem key={receipt.barcode} button onPress={() =>
-          this.props.navigation.navigate("ShowReceipt",{receipt:receipt,
-          onReceiptUpdate:this.onReceiptUpdate,
-          onBack:this.onBack})}>
+          this.props.navigation.navigate("AmphenolShowReceipt", {
+            receipt: receipt,
+            onReceiptUpdate: this.onReceiptUpdate,
+            onBack: this.onBack
+          })}>
           <Left>
             <Text>
               {receipt.title}
@@ -97,14 +105,11 @@ class AmphenolReceipts extends Component {
           <Left>
             <Button
               transparent
-              onPress={() => {
-                this.props.navigation.state.params.onBack()
-                this.props.navigation.goBack()
-              }
-              }
+              onPress={() => this.props.navigation.openDrawer()}
             >
-              <Icon name="arrow-back" />
+              <Icon name="menu" />
             </Button>
+
           </Left>
           <Body>
             <Title>{`安費諾入倉`}</Title>
@@ -124,29 +129,29 @@ class AmphenolReceipts extends Component {
               </List> : null
           }
         </Content>
-        <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
-              this.setState({ isModalVisible: true })            
-          }}>
-            <Text>新增項目</Text>
-          </Button>          
-          <Dialog.Container visible={this.state.isModalVisible}>
-            <Dialog.Title>請輸入入倉單號</Dialog.Title>
-            <Dialog.Input value={this.state.new_receipt_name}
-              placeholder='請輸入入倉單號'
-              autoFocus={true}
-              onFocus={()=>this.setState({new_receipt_name:null})}
-              onChangeText={
-                (text) => {
-                  this.setState({ new_receipt_name: text })
-                }
+        <Button success full style={[styles.mb15, styles.footer]} onPress={() => {
+          this.setState({ isModalVisible: true })
+        }}>
+          <Text>新增項目</Text>
+        </Button>
+        <Dialog.Container visible={this.state.isModalVisible}>
+          <Dialog.Title>請輸入入倉單號</Dialog.Title>
+          <Dialog.Input value={this.state.new_receipt_title}
+            placeholder='請輸入入倉單號'
+            autoFocus={true}
+            onFocus={() => this.setState({ new_receipt_title: null })}
+            onChangeText={
+              (text) => {
+                this.setState({ new_receipt_title: text })
               }
-              onEndEditing={(event) => {
-                this.setState({ isModalVisible: false })
-                this.addNewReceipt()
-              }}
-              returnKeyType="done" />
-            <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
-          </Dialog.Container>                  
+            }
+            onEndEditing={(event) => {
+              this.setState({ isModalVisible: false })
+              this.addNewReceipt(this.state.new_receipt_title)
+            }}
+            returnKeyType="done" />
+          <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+        </Dialog.Container>
       </Container>
     );
   }
