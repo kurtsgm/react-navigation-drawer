@@ -33,8 +33,9 @@ class ReceiptVerifyItem extends Component {
     this.verify = this.verify.bind(this)
     this.valid = this.valid.bind(this)
     this.state = { dirty: false, previous_set: false, product_storage_types: [] }
+  }
+  componentDidMount(){
     this.reload()
-
   }
   reload() {
     const { item_id, receipt_id, new_item } = this.props.navigation.state.params;
