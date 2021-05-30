@@ -161,8 +161,9 @@ class PickingListQC extends Component {
             </Button>
           </Left>
           <Body>
-            <Title>QC列表
-              {store.getState().username}
+            <Title>{
+            `#${this.state.picking_list.id} QC`
+            }
             </Title>
           </Body>
           <Right>

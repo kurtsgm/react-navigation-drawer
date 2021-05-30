@@ -26,7 +26,7 @@ import {
 import Dialog from "react-native-dialog";
 
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { apiFetch,BATCH_SUBMIT_SHELVES,GET_RECEIPT_ITEM } from "../../api"
+import { apiFetch,BATCH_SUBMIT_SHELVES,GET_RECEIPT_ITEM ,GET_SHELF_INFO} from "../../api"
 import styles from "./styles";
 import {temperatureColor} from '../../common'
 
@@ -236,6 +236,7 @@ class BatchReceipt extends Component {
                 </Col>
                 <Col size={4} style={styles.vertical_center} >
                 <Input style={styles.vertical_center} placeholder="請輸入儲位" autoFocus={false}
+                style={shelf.warning ? {color: 'orange'}: {}}
               value={shelf.token}
               keyboardType='numeric'
               returnKeyType="done"
@@ -262,9 +263,38 @@ class BatchReceipt extends Component {
                     }
                   }
                   this.setState({shelves:shelves})
-                  if(!this.checkUniqueness()){
+                  if(this.checkUniqueness()){
+                    apiFetch(GET_SHELF_INFO, { token: barcode }, data => {
+                      if(data){
+                        let shelves = this.state.shelves
+                        for(let shelf of shelves){
+                          if(shelf.token == barcode){
+                            if(data && data.storages.length > 0){
+                              Toast.show({
+                                text: "警告：該儲位已有貨品",
+                                duration: 2500,
+                                textStyle: { textAlign: "center" }
+                              })
+                              shelf.warning = true
+                            }else{
+                              shelf.warning = false
+                            }
+                            break
+                          }
+                        }
+                        this.setState({shelves:shelves})
+                      }else{
+                        Toast.show({
+                          text: `儲位 ${barcode} 不存在`,
+                          duration: 5000,
+                          type: 'danger',
+                          textStyle: { textAlign: "center" },
+                        })
+                      }
+                    })
+                  }else{
                     Toast.show({
-                      text: '錯誤，儲位重複',
+                      text: `錯誤，儲位 ${barcode} 重複`,
                       duration: 2500,
                       type: 'danger',
                       textStyle: { textAlign: "center" },

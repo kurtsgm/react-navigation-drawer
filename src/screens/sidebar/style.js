@@ -7,7 +7,7 @@ const deviceWidth = Dimensions.get("window").width;
 export default {
   drawerCover: {
     alignSelf: "stretch",
-    height: deviceHeight / 3.5,
+    height: deviceHeight / 6,
     width: null,
     position: "relative",
     marginBottom: 10
@@ -15,7 +15,7 @@ export default {
   drawerImage: {
     position: "absolute",
     left: Platform.OS === "android" ? deviceWidth / 10 : deviceWidth / 9,
-    top: Platform.OS === "android" ? deviceHeight / 13 : deviceHeight / 12,
+    top: Platform.OS === "android" ? deviceHeight / 25 : deviceHeight / 25,
     width: 210,
     height: 75,
     resizeMode: "cover"

@@ -110,7 +110,7 @@ const AppNavigator = createStackNavigator(
 
 const AppContainer = createAppContainer(AppNavigator);
 
-
+console.disableYellowBox = true;
 export default class AppRoot extends React.Component {
   render() {
     return (
