@@ -21,6 +21,7 @@ import ReceiptVerifyItem from './screens/receipt_verify/item'
 import PickingLists from './screens/picking_list'
 import PickingListShops from './screens/picking_list/shops'
 import ShowPickingList from './screens/picking_list/show'
+import PickingListQC from './screens/picking_list/qc'
 
 
 // Products
@@ -86,6 +87,7 @@ const AppNavigator = createStackNavigator(
 
     PickingLists: {screen: PickingLists},
     ShowPickingList: {screen: ShowPickingList},
+    PickingListQC: {screen: PickingListQC},
 
     BarcodeScanner: {screen: BarcodeScanner},
 

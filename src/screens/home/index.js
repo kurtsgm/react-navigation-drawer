@@ -13,6 +13,7 @@ import { Keyboard } from 'react-native'
 const launchscreenBg = require("../../../assets/launchscreen-bg.png");
 const launchscreenLogo = require("../../../assets/logo-wms.png");
 
+
 class Home extends Component {
   constructor(props) {
     super(props)
@@ -36,7 +37,7 @@ class Home extends Component {
         grant_type: 'password'
       }, (data) => {
         if (data.access_token) {
-          this.props.setToken(data.access_token, data.role)
+          this.props.setToken(data.access_token, data.role.this.state.username)
           navigate('Welcome')
         } else {
           this.setState({ login_failed: true })
@@ -54,7 +55,7 @@ class Home extends Component {
         grant_type: 'password'
       }, (data) => {
         if (data.access_token) {
-          this.props.setToken(data.access_token, data.role)
+          this.props.setToken(data.access_token, data.role,'a')
           navigate('Welcome')
         } else {
           this.setState({ login_failed: true })

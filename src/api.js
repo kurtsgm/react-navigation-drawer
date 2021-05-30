@@ -11,6 +11,7 @@ export const GET_RECEIPTS = "GET_RECEIPTS"
 export const GET_RECEIPTS_SHOPS = 'GET_RECEIPTS_SHOPS'
 export const GET_RECEIPT_ITEM = 'GET_RECEIPT_ITEM'
 export const VERIFY_RECEIPT_ITEM = 'VERIFY_RECEIPT_ITEM'
+export const VERIFY_RECEIPT_ALL_ITEM = 'VERIFY_RECEIPT_ALL_ITEM'
 
 
 export const RECEIVE_RECEIPT = "RECEIVE_RECEIPT"
@@ -50,6 +51,7 @@ const Actions = {
   GET_RECEIPT: {path: `${API_PATH}/v1/receipts/{id}`, method: "GET"},
   GET_RECEIPT_ITEM: {path: `${API_PATH}/v1/receipts/{receipt_id}/items/{id}`, method: "GET"},
   VERIFY_RECEIPT_ITEM: {path: `${API_PATH}/v1/receipts/{receipt_id}/items/{id}`, method: "POST"},
+  VERIFY_RECEIPT_ALL_ITEM: {path: `${API_PATH}/v1/receipts/{receipt_id}/verify_all`, method: "POST"},
   RECEIVE_RECEIPT: {path: `${API_PATH}/v1/receipts/{id}/receive`, method: "POST"},
   RECOMMEND_SHELF: {path: `${API_PATH}/v1/receipts/{id}/recommend`, method: "POST"},
   BATCH_SUBMIT_SHELVES: {path: `${API_PATH}/v1/receipts/{receipt_id}/items/{id}/shelves`, method: "POST"},
@@ -71,6 +73,32 @@ const Actions = {
   GET_TRANSFER_SHELVES: {path:`${API_PATH}/v1/transfer_receipts/today`, method: "GET"},
 }
 
+
+import { createConsumer } from '@rails/actioncable';
+global.addEventListener = () => {};
+global.removeEventListener = () => {};
+
+export function actionCableCumsumer(){
+  let host
+  if(store.getState().consumer){
+    console.log('GET CONSUMER')
+    return store.getState().consumer    
+  }else{
+    console.log('NO CONSUMER')
+    let consumer
+    if(__DEV__ ){
+      // host = "http://192.168.1.108:8088"
+      host = "ws://"+Constants.manifest.debuggerHost.split(":").shift().concat(":3000")
+  
+    }else{
+      host = "ws://wms-api.ibiza.com.tw"
+    }
+    consumer =  createConsumer(`${host}/cable?token=${store.getState().auth_token}`)
+    store.dispatch(AppActions.setConsumer(consumer))  
+    return consumer
+  }
+
+}
 
 export function apiFetch(action,data={},callback_function){
   let host

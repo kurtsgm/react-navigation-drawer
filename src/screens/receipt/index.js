@@ -20,7 +20,6 @@ import * as AppActions from '../../redux/actions/AppAction'
 import { apiFetch, GET_RECEIPTS } from "../../api"
 
 
-
 class Receipt extends Component {
   constructor(props) {
     super(props)
@@ -74,6 +73,14 @@ class Receipt extends Component {
           onReceiptUpdate:this.onReceiptUpdate,
           onBack:this.onBack})}>
           <Left>
+          {
+                receipt.status == "done" ?
+                  <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null
+              }
+              {
+                receipt.status == "processing" ?
+                  <Icon name="flash" style={{ color: "orange" }} /> : null
+              }
             <Text>
               {receipt.title}
             </Text>

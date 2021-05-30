@@ -752,7 +752,6 @@ class ShowPickingList extends Component {
           </Right>
         </Header>
         <Content disableKBDismissScroll={true}>
-          <Barcode value={`${picking_list.id}`} format="CODE128" />
           <List key="picking-list">
             {
               [ "manager"].includes(store.getState().role) ?
