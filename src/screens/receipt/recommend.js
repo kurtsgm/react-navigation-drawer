@@ -21,7 +21,7 @@ import {
 import Dialog from "react-native-dialog";
 
 import { Grid, Col } from "react-native-easy-grid";
-import { apiFetch, RECEIVE_RECEIPT } from "../../api"
+import { apiFetch, RECEIVE_RECEIPT,GET_SHELF_INFO } from "../../api"
 import styles from "./styles";
 import { normalize_shelf_barcode } from '../../common'
 
@@ -110,7 +110,7 @@ class RecommendShelf extends Component {
                   儲位
               </Text>
               </Left>
-              <Input placeholder='請指定儲位'
+              <Input placeholder='請指定儲位' style={this.state.warn_shelf ? {color: 'orange'}: {}}
                 keyboardType='numeric'
                 returnKeyType="done"
                 value={this.state.shelf_token}
@@ -120,10 +120,22 @@ class RecommendShelf extends Component {
                   (event) => {
                     let shelf_token = normalize_shelf_barcode(event.nativeEvent.text.trim())
                     this.setState({ shelf_token: shelf_token })
+                    apiFetch(GET_SHELF_INFO, { token: shelf_token }, data => {
+                      if(data && data.storages.length > 0){
+                        Toast.show({
+                          text: "警告：該儲位已有貨品",
+                          duration: 2500,
+                          textStyle: { textAlign: "center" }
+                        })
+                        this.setState({warn_shelf: true})
+                      }else{
+                        this.setState({warn_shelf: false})
+                      }
+                    })
                   }
                 } />
             </ListItem>
-            <ListItem key="shelf">
+            <ListItem key="temperature">
               <Left>
                 <Text>
                   溫層

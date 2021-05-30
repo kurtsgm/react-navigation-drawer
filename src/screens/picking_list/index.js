@@ -13,10 +13,11 @@ import {
   Right,
   List,
   Badge,
-  ListItem
+  ListItem,
+  ButtonGroup
 } from "native-base";
 
-import {hashColor} from '../../common'
+import { hashColor } from '../../common'
 
 import styles from "./styles";
 
@@ -47,10 +48,10 @@ class PickingLists extends Component {
   render() {
     let rows = this.state.picking_lists.map(picking_list => {
       picking_list.onBack = () => { this.reload() }
-      return <ListItem key={picking_list.id} button onPress={() =>
-        this.props.navigation.navigate("ShowPickingList", picking_list)}>
+      return <ListItem key={picking_list.id} >
+        <Grid>
           <Row>
-            <Left>
+            <Col size={1}>
               {
                 picking_list.status == "done" ?
                   <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null
@@ -64,36 +65,48 @@ class PickingLists extends Component {
                 picking_list.status == "processing" ?
                   <Icon name="flash" style={{ color: "orange" }} /> : null
               }
+            </Col>
+            <Col size={4}>
+
               <Text>
                 {`${picking_list.id} [${picking_list.orders_length}] ${picking_list.parent_id ? "\n(母批次: " + picking_list.parent_id + ")" : ''}`}
                 {"\n"}
                 {picking_list.channels.join("/")}
               </Text>
 
-            </Left>
-            <Body>
-            <Text>
+            </Col>
+            <Col size={4}>
+              <Text>
                 {picking_list.close_date}
               </Text>
-              
+
               {
-                picking_list.shipping_types.map(shipping_type=>{
+                picking_list.shipping_types.map(shipping_type => {
                   return <Badge key={shipping_type}
                     style={{
                       height: 25,
                       backgroundColor: hashColor(shipping_type)
                     }}
-                  textStyle={{ color: "white" }}>
+                    textStyle={{ color: "white" }}>
                     <Text>{shipping_type}</Text>
                   </Badge>
                 })
               }
-            </Body>
-            <Right>
-              <Icon name="arrow-forward" style={{ color: "#999" }} />
+            </Col >
+            <Col size={5}  style={{ flexDirection: 'row',flex: 'right' }}>
+              <Button button  bordered  onPress={() =>
+                this.props.navigation.navigate("ShowPickingList", picking_list)}>
 
-            </Right>
+                <Text>揀貨</Text></Button>
+              <Button button  bordered onPress={() =>
+                this.props.navigation.navigate("PickingListQC", picking_list)}>
+
+                <Text>QC</Text>
+
+              </Button>
+            </Col>
           </Row>
+        </Grid>
       </ListItem>
     })
 
@@ -108,7 +121,7 @@ class PickingLists extends Component {
                 this.props.navigation.state.params.onBack()
                 this.props.navigation.goBack()
               }
-            }
+              }
             >
               <Icon name="arrow-back" />
             </Button>

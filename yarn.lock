@@ -1708,6 +1708,11 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
+"@rails/actioncable@^6.0.3-7":
+  version "6.0.3-7"
+  resolved "https://registry.yarnpkg.com/@rails/actioncable/-/actioncable-6.0.3-7.tgz#9993c12bd86e254889c5f401be4df7bb2414d180"
+  integrity sha512-ND+0rRj0NQVrv8SYSLSjKyHaXLcFEB02/9+1hsbz7BgufhJcOr/eJ7Y+a/278nAmzKd7mLDQYusHwZ0Dmn7rRw==
+
 "@react-native-community/cli-debugger-ui@^4.9.0":
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-4.9.0.tgz#4177764ba69243c97aa26829d59d9501acb2bd71"
@@ -3190,6 +3195,11 @@ expo-font@~8.3.0:
   dependencies:
     fbjs "1.0.0"
     fontfaceobserver "^2.1.0"
+
+expo-keep-awake@^9.1.2:
+  version "9.1.2"
+  resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-9.1.2.tgz#b3e52c7bef0ade975ae88637a2bf980f6b573368"
+  integrity sha512-CCuEOQUNLYtMA0rt0sQ9u5LlIMH7lDJG7dImoorfKMsP95yHXy8dl3oCdtaz2zbsPgggVYeom9gE+gQu+Ki4rQ==
 
 expo-keep-awake@~8.3.0:
   version "8.3.0"
