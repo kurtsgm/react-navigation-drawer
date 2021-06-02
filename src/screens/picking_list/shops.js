@@ -14,20 +14,30 @@ import {
   ListItem
 } from "native-base";
 import styles from "./styles";
+import Dialog from "react-native-dialog";
 
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_PICKING_LISTS } from "../../api"
+import { apiFetch, GET_PICKING_LISTS, GET_PICKING_LIST } from "../../api"
 import { Grid, Col, Row } from "react-native-easy-grid";
 
 class PickingListShops extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      shops: []
+      shops: [],
+      target_picking_list_id: null,
+      isModalVisible: false
     }
     this.reload = this.reload.bind(this)
+    this.getPickingList = this.getPickingList.bind(this)
     this.onBack = this.onBack.bind(this)
     this.reload()
+  }
+
+  getPickingList(id) {
+    apiFetch(GET_PICKING_LIST, {id: id}, (picking_list) => {
+      this.props.navigation.navigate("PickingListQC", picking_list)
+    })
   }
   reload() {
     apiFetch(GET_PICKING_LISTS, {}, (picking_lists) => {
@@ -98,12 +108,36 @@ class PickingListShops extends Component {
           </Body>
           <Right>
             <Button transparent>
+              <Icon name="search" onPress={() => this.setState({ isModalVisible: true })} />
+            </Button>
+            <Button transparent>
               <Icon name="refresh" onPress={() => this.reload()} />
+
             </Button>
           </Right>
         </Header>
-
         <Content>
+          <Dialog.Container visible={this.state.isModalVisible}>
+            <Dialog.Title>請輸入揀貨批次</Dialog.Title>
+            <Dialog.Input
+              keyboardType='numeric'
+              placeholder='請輸入揀貨批次'
+              autoFocus={true}
+              onFocus={() => this.setState({ target_picking_list_id: null })}
+              onChangeText={
+                (text) => {
+                  this.setState({ target_picking_list_id: text })
+                }
+              }
+              onEndEditing={(event) => {
+                if(parseInt(this.state.target_picking_list_id)>0){
+                  this.getPickingList(this.state.target_picking_list_id)
+                }
+                this.setState({ isModalVisible: false })
+              }}
+              returnKeyType="done" />
+            <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+          </Dialog.Container>
           {
             this.state.shops.length > 0 ?
               <List>

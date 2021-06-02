@@ -50,7 +50,7 @@ class PickingListQC extends Component {
   reload(){
     apiFetch(GET_PICKING_LIST, { id: this.state.picking_list.id }, (_data) => {
       this.setState({
-        orders: _data.orders.filter(order=>['done','processing'].includes(order.status))
+        orders: _data.orders.filter(order=>['done','processing'].includes(order.status)).sort((a,b)=>a.picking_index - b.picking_index)
       })
     })
   }
@@ -58,6 +58,8 @@ class PickingListQC extends Component {
   connect() {
     let consumer = actionCableCumsumer()
     let self = this
+    console.log('cable')
+    console.log(global.cable_connected)
     if(!global.cable_connected){
       global.cable_connected = consumer.subscriptions.create({ channel: 'AppQcChannel' }, {
         connected() {
@@ -129,12 +131,13 @@ class PickingListQC extends Component {
         <ListItem key={order.barcode} style={order.processing ? {backgroundColor: 'lightgreen',width: '100%', marginLeft: 0, paddingLeft: 0, paddingRight: 0, marginRight: 0} : {}}>
           <Grid>
             <Row >
-            <Col size={1}>
-              </Col>
               <Col size={1}>
                 { status }
               </Col>
-              <Col size={8}>
+              <Col size={4}>
+                <Text style={{fontSize:20,top:24}}>{order.picking_index}</Text>
+              </Col>
+              <Col size={10}>
                 <Barcode height={50} value={`${order.barcode}`}  background={null} format="CODE128" text={order.name}/>
               </Col>
 

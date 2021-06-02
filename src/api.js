@@ -91,7 +91,7 @@ export function actionCableCumsumer(){
       host = "ws://"+Constants.manifest.debuggerHost.split(":").shift().concat(":3000")
   
     }else{
-      host = "ws://wms-api.ibiza.com.tw"
+      host = "wss://wms-api.ibiza.com.tw"
     }
     consumer =  createConsumer(`${host}/cable?token=${store.getState().auth_token}`)
     store.dispatch(AppActions.setConsumer(consumer))  
