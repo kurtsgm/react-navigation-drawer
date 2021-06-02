@@ -37,7 +37,7 @@ class Home extends Component {
         grant_type: 'password'
       }, (data) => {
         if (data.access_token) {
-          this.props.setToken(data.access_token, data.role.this.state.username)
+          this.props.setToken(data.access_token, data.role,this.state.username)
           navigate('Welcome')
         } else {
           this.setState({ login_failed: true })
