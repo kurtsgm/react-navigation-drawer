@@ -37,7 +37,7 @@ class Home extends Component {
         grant_type: 'password'
       }, (data) => {
         if (data.access_token) {
-          this.props.setToken(data.access_token, data.role.this.state.username)
+          this.props.setToken(data.access_token, data.role,this.state.username)
           navigate('Welcome')
         } else {
           this.setState({ login_failed: true })
@@ -111,7 +111,7 @@ class Home extends Component {
             </View>
           </Content>
           <Text style={{ backgroundColor: 'transparent',bottom: 0 ,textAlign:'right'}} >
-            版本: 1.1.32 (2021/04/18)
+            版本: 1.1.35 (2021/06/02)
           </Text>
         </ImageBackground>
       </Container>    

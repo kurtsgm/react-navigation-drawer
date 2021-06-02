@@ -90,14 +90,6 @@ const datas = [
     roles: ['admin','manager','staff','parttime']
   },
   { 
-    name: '安費諾入倉',
-    route: 'AmphenolReceipts',
-    icon: 'truck',
-    bg: "#C5F442",
-    roles: ['admin','manager','staff','parttime']
-  },
-
-  { 
     name: '關聯客戶',
     route: 'SettingShops',
     icon: 'cog',
