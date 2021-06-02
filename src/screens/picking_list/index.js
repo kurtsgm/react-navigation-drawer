@@ -93,7 +93,7 @@ class PickingLists extends Component {
                 })
               }
             </Col >
-            <Col size={5}  style={{ flexDirection: 'row',flex: 'right' }}>
+            <Col size={5}  style={{ flexDirection: 'row' }}>
               <Button button  bordered  onPress={() =>
                 this.props.navigation.navigate("ShowPickingList", picking_list)}>
 
