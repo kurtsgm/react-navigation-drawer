@@ -32,23 +32,35 @@ class HighLayerPickingLists extends Component {
       shop_name: params.shop_name,
       shop_id: params.shop_id,
       picking_lists: params.picking_lists,
+      checkedAll:false
     }
     this.togglePicking = this.togglePicking.bind(this)
+    this.toggleCheckAll = this.toggleCheckAll.bind(this)
   }
   reload() {
-    apiFetch(GET_PICKING_LISTS, { shop_id: this.state.shop_id,ready_to_pick: true}, (_data) => {
+    apiFetch(GET_PICKING_LISTS, { shop_id: this.state.shop_id, ready_to_pick: true }, (_data) => {
       this.setState({ picking_lists: _data })
+      console.log(_data)
     })
   }
-  togglePicking(picking_id) {
+
+  toggleCheckAll(){
     let pickings = this.state.picking_lists
     for(let picking of pickings){
-      if(picking.id == picking_id){
+      picking.checked = !this.state.checkedAll
+    }
+    this.setState({checkedAll: !this.state.checkedAll,picking_lists:pickings})
+  }
+
+  togglePicking(picking_id) {
+    let pickings = this.state.picking_lists
+    for (let picking of pickings) {
+      if (picking.id == picking_id) {
         picking.checked = !picking.checked
         break
       }
     }
-    this.setState({picking_lists: pickings})
+    this.setState({ picking_lists: pickings })
   }
 
   render() {
@@ -60,17 +72,19 @@ class HighLayerPickingLists extends Component {
       >
         <Grid>
           <Col size={1} >
-            <CheckBox checked={picking.checked} onPress={() => {
-              this.togglePicking(picking.id)
-            }
-            } />
+            <CheckBox checked={picking.checked} />
           </Col>
-          <Col size={3} >
+          <Col size={2} >
             <Text>
               {`# ${picking.id}`}
             </Text>
           </Col>
-          <Col size={3} >
+          <Col size={4} >
+            <Text>
+              {picking.channels.join("/")}
+            </Text>
+          </Col>
+          <Col size={2} >
             <Text>
               {picking.created_date}
             </Text>
@@ -108,6 +122,26 @@ class HighLayerPickingLists extends Component {
           {
             rows.length > 0 ?
               <List>
+                <ListItem onPress={() => {
+                        this.toggleCheckAll()
+                      }
+                      } >
+                  <Grid>
+                    <Col size={1} >
+                      <CheckBox checked={this.state.checkedAll} />
+                    </Col>
+                    <Col size={2} >
+                      <Text>
+                      </Text>
+                    </Col>
+                    <Col size={4} >
+                      <Text>
+                        全選/全不選
+                      </Text>
+                    </Col>
+
+                  </Grid>
+                </ListItem>
                 {rows}
                 <ListItem>
                   {/* Dummy */}
@@ -116,10 +150,10 @@ class HighLayerPickingLists extends Component {
           }
         </Content>
         <View style={styles.footer}>
-          {this.state.picking_lists.filter(p=>p.checked).length > 0 ?
+          {this.state.picking_lists.filter(p => p.checked).length > 0 ?
             <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
 
-              this.props.navigation.navigate("HighLayerShelf", {onBack: () => { this.reload() }, shop_id:this.state.shop_id,shop_name:this.state.shop_name,picking_list_ids: this.state.picking_lists.filter(p=>p.checked).map(p=>p.id) })
+              this.props.navigation.navigate("HighLayerShelf", { onBack: () => { this.reload() }, shop_id: this.state.shop_id, shop_name: this.state.shop_name, picking_list_ids: this.state.picking_lists.filter(p => p.checked).map(p => p.id) })
 
             }}>
               <Text>確認</Text>
