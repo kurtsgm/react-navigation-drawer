@@ -15,13 +15,16 @@ import {
   Right,
   List,
   ListItem,
-  CheckBox
+  CheckBox,
+  Badge
 } from "native-base";
 import styles from "./styles";
 
 import { apiFetch, GET_PICKING_LISTS } from "../../api"
 
 import { Grid, Col, Row } from "react-native-easy-grid";
+
+import { hashColor } from '../../common'
 
 class HighLayerPickingLists extends Component {
   constructor(props) {
@@ -81,7 +84,18 @@ class HighLayerPickingLists extends Component {
           </Col>
           <Col size={4} >
             <Text>
-              {picking.channels.join("/")}
+            {
+                picking.shipping_types.map(shipping_type => {
+                  return <Badge key={shipping_type}
+                    style={{
+                      height: 25,
+                      backgroundColor: hashColor(shipping_type)
+                    }}
+                    textStyle={{ color: "white" }}>
+                    <Text>{shipping_type}</Text>
+                  </Badge>
+                })
+              }
             </Text>
           </Col>
           <Col size={2} >
