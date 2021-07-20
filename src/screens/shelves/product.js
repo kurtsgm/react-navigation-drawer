@@ -72,6 +72,14 @@ class ShelfProduct extends Component {
                 </Body>
               </Left>
             </CardItem>
+            <CardItem>
+              <Left>
+                <Text>品號</Text>
+              </Left>
+              <Right>
+              <Text>{storage.product_storage.product.uid}</Text>
+              </Right>
+            </CardItem>
 
             <CardItem>
               <Left>
