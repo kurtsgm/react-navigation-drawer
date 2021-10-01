@@ -209,7 +209,7 @@ class ShowReceipt extends Component {
           onEndEditing={(event) => {
             this.setState({ isModalVisible: false })
             let items = this.state.items
-            for (item of items) {
+            for (let item of items) {
               if (item.id == this.state.currentItemId) {
                 item.ready_to_receive = parseInt(event.nativeEvent.text)
                 if (item.ready_to_receive > (item.verified_box_count - item.received_count)) {
@@ -360,7 +360,7 @@ class ShowReceipt extends Component {
   }
 
   recommend() {
-    items = this.state.items.map((item) => {
+    let items = this.state.items.map((item) => {
       if (item.ready_to_receive > 0) {
         return { id: item.id, quantity: item.ready_to_receive }
       }
@@ -425,29 +425,35 @@ class ShowReceipt extends Component {
             : null
 
         }
-        <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
-          this.setState({ isNewItemModalVisible: true })
-        }}>
-          <Text>新增項目</Text>
-        </Button>
-        <Dialog.Container visible={this.state.isNewItemModalVisible}>
-          <Dialog.Title>請輸入品號或條碼</Dialog.Title>
-          <Dialog.Input value={this.state.new_item_uid}
-            placeholder='請輸入品號或條碼'
-            autoFocus={true}
-            onFocus={() => this.setState({ new_item_uid: null })}
-            onChangeText={
-              (text) => {
-                this.setState({ new_item_uid: text })
-              }
-            }
-            onEndEditing={(event) => {
-              this.setState({ isNewItemModalVisible: false })
-              this.addNewItem()
-            }}
-            returnKeyType="done" />
-          <Dialog.Button label="取消" onPress={() => this.setState({ isNewItemModalVisible: false })} />
-        </Dialog.Container>
+        {
+          this.item_count() == 0 ?
+            <Button success full style={[styles.mb15, styles.footer]} onPress={() => {
+              this.setState({ isNewItemModalVisible: true })
+            }}>
+              <Text>新增項目</Text>
+            </Button> : null
+        }
+        { this.item_count() == 0 ?
+            <Dialog.Container visible={this.state.isNewItemModalVisible}>
+              <Dialog.Title>請輸入品號或條碼</Dialog.Title>
+              <Dialog.Input value={this.state.new_item_uid}
+                placeholder='請輸入品號或條碼'
+                autoFocus={true}
+                onFocus={() => this.setState({ new_item_uid: null })}
+                onChangeText={
+                  (text) => {
+                    this.setState({ new_item_uid: text })
+                  }
+                }
+                onEndEditing={(event) => {
+                  this.setState({ isNewItemModalVisible: false })
+                  this.addNewItem()
+                }}
+                returnKeyType="done" />
+              <Dialog.Button label="取消" onPress={() => this.setState({ isNewItemModalVisible: false })} />
+            </Dialog.Container> : null
+  
+        }
         <Footer>
           <FooterTab>
             <Button active={!this.state.batch_mode} onPress={() => this.setBatchMode(false)}>
