@@ -54,7 +54,7 @@ class ShelfShow extends Component {
       }}>
         <Left>
           <Text>
-              {`${storage.product_storage.product.name}\n${storage.product_storage.product.barcode}\n${[
+              {`${storage.product_storage.product.name}\n${storage.product_storage.product.uid}\n${storage.product_storage.product.barcode}\n${[
                   storage.product_storage.storage_type_name,
                   storage.product_storage.expiration_date,
                   storage.product_storage.batch
