@@ -25,7 +25,7 @@ import {temperatureColor} from '../../common'
 import Dialog from "react-native-dialog";
 
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { apiFetch, GET_RECEIPT, RECEIVE_RECEIPT, RECOMMEND_SHELF } from "../../api"
+import { apiFetch, GET_RECEIPT, RECEIVE_RECEIPT, RECOMMEND_SHELF ,GET_PRODUCTS} from "../../api"
 import styles from "./styles";
 
 
@@ -42,7 +42,8 @@ class ShowReceipt extends Component {
       items: [],
       barcode: null,
       batch_mode: false,
-      all_checked: false
+      all_checked: false,
+      isNewItemModalVisible: false
     }
     this.recommend = this.recommend.bind(this)
     this.reload = this.reload.bind(this)
@@ -53,11 +54,31 @@ class ShowReceipt extends Component {
     this.singleModeRender = this.singleModeRender.bind(this)
     this.batchModeRender = this.batchModeRender.bind(this)
     this.barcodeInput = this.barcodeInput.bind(this)
+    this.addNewItem = this.addNewItem.bind(this)
     this.reload()
 
   }
   setBatchMode(isBatch) {
     this.setState({ batch_mode: isBatch })
+  }
+
+  addNewItem() {
+    const { receipt } = this.props.navigation.state.params;
+    apiFetch(GET_PRODUCTS, { barcode: this.state.new_item_uid, shop_id: receipt.shop_id }, (_data) => {
+      if (_data.length > 0) {
+        product = _data[0]
+        this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: receipt.id, new_item: product, onBack: ()=>this.reload() })
+      }
+      else {
+        Toast.show({
+          text: '錯誤，查無此品項',
+          duration: 2500,
+          type: 'danger',
+          position: "top",
+          textStyle: { textAlign: "center" }
+        })
+      }
+    })
   }
 
   barcodeInput() {
@@ -404,6 +425,29 @@ class ShowReceipt extends Component {
             : null
 
         }
+        <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
+          this.setState({ isNewItemModalVisible: true })
+        }}>
+          <Text>新增項目</Text>
+        </Button>
+        <Dialog.Container visible={this.state.isNewItemModalVisible}>
+          <Dialog.Title>請輸入品號或條碼</Dialog.Title>
+          <Dialog.Input value={this.state.new_item_uid}
+            placeholder='請輸入品號或條碼'
+            autoFocus={true}
+            onFocus={() => this.setState({ new_item_uid: null })}
+            onChangeText={
+              (text) => {
+                this.setState({ new_item_uid: text })
+              }
+            }
+            onEndEditing={(event) => {
+              this.setState({ isNewItemModalVisible: false })
+              this.addNewItem()
+            }}
+            returnKeyType="done" />
+          <Dialog.Button label="取消" onPress={() => this.setState({ isNewItemModalVisible: false })} />
+        </Dialog.Container>
         <Footer>
           <FooterTab>
             <Button active={!this.state.batch_mode} onPress={() => this.setBatchMode(false)}>
