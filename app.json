@@ -1,10 +1,10 @@
 {
   "expo": {
     "name": "SDJ智慧倉儲系統",
-    "version": "1.1.37",
+    "version": "1.1.39",
     "android": {
       "package": "com.ibiza.sdj",
-      "versionCode": 27,
+      "versionCode": 29,
       "permissions": [
         "CAMERA"
       ]
@@ -15,10 +15,6 @@
     ],
     "icon": "./assets/icon.png",
     "slug": "ibiza_sdj",
-    "loading": {
-      "hideExponentText": true,
-      "backgroundImage": "./assets/splashscreen.png"
-    },
     "updates": {
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
@@ -34,7 +30,6 @@
         "NSCameraUsageDescription": "使用您的相機來掃描Barcode或是QRCODE"
       }
     },
-    "androidStatusBarColor": "#334393",
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#334393"
