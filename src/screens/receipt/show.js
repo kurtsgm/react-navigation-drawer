@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View } from 'react-native';
+import { View, Alert } from 'react-native';
 import {
   Container,
   Header,
@@ -25,7 +25,7 @@ import {temperatureColor} from '../../common'
 import Dialog from "react-native-dialog";
 
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { apiFetch, GET_RECEIPT, RECEIVE_RECEIPT, RECOMMEND_SHELF ,GET_PRODUCTS} from "../../api"
+import { apiFetch, GET_RECEIPT, RECEIVE_RECEIPT, CLOSE_RECEIPT,RECOMMEND_SHELF ,GET_PRODUCTS} from "../../api"
 import styles from "./styles";
 
 
@@ -55,6 +55,7 @@ class ShowReceipt extends Component {
     this.batchModeRender = this.batchModeRender.bind(this)
     this.barcodeInput = this.barcodeInput.bind(this)
     this.addNewItem = this.addNewItem.bind(this)
+    this.close = this.close.bind(this)
     this.reload()
 
   }
@@ -349,6 +350,15 @@ class ShowReceipt extends Component {
       this.props.navigation.state.params.onReceiptUpdate(data)
     });
   }
+
+  close() {
+    apiFetch(CLOSE_RECEIPT, {
+      id: this.state.receipt_id,
+    }, (data) => {
+      this.props.navigation.goBack()
+    });
+  }
+
   onReceived() {
     Toast.show({
       text: '已成功入庫',
@@ -408,6 +418,26 @@ class ShowReceipt extends Component {
           </Body>
           <Right>
             <Button transparent>
+              <Icon name="checkmark" onPress={() => {
+                Alert.alert(
+                  '強制結單',
+                  '尚未全部上架，是否強制結案此入倉單?',
+                  [
+                    { text: '確認', onPress: () => {
+                      this.close()
+                      } 
+                    },
+                    {
+                      text: '取消',
+                    },
+
+                  ],
+                  { cancelable: true },
+                );
+              }} />
+            </Button>
+
+            <Button transparent>
               <Icon name="refresh" onPress={() => this.reload()} />
             </Button>
           </Right>
@@ -425,6 +455,7 @@ class ShowReceipt extends Component {
             : null
 
         }
+
         {
           this.item_count() == 0 ?
             <Button success full style={[styles.mb15, styles.footer]} onPress={() => {

@@ -15,10 +15,6 @@
     ],
     "icon": "./assets/icon.png",
     "slug": "ibiza_wms",
-    "loading": {
-      "hideExponentText": true,
-      "backgroundImage": "./assets/splashscreen.png"
-    },
     "updates": {
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
@@ -34,7 +30,6 @@
         "NSCameraUsageDescription": "使用您的相機來掃描Barcode或是QRCODE"
       }
     },
-    "androidStatusBarColor": "#334393",
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#334393",

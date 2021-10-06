@@ -12,6 +12,7 @@ export const GET_RECEIPTS_SHOPS = 'GET_RECEIPTS_SHOPS'
 export const GET_RECEIPT_ITEM = 'GET_RECEIPT_ITEM'
 export const VERIFY_RECEIPT_ITEM = 'VERIFY_RECEIPT_ITEM'
 export const VERIFY_RECEIPT_ALL_ITEM = 'VERIFY_RECEIPT_ALL_ITEM'
+export const CLOSE_RECEIPT = 'CLOSE_RECEIPT'
 
 
 export const RECEIVE_RECEIPT = "RECEIVE_RECEIPT"
@@ -55,6 +56,7 @@ const Actions = {
   RECEIVE_RECEIPT: {path: `${API_PATH}/v1/receipts/{id}/receive`, method: "POST"},
   RECOMMEND_SHELF: {path: `${API_PATH}/v1/receipts/{id}/recommend`, method: "POST"},
   BATCH_SUBMIT_SHELVES: {path: `${API_PATH}/v1/receipts/{receipt_id}/items/{id}/shelves`, method: "POST"},
+  CLOSE_RECEIPT: {path: `${API_PATH}/v1/receipts/{id}/close`,method: "POST"},
   GET_SHELVES: {path: `${API_PATH}/v1/shelves/`, method: "GET"},
   GET_PRODUCTS: {path: `${API_PATH}/v1/products/{barcode}`, method: "GET"},
   GET_SHELF_INFO: {path: `${API_PATH}/v1/shelves/{token}`, method: "GET"},
