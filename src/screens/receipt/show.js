@@ -355,6 +355,7 @@ class ShowReceipt extends Component {
     apiFetch(CLOSE_RECEIPT, {
       id: this.state.receipt_id,
     }, (data) => {
+      this.props.navigation.state.params.onBack()
       this.props.navigation.goBack()
     });
   }
