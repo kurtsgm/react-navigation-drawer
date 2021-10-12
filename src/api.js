@@ -130,7 +130,7 @@ export function apiFetch(action,data={},callback_function){
   let path = _action.path
   Object.keys(data).forEach(key=>{
     if(path.match(`{${key}}`)){
-      path=path.replace(`{${key}}`,data[key])
+      path=path.replace(`{${key}}`,encodeURIComponent(data[key]))
       delete data[key]
     }
   })
