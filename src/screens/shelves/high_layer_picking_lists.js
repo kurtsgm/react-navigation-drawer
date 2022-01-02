@@ -163,17 +163,17 @@ class HighLayerPickingLists extends Component {
               </List> : null
           }
         </Content>
-        <View style={styles.footer}>
-          {this.state.picking_lists.filter(p => p.checked).length > 0 ?
-            <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
+          <View style={styles.footer}>
+            {this.state.picking_lists.filter(p => p.checked).length > 0 ?
+              <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
 
-              this.props.navigation.navigate("HighLayerShelf", { onBack: () => { this.reload() }, shop_id: this.state.shop_id, shop_name: this.state.shop_name, picking_list_ids: this.state.picking_lists.filter(p => p.checked).map(p => p.id) })
+                this.props.navigation.navigate("HighLayerShelf", { onBack: () => { this.reload() }, shop_id: this.state.shop_id, shop_name: this.state.shop_name, picking_list_ids: this.state.picking_lists.filter(p => p.checked).map(p => p.id) })
 
-            }}>
-              <Text>確認</Text>
-            </Button> : null
-          }
-        </View>
+              }}>
+                <Text>確認</Text>
+              </Button> : null
+            }
+          </View>
 
       </Container>
     );

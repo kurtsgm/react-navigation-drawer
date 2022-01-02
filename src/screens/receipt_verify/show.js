@@ -14,12 +14,14 @@ import {
   ListItem,
   Item,
   Input,
-  Toast
+  Toast,
+  Picker,
+  Badge
 } from "native-base";
 import styles from "./styles";
 import Dialog from "react-native-dialog";
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_RECEIPT, GET_PRODUCTS ,VERIFY_RECEIPT_ALL_ITEM} from "../../api"
+import { apiFetch, GET_RECEIPTS, GET_PRODUCTS, VERIFY_RECEIPT_ALL_ITEM } from "../../api"
 import { store } from '../../redux/stores/store'
 import { Grid, Col, Row } from "react-native-easy-grid";
 
@@ -31,6 +33,7 @@ class ShowVerifyReceipt extends Component {
       barcode: null,
       isModalVisible: false,
       new_item_uid: null,
+      new_item_receipt: this.props.navigation.state.params.receipts[0]
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
@@ -40,18 +43,18 @@ class ShowVerifyReceipt extends Component {
 
   }
   reload() {
-    const { receipt } = this.props.navigation.state.params;
-    apiFetch(GET_RECEIPT, { id: receipt.id }, (_data) => {
-      this.setState({ items: _data.items })
+    const { receipts } = this.props.navigation.state.params;
+    apiFetch(GET_RECEIPTS, { ids: receipts.map(receipt => receipt.id), to_be_verified: true, with_items: true }, (_data) => {
+      this.setState({ items: _data.flatMap(receipt => receipt.items) })
     })
   }
 
   addNewItem() {
-    const { receipt } = this.props.navigation.state.params;
-    apiFetch(GET_PRODUCTS, { barcode: this.state.new_item_uid, shop_id: receipt.shop_id }, (_data) => {
+    apiFetch(GET_PRODUCTS, { barcode: this.state.new_item_uid, shop_id: this.state.new_item_receipt.shop_id }, (_data) => {
+      console.log(_data)
       if (_data.length > 0) {
-        product = _data[0]
-        this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: receipt.id, new_item: product, onBack: this.onBack })
+        let product = _data[0]
+        this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: this.state.new_item_receipt.id, new_item: product, onBack: this.onBack })
       }
       else {
         Toast.show({
@@ -65,19 +68,21 @@ class ShowVerifyReceipt extends Component {
     })
 
   }
-  verifyAll(){
-    const { receipt } = this.props.navigation.state.params;
-
-    apiFetch(VERIFY_RECEIPT_ALL_ITEM, { receipt_id: receipt.id }, (_data) => {
-      this.reload()
-    })
+  verifyAll() {
+    const { receipts } = this.props.navigation.state.params;
+    for (receipt of receipts) {
+      apiFetch(VERIFY_RECEIPT_ALL_ITEM, { receipt_id: receipt.id }, (_data) => {
+        this.reload()
+      })
+    }
   }
   onBack() {
     this.reload()
   }
   render() {
     let rows = []
-    const { receipt } = this.props.navigation.state.params;
+    const { receipts } = this.props.navigation.state.params;
+    let {new_item_receipt}  = this.state
     this.state.items.filter(item => {
       if (this.state.barcode) {
         return item.product_uid.toUpperCase().includes(this.state.barcode)
@@ -85,29 +90,49 @@ class ShowVerifyReceipt extends Component {
           || item.product_name && item.product_name.toUpperCase().includes(this.state.barcode.toUpperCase())
       }
       return true
-    }).forEach((item) => {
+    }).sort((a,b)=> `${a.uid}-${a.expiration_date}-${a.batch}-${a.receipt_id}`.localeCompare(`${b.uid}-${b.expiration_date}-${b.batch}`)).forEach((item) => {
       rows.push(
         <ListItem key={item.id} button onPress={() => {
-          this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: receipt.id, item_id: item.id, onBack: this.onBack })
+          this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: item.receipt_id, item_id: item.id, onBack: this.onBack })
         }
         }>
           <Left>
-            {item.verified_pcs || item.verified_pcs == 0 ?
-              <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null}
-            {item.verified_pcs || item.verified_pcs == 0 ?
-              <Text>
-                {`${[item.product_name, item.storage_type_name].filter(e => e).join(" ")} [${item.pcs_per_box}入]`}
-                {item.expiration_date ? item.expiration_date : ''}
-                {`\n應收:${item.scheduled_pcs} 實收:${item.verified_pcs} `}
-              </Text>
-              :
-              <Text>
-                {`${[item.product_name, item.storage_type_name].filter(e => e).join(" ")} [${item.pcs_per_box}入]`}
-                {item.expiration_date ? item.expiration_date : ''}
-                {`\n應收:${item.scheduled_pcs}`}
-              </Text>
-            }
+            <Grid>
+              <Row>
+                {item.verified_pcs || item.verified_pcs == 0 ?
+                  <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null}
+                {item.verified_pcs || item.verified_pcs == 0 ?
+                  <Text>
+                    {`${[item.product_name, item.storage_type_name].filter(e => e).join(" ")} [${item.pcs_per_box}入]`}
+                    {item.expiration_date ? item.expiration_date : ''}
+                    {`\n應收:${item.scheduled_pcs} 實收:${item.verified_pcs} `}
+                  </Text>
+                  :
+                  <Text>
+                    {`${[item.product_name, item.storage_type_name].filter(e => e).join(" ")} [${item.pcs_per_box}入]`}
+                    {item.expiration_date ? item.expiration_date : ''}
+                    {`\n應收:${item.scheduled_pcs}`}
+                  </Text>
+                }
+              </Row>
+              {
+                receipts.length > 1 ?
+                  <Row>
+                    <Badge
+                      style={{
+                        borderRadius: 3,
+                        height: 25,
+                        width: 100,
+                        backgroundColor: "#c3c3d5"
+                      }}
+                      textStyle={{ color: "white" }}
+                    >
+                      <Text>{receipts.filter(r => r.id == item.receipt_id)[0].title}</Text>
+                    </Badge></Row> : null
+              }
 
+
+            </Grid>
           </Left>
           <Right>
             <Icon name="arrow-forward" style={{ color: "#999" }} />
@@ -160,9 +185,10 @@ class ShowVerifyReceipt extends Component {
                 }
 
                 <ListItem>
-                  <Input placeholder="Search" placeholder="請輸入或者掃描條碼" autoFocus={true}
+                  <Input placeholder="Search" placeholder="請輸入或者掃描條碼" 
                     value={this.state.barcode}
                     onFocus={() => this.setState({ barcode: null })}
+                    returnKeyType="done"
                     onChangeText={(text) => this.setState({ barcode: text.toUpperCase() })}
                     onEndEditing={
                       (event) => {
@@ -196,6 +222,24 @@ class ShowVerifyReceipt extends Component {
             <Text>新增項目</Text>
           </Button>
           <Dialog.Container visible={this.state.isModalVisible}>
+            {
+              receipts.length > 1 ?<Dialog.Description><Picker mode="dropdown"
+                headerBackButtonText="返回"
+                style={{ width: 200 }}
+                textStyle={{ color: "red" }}
+                iosHeader="選擇入倉單"
+                placeholder="選擇入倉單"
+                iosIcon={<Icon name="arrow-down" />}
+                onValueChange={(id) => { this.setState({ new_item_receipt: receipts.find(r => r.id == id) }) }}
+                selectedValue={new_item_receipt.id}
+              >
+                {
+                  receipts.map(_receipt => {
+                    return <Picker.Item key={_receipt.id} label={`${_receipt.title} `} value={_receipt.id}></Picker.Item>
+                  })
+                }
+              </Picker></Dialog.Description>  : null
+            }
             <Dialog.Title>請輸入品號或條碼</Dialog.Title>
             <Dialog.Input value={this.state.new_item_uid}
               placeholder='請輸入品號或條碼'
@@ -206,11 +250,11 @@ class ShowVerifyReceipt extends Component {
                   this.setState({ new_item_uid: text })
                 }
               }
-              onEndEditing={(event) => {
-                this.setState({ isModalVisible: false })
-                this.addNewItem()
-              }}
               returnKeyType="done" />
+            <Dialog.Button primary label="確認" onPress={() => {
+              this.addNewItem()
+              this.setState({ isModalVisible: false })} 
+            }/>              
             <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
           </Dialog.Container>
         </Content>

@@ -1,5 +1,7 @@
 
 import React, { Component } from "react";
+import { View } from 'react-native';
+
 import {
   Container,
   Header,
@@ -12,10 +14,11 @@ import {
   Body,
   Right,
   List,
+  CheckBox,
   ListItem
 } from "native-base";
 import styles from "./styles";
-
+import { Grid, Col, Row } from "react-native-easy-grid";
 import * as AppActions from '../../redux/actions/AppAction'
 import { apiFetch, GET_RECEIPTS } from "../../api"
 
@@ -25,25 +28,54 @@ class ReceiptVerifyIndex extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      receipts: []
+      receipts: [],
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
+    this.toggleReceipt = this.toggleReceipt.bind(this)
+    this.toggleCheckAll = this.toggleCheckAll.bind(this)
+    this.navigateToDetail = this.navigateToDetail.bind(this)
     this.reload()
   }
   reload() {
     const { shop } = this.props.navigation.state.params;
-    apiFetch(GET_RECEIPTS,{
-      to_be_verified:true,
+    apiFetch(GET_RECEIPTS, {
+      to_be_verified: true,
       shop_id: shop.id
-    },(_data) => {
+    }, (_data) => {
       this.setState({ receipts: _data })
     })
   }
 
-  onBack(){
+  toggleCheckAll() {
+    let receipts = this.state.receipts
+    for (let receipt of receipts) {
+      receipt.checked = !this.state.checkedAll
+    }
+    this.setState({ checkedAll: !this.state.checkedAll, receipts: receipts })
+  }
+
+  toggleReceipt(receipt_id) {
+    let receipts = this.state.receipts
+    for (let receipt of receipts) {
+      if (receipt.id == receipt_id) {
+        receipt.checked = !receipt.checked
+        break
+      }
+    }
+    this.setState({ receipts: receipts })
+  }
+
+
+  onBack() {
     this.reload()
   }
+
+  navigateToDetail() {
+    let receipts = this.state.receipts.filter(r=>r.checked)
+    this.props.navigation.navigate("ShowVerifyReceipt", { receipts: receipts, onBack: this.onBack })
+  }
+
 
   render() {
     let rows = []
@@ -60,17 +92,17 @@ class ReceiptVerifyIndex extends Component {
         previous_date = receipt.est_date
       }
       rows.push(
-        <ListItem key={receipt.barcode} button onPress={() =>
-          this.props.navigation.navigate("ShowVerifyReceipt",{receipt:receipt,
-          onBack:this.onBack})}>
-          <Left>
-            <Text>
-              {receipt.title}
-            </Text>
-          </Left>
-          <Right>
-            <Icon name="arrow-forward" style={{ color: "#999" }} />
-          </Right>
+        <ListItem key={receipt.barcode} button onPress={() => this.toggleReceipt(receipt.id)}>
+          <Grid>
+            <Col size={1} >
+              <CheckBox checked={receipt.checked} />
+            </Col>
+            <Col size={2} >
+              <Text>
+                {receipt.title}
+              </Text>
+            </Col>
+          </Grid>
         </ListItem>)
 
     })
@@ -80,7 +112,7 @@ class ReceiptVerifyIndex extends Component {
       <Container style={styles.container}>
         <Header>
           <Left>
-          <Button
+            <Button
               transparent
               onPress={() => {
                 this.props.navigation.state.params.onBack()
@@ -105,10 +137,40 @@ class ReceiptVerifyIndex extends Component {
           {
             this.state.receipts.length > 0 ?
               <List>
+                <ListItem onPress={() => {
+                  this.toggleCheckAll()
+                }
+                } >
+                  <Grid>
+                    <Col size={1} >
+                      <CheckBox checked={this.state.checkedAll} />
+                    </Col>
+                    <Col size={2} >
+                      <Text>
+                      </Text>
+                    </Col>
+                    <Col size={4} >
+                      <Text>
+                        全選/全不選
+                      </Text>
+                    </Col>
+
+                  </Grid>
+                </ListItem>
                 {rows}
               </List> : null
           }
         </Content>
+        <View style={styles.footer}>
+          {this.state.receipts.filter(receipt => receipt.checked).length > 0 ?
+            <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
+              this.navigateToDetail()
+            }}>
+              <Text>確認</Text>
+            </Button> : null
+          }
+        </View>
+
       </Container>
     );
   }
