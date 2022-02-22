@@ -68,13 +68,22 @@ class PickingListShops extends Component {
   }
   render() {
     let rows = []
-    for (let shop of this.state.shops) {
+    let shops = this.state.shops
+    shops.sort((a,b)=>{
+      if(a.done_count == a.count){
+        return 1
+      }
+    })
+    for (let shop of shops) {
       rows.push(
         <ListItem key={shop.id} button onPress={() => {
           this.props.navigation.navigate("PickingLists", { shop_id: shop.id, shop_name: shop.name, onBack: this.onBack })
         }
         }>
           <Left>
+            {
+              shop.done_count == shop.count ? <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null
+            }
             <Text>
               {shop.name}
             </Text>
@@ -89,7 +98,6 @@ class PickingListShops extends Component {
           </Right>
 
         </ListItem>)
-
     }
 
     return (
