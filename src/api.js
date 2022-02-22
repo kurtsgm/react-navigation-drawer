@@ -144,7 +144,13 @@ export function apiFetch(action,data={},callback_function){
     }
   }
   if (_action.method == "GET" && data){
-    params= "?"+Object.entries(data).map(item=>item[0]+"="+item[1]).join("&")
+    params= "?"+Object.entries(data).map(item=>{
+      if(Array.isArray(item[1])){
+        return item[1].map(subitem=>item[0]+"[]="+subitem)
+      }else{
+        return item[0]+"="+item[1]
+      }
+    }).flat().join("&")
     url+=params
   }else{
     options.body = JSON.stringify(

@@ -328,6 +328,11 @@ class ShowPickingList extends Component {
               <Text style={high_layer ? { "color": "orange" } : {}} >
                 {data.shelf_token}
               </Text>
+              <Text style={high_layer ? { "color": "orange" } : {}} >
+                [
+                  {data.pcs} PCS
+                ]
+              </Text>
             </Col>
             <Col size={4} style={styles.vertical_center} >
               {data.done ? <Text style={{ "color": "green" }}>{data.ready_to_pick}</Text> :
@@ -501,6 +506,7 @@ class ShowPickingList extends Component {
                       textStyle={{ color: "white" }}
                     >
                       <Text>{shelf.token}</Text>
+                      
                     </Badge>
 
                     <Text> - x {shelf.quantity} </Text>

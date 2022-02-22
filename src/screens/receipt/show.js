@@ -141,8 +141,9 @@ class ShowReceipt extends Component {
             || item.product_uid && item.product_uid.toUpperCase().includes(this.state.barcode.toUpperCase())
             || item.product_name && item.product_name.toUpperCase().includes(this.state.barcode.toUpperCase())
             : true
-        }).map(item => {
+        }).sort((a,b)=>a.verified_pcs == a.received_pcs ? 0 : -1 ).map(item => {
           let valid_stack = false
+          let stack_count 
           if (item.stack_base && item.stack_level) {
             valid_stack = true
             stack_count = Math.ceil((item.verified_pcs - item.received_pcs) / (item.pcs_per_box * item.stack_base * item.stack_level))
@@ -251,7 +252,7 @@ class ShowReceipt extends Component {
             || item.product_uid && item.product_uid.toUpperCase().includes(this.state.barcode.toUpperCase())
             || item.product_name && item.product_name.toUpperCase().includes(this.state.barcode.toUpperCase())
             : true
-        }).filter(item=>item.verified_pcs != 0).map(data => {
+        }).filter(item=>item.verified_pcs != 0).sort((a,b)=> a.received_count == a.verified_box_count ? 0 : -1).map(data => {
           return <ListItem key={data.id}>
             <Grid>
               <Col size={4} style={styles.vertical_center} >
