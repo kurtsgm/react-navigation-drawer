@@ -44,7 +44,13 @@ const datas = [
     bg: "#C5F442",
     roles: ['admin','manager','staff','parttime']
   },
-
+  {
+    name: '揀補作業',
+    route: 'ReplenishmentShopIndex',
+    icon: 'plus-square',
+    bg: "#C5F442",
+    roles: ['admin','manager','staff','parttime']
+  },
   {
     name: '庫存查詢',
     route: 'ProductSearch',

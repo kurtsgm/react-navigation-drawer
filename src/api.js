@@ -33,6 +33,9 @@ export const CONFIRM_PICKING = 'CONFIRM_PICKING'
 export const GET_HIGH_LAYER = 'GET_HIGH_LAYER'
 export const ACTIVATE_PICKING = "ACTIVATE_PICKING"
 
+export const GET_REPLENISHMENTS = 'GET_REPLENISHMENTS'
+
+
 export const GET_WAREHOUSES = "GET_WAREHOUSES"
 export const GET_TRANSFER_SHELVES = 'GET_TRANSFER_SHELVES'
 
@@ -88,6 +91,7 @@ const Actions = {
   AMPHENOL_DONE_RECEIPT:  {path:`${API_PATH}/v1/amphenol/receipts/{receipt_id}/done`, method: "POST"},
   AMPHENOL_CREATE_RECEIPT:  {path:`${API_PATH}/v1/amphenol/receipts`, method: "POST"},
   AMPHENOL_RECEIVE_SHELF:  {path:`${API_PATH}/v1/amphenol/receipts/{receipt_id}/receive_shelf`, method: "POST"},  
+  GET_REPLENISHMENTS: {path:`${API_PATH}/v1/replenishments`, method: "GET"},
 }
 
 

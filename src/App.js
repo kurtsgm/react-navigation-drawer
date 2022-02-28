@@ -24,6 +24,11 @@ import ShowPickingList from './screens/picking_list/show'
 import PickingListQC from './screens/picking_list/qc'
 
 
+// Replenishments
+import ReplenishmentShopIndex from './screens/replenishment/shops'
+import ReplenishmentProductStorages from './screens/replenishment/index'
+import ReplenishmentMerge from "./screens/replenishment/merge";
+
 // Products
 import ProductSearch from './screens/products/search'
 import ProductStorages from './screens/products/storages'
@@ -60,6 +65,7 @@ const Drawer = createDrawerNavigator(
     ReceiptShops: {screen:ReceiptShops},
     ReceiptVerifyShops: {screen: ReceiptVerifyShops},
     PickingListShops: {screen: PickingListShops},
+    ReplenishmentShopIndex: {screen: ReplenishmentShopIndex},
     ProductSearch: {screen: ProductSearch},
     ShelfSearch: {screen: ShelfSearch},
     ShelfMerge: {screen: ShelfMerge},
@@ -96,6 +102,9 @@ const AppNavigator = createStackNavigator(
     PickingListQC: {screen: PickingListQC},
 
     BarcodeScanner: {screen: BarcodeScanner},
+
+    ReplenishmentProductStorages: {screen: ReplenishmentProductStorages},
+    ReplenishmentMerge: {screen: ReplenishmentMerge},
 
     ProductStorages: {screen: ProductStorages},
     ProductShelf: {screen: ProductShelf},

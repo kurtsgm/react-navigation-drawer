@@ -72,6 +72,8 @@ class PickingListShops extends Component {
     shops.sort((a,b)=>{
       if(a.done_count == a.count){
         return 1
+      }else{
+        return 0
       }
     })
     for (let shop of shops) {
