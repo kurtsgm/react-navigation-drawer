@@ -320,7 +320,7 @@ class ShelfMerge extends Component {
                   </Col>
                   <Col size={1}>
                     <Label style={styles.arrow}>
-                      <Icon name="md-arrow-round-forward"></Icon>
+                      <Icon name="arrow-forward"></Icon>
                     </Label>
                   </Col>
                   <Col size={4}>

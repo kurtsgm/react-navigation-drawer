@@ -3,9 +3,8 @@ export default {
     backgroundColor: "#FFF",
     flex: 1,
   },
-  text: {
-    alignSelf: "center",
-    marginBottom: 7
+  float_left:{
+    alignSelf: "left",
   },
   storage_title:{
     alignSelf: "auto",

@@ -33,6 +33,9 @@ export const CONFIRM_PICKING = 'CONFIRM_PICKING'
 export const GET_HIGH_LAYER = 'GET_HIGH_LAYER'
 export const ACTIVATE_PICKING = "ACTIVATE_PICKING"
 
+export const GET_REPLENISHMENTS = 'GET_REPLENISHMENTS'
+
+
 export const GET_WAREHOUSES = "GET_WAREHOUSES"
 export const GET_TRANSFER_SHELVES = 'GET_TRANSFER_SHELVES'
 
@@ -73,6 +76,7 @@ const Actions = {
   SET_SHOPS: {path:`${API_PATH}/v1/shops`, method: "POST"},
   GET_WAREHOUSES: {path:`${API_PATH}/v1/warehouses`, method: "GET"},
   GET_TRANSFER_SHELVES: {path:`${API_PATH}/v1/transfer_receipts/today`, method: "GET"},
+  GET_REPLENISHMENTS: {path:`${API_PATH}/v1/replenishments`, method: "GET"},
 }
 
 

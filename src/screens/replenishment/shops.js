@@ -1,3 +1,4 @@
+
 import React, { Component } from "react";
 import {
   Container,
@@ -11,53 +12,49 @@ import {
   Body,
   Right,
   List,
-  ListItem
+  ListItem,
 } from "native-base";
 import styles from "./styles";
 
-import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_RECEIPTS_SHOPS } from "../../api"
+import { apiFetch, GET_REPLENISHMENTS, } from "../../api"
 
 
-class ReceiptVerifyShops extends Component {
+
+class ReplenishmentShopIndex extends Component {
   constructor(props) {
     super(props)
     this.state = {
       shops: []
     }
     this.reload = this.reload.bind(this)
-    this.onBack = this.onBack.bind(this)
     this.reload()
-
   }
   reload() {
-    apiFetch(GET_RECEIPTS_SHOPS,{to_be_verified: true},(_data) => {
+    apiFetch(GET_REPLENISHMENTS,{}, (_data) => {
       this.setState({ shops: _data })
     })
   }
 
-  onBack(){
-    this.reload()
-  }
-  render() {
-    let rows = []
-    for(let shop of this.state.shops) {
-      rows.push(
-        <ListItem key={shop.id} button onPress={() =>{
-          this.props.navigation.navigate("ReceiptVerifyIndex",{shop:shop,onBack:this.onBack})
-        }
-          }>
-          <Left>
-            <Text>
-              {shop.name}
-            </Text>
-          </Left>
-          <Right>
-            <Icon name="arrow-forward" style={{ color: "#999" }} />
-          </Right>
-        </ListItem>)
 
-    }
+  render() {
+    let rows = this.state.shops.map(shop_data => {
+      return <ListItem key={`shop-${shop_data.shop.id}`} button onPress={() =>
+        this.props.navigation.navigate("ReplenishmentProductStorages", {onBack: () => { this.reload() }, shop: shop_data.shop,storages: shop_data.product_storages })}>
+        <Body>
+          <Text>
+            {shop_data.shop.name}
+          </Text>
+        </Body>
+        <Right>
+          <Button disabled={true} primary transparent>
+            <Icon name="arrow-forward" style={{ color: "#999" }} />
+          </Button>
+
+        </Right>
+
+      </ListItem>
+    })
+
 
     return (
       <Container style={styles.container}>
@@ -71,7 +68,7 @@ class ReceiptVerifyShops extends Component {
             </Button>
           </Left>
           <Body>
-            <Title>入倉驗收</Title>
+            <Title>揀補作業</Title>
           </Body>
           <Right>
             <Button transparent>
@@ -82,7 +79,7 @@ class ReceiptVerifyShops extends Component {
 
         <Content>
           {
-            this.state.shops.length > 0 ?
+            rows.length > 0 ?
               <List>
                 {rows}
               </List> : null
@@ -93,4 +90,4 @@ class ReceiptVerifyShops extends Component {
   }
 }
 
-export default ReceiptVerifyShops;
+export default ReplenishmentShopIndex;
