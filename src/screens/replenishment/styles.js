@@ -4,7 +4,7 @@ export default {
     flex: 1,
   },
   float_left:{
-    alignSelf: "left",
+    alignSelf: "flex-start",
   },
   storage_title:{
     alignSelf: "auto",
