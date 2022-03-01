@@ -12,7 +12,8 @@ import {
   Body,
   Right,
   List,
-  ListItem
+  ListItem,
+  Badge
 } from "native-base";
 import styles from "./styles";
 import { apiFetch, GET_REPLENISHMENTS, } from "../../api"
@@ -74,9 +75,7 @@ class ReplenishmentProductStorages extends Component {
       //   console.log(storage.replenishment_shelves.length > 0)
       //   console.log(storage.current_shelves.total_pcs > 0)
       // }
-      while (need > 0 && storage.replenishment_shelves.length > 0 && storage.current_shelves.length > 0) {
-        // console.log("need")
-        // console.log(need)
+      while(need > 0 && storage.replenishment_shelves.length > 0 && storage.current_shelves.length > 0) {
         result_shelves.push({
           product: storage.product,
           product_storage: storage,
@@ -99,10 +98,10 @@ class ReplenishmentProductStorages extends Component {
       } catch (e) {
         return 1
       }
+
     })
-    // console.log(sorted_shelves)
     rows = sorted_shelves.map(shelf => {
-      return <ListItem key={shelf.id} style={styles.float_left} onPress={()=>{
+      return <ListItem key={shelf.id} onPress={()=>{
         this.props.navigation.navigate("ReplenishmentMerge", { source_shelf: shelf.source_shelf.token ,destination_shelf: shelf.target_shelf.token,onBack: this.reload })
       }}>
         <Grid>
@@ -132,16 +131,36 @@ class ReplenishmentProductStorages extends Component {
                 </Col>
               </Row> : null
           }
-          <Row style={styles.vertical_center}>
+          <Row >
             <Col size={1} style={styles.vertical_center}>
+            <Badge
+                    style={{
+                      borderRadius: 3,
+                      height: 25,
+                      width: 100,
+                      backgroundColor: "#000000"
+                    }}
+                    textStyle={{ color: "white" }}
+                  >
               <Text style={styles.float_left}>{shelf.source_shelf.token}</Text>
+              </Badge>
             </Col>
             <Col size={1} style={styles.vertical_center}>
               <Icon name="arrow-forward" style={{ color: "#999" }} />
             </Col>
 
             <Col size={1} style={styles.vertical_center}>
+            <Badge
+                    style={{
+                      borderRadius: 3,
+                      height: 25,
+                      width: 100,
+                      backgroundColor: "#000000"
+                    }}
+                    textStyle={{ color: "white" }}
+                  >
               <Text style={styles.float_left}>{shelf.target_shelf.token}</Text>
+              </Badge>
             </Col>
           </Row>          
         </Grid>
