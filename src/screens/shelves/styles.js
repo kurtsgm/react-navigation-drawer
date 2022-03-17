@@ -19,6 +19,12 @@ export default {
   orange: {
     color: "orange",
   },
+  red: {
+    color: "red",
+  },
+  font_20:{
+    fontSize: 20
+  },  
   highlight:{
     fontSize: 28
   },
