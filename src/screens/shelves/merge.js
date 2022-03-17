@@ -26,8 +26,9 @@ import {
 
 import styles from "./styles"
 import { apiFetch, GET_SHELVES, GET_SHELF_INFO, MERGE_SHELVES } from "../../api"
-import { normalize_shelf_barcode, boxText,getShelfLayer } from '../../common'
+import { normalize_shelf_barcode, boxText, getShelfLayer } from '../../common'
 import { Grid, Row, Col } from "react-native-easy-grid";
+import Dialog from "react-native-dialog";
 
 const INIT_STATE = {
   shelves: [],
@@ -37,7 +38,9 @@ const INIT_STATE = {
   high_layer: null,
   all_checked: false,
   set_for_picking: false,
-  sending:false
+  sending: false,
+  selected_shops: [],
+  isModalVisible: false
 }
 
 
@@ -52,15 +55,16 @@ class ShelfMerge extends Component {
     this.afterMerge = this.afterMerge.bind(this)
     this.extra_info = this.extra_info.bind(this)
     this.toggleAll = this.toggleAll.bind(this)
+    this.toggleShop = this.toggleShop.bind(this)
     this.isLayerOne = this.isLayerOne.bind(this)
     this.mergeOptions = this.mergeOptions.bind(this)
     this.title = '合併／移動儲位'
   }
-  
+
   valid() {
     return !this.state.sending && this.state.source_shelf && this.state.destination_shelf && this.state.products.filter(p => p.checked).length > 0
   }
-  setSourceData(data){
+  setSourceData(data) {
     let products = data.storages.map(shelf_storage => {
       return {
         shop_id: shelf_storage.product_storage.shop_id,
@@ -79,7 +83,8 @@ class ShelfMerge extends Component {
     this.setState({
       source_shelf: data.token,
       all_checked: products.reduce((checked, p) => { return p.checked && checked }, true),
-      products: products
+      products: products,
+      selected_shops: new Set(products.map(p=>p.shop_id))
     })
   }
 
@@ -120,19 +125,39 @@ class ShelfMerge extends Component {
 
   toggleAll() {
     let products = this.state.products
+    let selected_shops = new Set()
     for (let product of products) {
       product.checked = !this.state.all_checked
+      product.checked ? selected_shops.add(product.shop_id) : selected_shops.delete(product.shop_id)
     }
-    this.setState({ products: products, all_checked: !this.state.all_checked })
+    this.setState({ products: products, all_checked: !this.state.all_checked,selected_shops:selected_shops })
   }
 
-  mergeOptions(){
+  toggleShop(shop_id){
+    let selected = this.state.selected_shops
+    let all_checked = true
+    if(selected.has(shop_id)){
+      selected.delete(shop_id)
+    }else{
+      selected.add(shop_id)
+    }
+    let products = this.state.products
+    for (let product of products) {
+      if(product.shop_id == shop_id){
+        product.checked = selected.has(shop_id)
+      }
+      all_checked &= product.checked
+    }
+    this.setState({ products: products, all_checked: all_checked && selected.has(shop_id) ,selected_shops: selected})
+  }
+
+  mergeOptions() {
     return {}
   }
 
   merge() {
-    this.setState({sending: true})
-    apiFetch(MERGE_SHELVES,Object.assign({}, this.mergeOptions(),{
+    this.setState({ sending: true })
+    apiFetch(MERGE_SHELVES, Object.assign({}, this.mergeOptions(), {
       from: this.state.source_shelf,
       to: this.state.destination_shelf,
       set_for_picking: this.state.set_for_picking,
@@ -153,7 +178,7 @@ class ShelfMerge extends Component {
           duration: 2500,
           textStyle: { textAlign: "center" }
         })
-        this.setState({sending: false})
+        this.setState({ sending: false })
       }
       this.afterMerge()
     })
@@ -176,14 +201,27 @@ class ShelfMerge extends Component {
     let high_layer = this.state.high_layer
     let product_rows = []
     let previous_shop = null
+    let involved_shops = new Set(this.state.products.map(p=>p.checked ? p.shop_id : null))
+    involved_shops.delete(null)
+    let shops_count = involved_shops.size
 
-    for(let product of this.state.products.sort((a,b)=>a.shop_id - b.shop_id)){
+    for (let product of this.state.products.sort((a, b) => a.shop_id - b.shop_id)) {
       if (previous_shop != product.shop_id) {
         product_rows.push(<ListItem itemDivider key={`divider-${product.shop_id}`}>
-          <Text>{product.shop_name}</Text>
+          <Grid>
+            <Col size={1} >
+              <CheckBox checked={this.state.selected_shops.has(product.shop_id)}
+                onPress={() => {
+                  this.toggleShop(product.shop_id)
+                }} />
+            </Col>
+            <Col size={6} >
+              <Text>{product.shop_name}</Text>
+            </Col>
+          </Grid>
         </ListItem>)
         previous_shop = product.shop_id
-      }      
+      }
       product_rows.push(<ListItem key={product.id}
         onPress={() => {
           this.toggleProduct(product.id)
@@ -271,7 +309,7 @@ class ShelfMerge extends Component {
                             boxText(high_layer.product_box_pcs, high_layer.shelf_quantity)
                           }
                           )
-                      </Text> : null
+                        </Text> : null
 
                     }
                   </Right>
@@ -333,19 +371,19 @@ class ShelfMerge extends Component {
                         }
                       }
                       returnKeyType="done" />
-                        <Button
-                          transparent
-                          onPress={() =>
-                            this.props.navigation.navigate("BarcodeScanner", {
-                              onBarcodeScanned: (barcode) => {
-                                this.setState({ destination_shelf: normalize_shelf_barcode(barcode) })
-                              }
-                            }
-                            )
+                    <Button
+                      transparent
+                      onPress={() =>
+                        this.props.navigation.navigate("BarcodeScanner", {
+                          onBarcodeScanned: (barcode) => {
+                            this.setState({ destination_shelf: normalize_shelf_barcode(barcode) })
                           }
-                        >
-                          <Icon name="camera" />
-                        </Button>                      
+                        }
+                        )
+                      }
+                    >
+                      <Icon name="camera" />
+                    </Button>
                   </Col>
                 </Row>
               </Grid>
@@ -383,9 +421,14 @@ class ShelfMerge extends Component {
                     }} />
                 </Col>
                 <Col size={4}>
-                  <Text>選擇全部</Text>
+                  <Text style>選擇全部</Text>
                 </Col>
-                <Col size={2}></Col>
+                <Col size={2}>
+                  {
+                    shops_count > 1 ? <Text style={[styles.red,styles.font_20]}> {`(${shops_count} 客戶)`} </Text> : null
+                  }
+
+                </Col>
               </Grid>
             </ListItem>
             {
@@ -397,12 +440,28 @@ class ShelfMerge extends Component {
         <View style={styles.footer}>
           {this.valid() ?
             <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
-              this.merge()
+              if(shops_count > 1){
+                this.setState({isModalVisible: true})
+
+              }else{
+                this.merge()
+              }
             }}>
               <Text>確認移入</Text>
             </Button> : null
           }
         </View>
+        {
+          shops_count > 1 ?  <Dialog.Container visible={this.state.isModalVisible}>
+          <Dialog.Title>{`確認移動 ${shops_count} 個客戶的品項?`}</Dialog.Title>            
+          <Dialog.Button label="確認" onPress={() => {
+            this.setState({ isModalVisible: false })
+            this.merge()
+          }} />
+          <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+        </Dialog.Container> : null
+        }
+
       </Container>
     );
   }
