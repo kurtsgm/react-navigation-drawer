@@ -54,7 +54,9 @@ class HighLayerShelf extends Component {
           <Col size={5} style={styles.vertical_center} >
             <Text>
               {`${shelf.product}/${shelf.storage_type_name}`}
-
+            </Text>
+            <Text>
+            {`${shelf.product_barcode}`}
             </Text>
           </Col>
           <Col size={4} style={styles.vertical_center} >

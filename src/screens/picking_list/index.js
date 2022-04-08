@@ -40,6 +40,7 @@ class PickingLists extends Component {
   }
   reload() {
     apiFetch(GET_PICKING_LISTS, { shop_id: this.state.shop_id }, (_data) => {
+      _data.sort((a,b)=>{return a.status == 'done'})
       this.setState({ picking_lists: _data })
     })
   }
