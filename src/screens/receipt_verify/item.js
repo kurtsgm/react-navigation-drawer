@@ -61,6 +61,7 @@ class ReceiptVerifyItem extends Component {
         product_uid: new_item.uid,
         product_id: new_item.id,
         product_default_pcs: new_item.default_pcs,
+        preset_product_default_pcs: new_item.default_pcs,
         box_height: new_item.box_height,
         box_length: new_item.box_length,
         box_weight: new_item.box_weight,
@@ -193,7 +194,9 @@ class ReceiptVerifyItem extends Component {
                     }
                   </Col></Row>
               </CardItem>
-              <CardItem>
+              {
+                this.state.scheduled_pcs ? 
+                <CardItem>
                 <Row><Col size={1}>
                   <Text>應收PCS</Text>
                 </Col>
@@ -208,7 +211,9 @@ class ReceiptVerifyItem extends Component {
                       </Text> : null
                     }
                   </Col></Row>
-              </CardItem>
+              </CardItem> : null
+              }
+
               <CardItem>
                 <Row>
                   <Col size={1}>
@@ -235,17 +240,21 @@ class ReceiptVerifyItem extends Component {
                   <Text>標準箱入數</Text>
                 </Col>
                   <Col size={2}>
+                    {
+                      this.state.preset_product_default_pcs ? <Text>{this.state.preset_product_default_pcs}</Text> :
                     <Item success >
-                      <Input keyboardType='numeric' textAlign={'right'}
-                        value={`${this.state.product_default_pcs ? this.state.product_default_pcs : ''}`}
-                        onChangeText={
-                          (text) => {
-                            this.setState({ product_default_pcs: text })
+                          <Input keyboardType='numeric' textAlign={'right'}
+                          value={`${this.state.product_default_pcs ? this.state.product_default_pcs : ''}`}
+                          onChangeText={
+                            (text) => {
+                              this.setState({ product_default_pcs: text })
+                            }
                           }
-                        }
-                        onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                        returnKeyType="done" />
+                          onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                          returnKeyType="done" />
+                      
                     </Item>
+                      }
 
 
                   </Col></Row>
