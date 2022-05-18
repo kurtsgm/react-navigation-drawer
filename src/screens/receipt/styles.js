@@ -16,6 +16,11 @@ export default {
   mb: {
     marginBottom: 15
   },
+  dialog_inside_button:{
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 15
+  },
   mt15: {
     marginTop: 15
   },

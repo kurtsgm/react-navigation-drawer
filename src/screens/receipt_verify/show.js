@@ -33,12 +33,15 @@ class ShowVerifyReceipt extends Component {
       barcode: null,
       isModalVisible: false,
       new_item_uid: null,
-      new_item_receipt: this.props.navigation.state.params.receipts[0]
+      new_item_receipt: this.props.navigation.state.params.receipts[0],
+      new_item_candidate: []
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
     this.addNewItem = this.addNewItem.bind(this)
     this.verifyAll = this.verifyAll.bind(this)
+    this.setCandidate = this.setCandidate.bind(this)
+
     this.reload()
 
   }
@@ -49,12 +52,21 @@ class ShowVerifyReceipt extends Component {
     })
   }
 
+  setCandidate(_data){
+    this.setState({new_item_candidate: _data})
+  }
+
+
   addNewItem() {
     apiFetch(GET_PRODUCTS, { barcode: this.state.new_item_uid, shop_id: this.state.new_item_receipt.shop_id }, (_data) => {
       console.log(_data)
-      if (_data.length > 0) {
+      if (_data.length == 1) {
         let product = _data[0]
+        this.setState({ isModalVisible: false })
         this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: this.state.new_item_receipt.id, new_item: product, onBack: this.onBack })
+      }
+      else if(_data.length > 1){
+        this.setCandidate(_data)
       }
       else {
         Toast.show({
@@ -185,7 +197,7 @@ class ShowVerifyReceipt extends Component {
                 }
 
                 <ListItem>
-                  <Input placeholder="Search" placeholder="請輸入或者掃描條碼" 
+                  <Input placeholder="請輸入或者掃描條碼" 
                     value={this.state.barcode}
                     onFocus={() => this.setState({ barcode: null })}
                     returnKeyType="done"
@@ -217,7 +229,7 @@ class ShowVerifyReceipt extends Component {
               </List> : null
           }
           <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
-            this.setState({ isModalVisible: true })
+            this.setState({ isModalVisible: true ,new_item_candidate:[]})
           }}>
             <Text>新增項目</Text>
           </Button>
@@ -250,11 +262,24 @@ class ShowVerifyReceipt extends Component {
                   this.setState({ new_item_uid: text })
                 }
               }
+              onEndEditing={(event) => {
+                this.setCandidate([])
+                this.addNewItem()
+              }}
+
               returnKeyType="done" />
-            <Dialog.Button primary label="確認" onPress={() => {
-              this.addNewItem()
-              this.setState({ isModalVisible: false })} 
-            }/>              
+              {
+                this.state.new_item_candidate.map(candidate=>{
+                  return <Button bordered light block primary style={styles.dialog_inside_button} onPress={() => {
+                    this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: this.state.receipt_id, new_item: candidate, onBack: ()=>this.reload() })
+                    this.setState({ isModalVisible: false })
+            
+                  }}>
+                      <Text>{`${candidate.uid}`}</Text> 
+                  </Button>
+                })
+              }
+
             <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
           </Dialog.Container>
         </Content>

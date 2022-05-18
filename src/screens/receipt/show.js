@@ -43,7 +43,8 @@ class ShowReceipt extends Component {
       barcode: null,
       batch_mode: false,
       all_checked: false,
-      isNewItemModalVisible: false
+      isNewItemModalVisible: false,
+      new_item_candidate: []
     }
     this.recommend = this.recommend.bind(this)
     this.reload = this.reload.bind(this)
@@ -56,6 +57,7 @@ class ShowReceipt extends Component {
     this.barcodeInput = this.barcodeInput.bind(this)
     this.addNewItem = this.addNewItem.bind(this)
     this.close = this.close.bind(this)
+    this.setCandidate = this.setCandidate.bind(this)
     this.reload()
 
   }
@@ -63,12 +65,20 @@ class ShowReceipt extends Component {
     this.setState({ batch_mode: isBatch })
   }
 
+  setCandidate(_data){
+    this.setState({new_item_candidate: _data})
+  }
+
   addNewItem() {
     const { receipt } = this.props.navigation.state.params;
     apiFetch(GET_PRODUCTS, { barcode: this.state.new_item_uid, shop_id: receipt.shop_id }, (_data) => {
-      if (_data.length > 0) {
-        product = _data[0]
+      if (_data.length == 1) {
+        let product = _data[0]
         this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: receipt.id, new_item: product, onBack: ()=>this.reload() })
+        this.setState({ isNewItemModalVisible: false })
+      }
+      else if(_data.length > 1){
+        this.setCandidate(_data)
       }
       else {
         Toast.show({
@@ -462,6 +472,7 @@ class ShowReceipt extends Component {
           this.item_count() == 0 ?
             <Button success full style={[styles.mb15, styles.footer]} onPress={() => {
               this.setState({ isNewItemModalVisible: true })
+              this.setCandidate([])              
             }}>
               <Text>新增項目</Text>
             </Button> : null
@@ -479,10 +490,22 @@ class ShowReceipt extends Component {
                   }
                 }
                 onEndEditing={(event) => {
-                  this.setState({ isNewItemModalVisible: false })
+                  this.setCandidate([])
                   this.addNewItem()
                 }}
                 returnKeyType="done" />
+              {
+                this.state.new_item_candidate.map(candidate=>{
+                  return <Button bordered light block primary style={styles.dialog_inside_button} onPress={() => {
+                    this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: this.state.receipt_id, new_item: candidate, onBack: ()=>this.reload() })
+                    this.setState({ isNewItemModalVisible: false })
+            
+                  }}>
+                      <Text>{`${candidate.uid}`}</Text> 
+                  </Button>
+                })
+              }
+
               <Dialog.Button label="取消" onPress={() => this.setState({ isNewItemModalVisible: false })} />
             </Dialog.Container> : null
   

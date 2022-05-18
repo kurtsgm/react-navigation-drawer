@@ -25,5 +25,10 @@ export default {
   },
   footer: {
     bottom: 0
+  },
+  dialog_inside_button:{
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 15
   }
 };
