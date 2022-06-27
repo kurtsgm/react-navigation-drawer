@@ -1,8 +1,7 @@
-import Expo from "expo";
-import Constants from 'expo-constants'
 
 import * as AppActions from './redux/actions/AppAction'
 import {store} from './redux/stores/store'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // const { manifest } = Expo.Constants;
 
@@ -86,94 +85,96 @@ global.removeEventListener = () => {};
 
 export function actionCableCumsumer(){
   let host
-  if(store.getState().consumer){
-    console.log('GET CONSUMER')
-    return store.getState().consumer    
-  }else{
-    console.log('NO CONSUMER')
-    let consumer
-    if(__DEV__ ){
-      // host = "http://192.168.1.108:8088"
-      host = "ws://"+Constants.manifest.debuggerHost.split(":").shift().concat(":3000")
-  
+  AsyncStorage.getItem('@domain').then(domain=>{
+    if(store.getState().consumer){
+      console.log('GET CONSUMER')
+      return store.getState().consumer    
     }else{
-      host = "wss://wms-api.ibiza.com.tw"
+      console.log('NO CONSUMER')
+      let consumer
+      if(__DEV__ ){
+        // host = "http://192.168.1.108:8088"
+        host = "ws://"+domain  
+      }else{
+        host = "wss://"+ domain
+      }
+      consumer =  createConsumer(`${host}/cable?token=${store.getState().auth_token}`)
+      store.dispatch(AppActions.setConsumer(consumer))  
+      return consumer
     }
-    consumer =  createConsumer(`${host}/cable?token=${store.getState().auth_token}`)
-    store.dispatch(AppActions.setConsumer(consumer))  
-    return consumer
-  }
-
+  })
 }
 
 export function apiFetch(action,data={},callback_function){
   let host
-  if(__DEV__ ){
-    // host = "http://192.168.1.108:8088"
-    host = "http://"+Constants.manifest.debuggerHost.split(":").shift().concat(":3000")
-
-  }else{
-    host = "https://wms-api.ibiza.com.tw"
-  }
-  let _action = Actions[action]
-  let path = _action.path
-  Object.keys(data).forEach(key=>{
-    if(path.match(`{${key}}`)){
-      path=path.replace(`{${key}}`,encodeURIComponent(data[key]))
-      delete data[key]
-    }
-  })
-  let url = host + path
-  let options = {
-    method:  _action.method,
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer '+store.getState().auth_token
-    }
-  }
-  if (_action.method == "GET" && data){
-    params= "?"+Object.entries(data).map(item=>{
-      if(Array.isArray(item[1])){
-        return item[1].map(subitem=>item[0]+"[]="+subitem)
-      }else{
-        return item[0]+"="+item[1]
-      }
-    }).flat().join("&")
-    url+=params
-  }else{
-    options.body = JSON.stringify(
-      data
-    )
-  }
-  store.dispatch(AppActions.onLoadingStart())
-  return fetch(url, options).then((response)=>{
-    if(!response.ok){
-      throw new Error(`${response.status}`);
+  AsyncStorage.getItem('@domain').then(domain=>{
+    if(__DEV__ ){
+      // host = "http://192.168.1.108:8088"
+      host = "http://"+domain
+  
     }else{
-      return response.json();
+      host = "https://"+domain
     }
-  }).then(response=>{
-    store.dispatch(AppActions.onLoadingEnd())
-    callback_function(response)
-  }).catch(function(error) {
-    let text
-    store.dispatch(AppActions.onLoadingEnd())
-    switch(error.message){
-      case '401':
-        text = '登入(狀態)失敗，請重新嘗試登入'
-        break
-      case '500':
-        text = '發生錯誤，請通報工程人員處理'
-        break
-      default:
-        text = `連線異常，請檢查網路狀態 (狀態${error})`
+    let _action = Actions[action]
+    let path = _action.path
+    Object.keys(data).forEach(key=>{
+      if(path.match(`{${key}}`)){
+        path=path.replace(`{${key}}`,encodeURIComponent(data[key]))
+        delete data[key]
+      }
+    })
+    let url = host + path
+    let options = {
+      method:  _action.method,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+store.getState().auth_token
+      }
     }
-    Toast.show({
-      text: text,
-      duration: 2500,
-      type: 'danger',
-      textStyle: {textAlign: "center"}
+    if (_action.method == "GET" && data){
+      params= "?"+Object.entries(data).map(item=>{
+        if(Array.isArray(item[1])){
+          return item[1].map(subitem=>item[0]+"[]="+subitem)
+        }else{
+          return item[0]+"="+item[1]
+        }
+      }).flat().join("&")
+      url+=params
+    }else{
+      options.body = JSON.stringify(
+        data
+      )
+    }
+    store.dispatch(AppActions.onLoadingStart())
+    return fetch(url, options).then((response)=>{
+      if(!response.ok){
+        throw new Error(`${response.status}`);
+      }else{
+        return response.json();
+      }
+    }).then(response=>{
+      store.dispatch(AppActions.onLoadingEnd())
+      callback_function(response)
+    }).catch(function(error) {
+      let text
+      store.dispatch(AppActions.onLoadingEnd())
+      switch(error.message){
+        case '401':
+          text = '登入(狀態)失敗，請重新嘗試登入'
+          break
+        case '500':
+          text = '發生錯誤，請通報工程人員處理'
+          break
+        default:
+          text = `連線異常，請檢查網路狀態 (狀態${error})`
+      }
+      Toast.show({
+        text: text,
+        duration: 2500,
+        type: 'danger',
+        textStyle: {textAlign: "center"}
+      })
     })
   })
 }

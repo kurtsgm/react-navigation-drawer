@@ -12,7 +12,8 @@ import { apiFetch, API_OAUTH } from "../../api"
 import { Keyboard } from 'react-native'
 const launchscreenBg = require("../../../assets/launchscreen-bg.png");
 const launchscreenLogo = require("../../../assets/logo-wms.png");
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants'
 
 class Home extends Component {
   constructor(props) {
@@ -27,6 +28,18 @@ class Home extends Component {
       this.fast_login = this.fast_login.bind(this)
     }
   }
+  componentDidMount(){
+    // if logined, go to welcome page
+    AsyncStorage.getItem('@authToken').then((value)=>{
+      if(value){
+        const { navigate } = this.props.navigation;
+        data = JSON.parse(value)
+        this.props.setToken(data.access_token, data.role,this.state.username)
+        navigate('Welcome')
+      }
+    })
+  }
+
   login() {
     const { navigate } = this.props.navigation;
     if (this.state.username && this.state.password) {
@@ -37,8 +50,17 @@ class Home extends Component {
         grant_type: 'password'
       }, (data) => {
         if (data.access_token) {
-          this.props.setToken(data.access_token, data.role,this.state.username)
-          navigate('Welcome')
+          // this.props.setToken(data.access_token, data.role,this.state.username)
+          // set auth token and roles
+          AsyncStorage.setItem('@authToken',
+            JSON.stringify({
+              access_token: data.access_token, 
+              role: data.role,
+              username: this.state.username 
+          })).then(()=>{
+            this.props.setToken(data.access_token, data.role,this.state.username)
+            navigate('Welcome')
+          })
         } else {
           this.setState({ login_failed: true })
         }
@@ -49,18 +71,28 @@ class Home extends Component {
   fast_login() {
     if (__DEV__) {
       const { navigate } = this.props.navigation;
-      apiFetch(API_OAUTH, {
-        username: 'a',
-        password: 'qwertyui',
-        grant_type: 'password'
-      }, (data) => {
-        if (data.access_token) {
-          this.props.setToken(data.access_token, data.role,'a')
-          navigate('Welcome')
-        } else {
-          this.setState({ login_failed: true })
-        }
-      });
+      AsyncStorage.setItem('@domain',Constants.manifest.debuggerHost.split(":").shift().concat(":3000")).then(()=>{
+        apiFetch(API_OAUTH, {
+          username: 'a',
+          password: 'qwertyui',
+          grant_type: 'password'
+        }, (data) => {
+          if (data.access_token) {
+            AsyncStorage.setItem('@authToken',
+              JSON.stringify({
+                access_token: data.access_token, 
+                role: data.role,
+                username: this.state.username 
+            })).then(()=>{
+              this.props.setToken(data.access_token, data.role,this.state.username)
+              navigate('Welcome')
+            })
+          } else {
+            this.setState({ login_failed: true })
+          }
+        });
+      })
+      
     }
 
   }
@@ -85,6 +117,12 @@ class Home extends Component {
                   <Label style={styles.text}>密碼</Label>
                   <Input style={styles.text} autoCapitalize="none" secureTextEntry onChangeText={(text) => this.setState({ password: text })} />
                 </Item>
+                <Item fixedLabel>
+                  <Label style={styles.text}>登入網址</Label>
+                  <Input style={styles.text} autoCapitalize="none" secureTextEntry onChangeText={(text) => 
+                    AsyncStorage.setItem('@domain',text)
+                  } />
+                </Item>
                 <Label style={styles.center_container}>
                   <Text style={[styles.warning_text, styles.center]}>
                     {this.state.login_failed ? "登入失敗，請檢查帳號密碼" : ""}
@@ -92,6 +130,12 @@ class Home extends Component {
                 </Label>
 
               </Form>
+              <Button
+                    style={{ backgroundColor: "#6FAF98", alignSelf: "center" }}
+                    onPress={this.login}
+                  >
+                    <Text>登入</Text>
+                  </Button>
               {
                 __DEV__ ?
                   <Button
@@ -99,12 +143,7 @@ class Home extends Component {
                     onPress={this.fast_login}
                   >
                     <Text>快速Login(測試用)</Text>
-                  </Button> : <Button
-                    style={{ backgroundColor: "#6FAF98", alignSelf: "center" }}
-                    onPress={this.login}
-                  >
-                    <Text>登入</Text>
-                  </Button>
+                  </Button> : nil
 
               }
 

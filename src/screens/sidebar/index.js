@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import * as AppActions from '../../redux/actions/AppAction'
 import Spinner from 'react-native-loading-spinner-overlay';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Image ,Linking} from "react-native";
 import {
   Content,
@@ -129,7 +129,8 @@ class SideBar extends Component {
 
   route(route){
     if(route == 'Logout'){
-      this.props.setToken(null,null,null)
+      // clear authToken
+      AsyncStorage.removeItem('authToken')
       this.props.navigation.navigate("Home")
     }else{
       this.props.navigation.navigate(route)
