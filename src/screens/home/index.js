@@ -152,7 +152,15 @@ class Home extends Component {
               { this.state.logged_in_username ? 
               <Button round info
               style={{ marginBottom: 20, alignSelf: "center" }}
-              onPress={this.fast_login}
+              onPress={()=>{
+                // login with existing token
+                AsyncStorage.getItem('@authToken').then((value)=>{
+                  if(!!value){
+                    this.validateOperator(value)
+                  }
+                }
+                )
+              }}
             >
               <Text>{`以${this.state.logged_in_username}身份登入`}</Text>
             </Button> : null
