@@ -130,7 +130,9 @@ class SideBar extends Component {
   route(route){
     if(route == 'Logout'){
       // clear authToken
-      AsyncStorage.removeItem('authToken')
+      AsyncStorage.removeItem('@authToken')
+      // set auth token to null
+      this.props.setToken(null,null,null)
       this.props.navigation.navigate("Home")
     }else{
       this.props.navigation.navigate(route)

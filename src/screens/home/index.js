@@ -14,6 +14,7 @@ const launchscreenBg = require("../../../assets/launchscreen-bg.png");
 const launchscreenLogo = require("../../../assets/logo-wms.png");
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants'
+import { store } from "../../redux/stores/store";
 
 class Home extends Component {
   constructor(props) {
@@ -30,19 +31,25 @@ class Home extends Component {
     }
     this.validateOperator = this.validateOperator.bind(this)
   }
+  
   componentDidMount(){
-    AsyncStorage.getItem('@authToken').then((value)=>{
-      if(!!value){
+    // if params logOut , call logout
+    AsyncStorage.getItem('@authToken').then((access_token)=>{
+      if(!!access_token){
         AsyncStorage.getItem('@username').then((username)=>{
-          this.setState({logged_in_username:username})
+          this.props.setToken(access_token,null,username)
         })
       }
     })
+  
   }
   
   validateOperator(access_token) {
     this.props.setToken(access_token,null,null)
+    console.log(access_token)
     apiFetch(GET_ME, {}, (data) => {
+      console.log('data!!!')
+      console.log(data)
       if (data.username) {
         this.props.setToken(access_token, data.role,data.username)
         this.props.setWarehouse(data.warehouse)
@@ -88,6 +95,7 @@ class Home extends Component {
         }, (data) => {
           if (data.access_token) {
             AsyncStorage.setItem('@authToken',data.access_token).then(()=>{
+              console.log("Validate!!")
               this.validateOperator(data.access_token)
             })
           } else {
@@ -99,8 +107,18 @@ class Home extends Component {
     }
 
   }
+  logout(){
+    AsyncStorage.removeItem('@authToken').then(()=>{
+      this.props.setToken(null,null,null)
+      this.props.setWarehouse(null)
+      this.setState({logged_in_username:null})
+    }
+    )
+  }
+  
 
   render() {
+    console.log(store.getState())
     return <Container>
         <StatusBar barStyle="light-content" />
         <ImageBackground source={launchscreenBg} style={styles.imageContainer}>
@@ -111,6 +129,22 @@ class Home extends Component {
               </H1>
             </View>
             <View >
+            { store.getState().username ? 
+              <Button round info
+              style={{ marginBottom: 20, alignSelf: "center" }}
+              onPress={()=>{
+                // login with existing token
+                AsyncStorage.getItem('@authToken').then((value)=>{
+                  if(!!value){
+                    this.validateOperator(value)
+                  }
+                }
+                )
+              }}
+            >
+              <Text>{`以${store.getState().username}身份登入`}</Text>
+            </Button> :
+            <>
               <Form>
                 <Item fixedLabel >
                   <Label style={styles.text}>帳號</Label>
@@ -149,23 +183,8 @@ class Home extends Component {
                   </Button> : null
 
               }
-              { this.state.logged_in_username ? 
-              <Button round info
-              style={{ marginBottom: 20, alignSelf: "center" }}
-              onPress={()=>{
-                // login with existing token
-                AsyncStorage.getItem('@authToken').then((value)=>{
-                  if(!!value){
-                    this.validateOperator(value)
-                  }
-                }
-                )
-              }}
-            >
-              <Text>{`以${this.state.logged_in_username}身份登入`}</Text>
-            </Button> : null
-              }
-
+              </>
+            }
             </View>
           </Content>
           <Text style={{ backgroundColor: 'transparent',bottom: 0 ,textAlign:'right'}} >
