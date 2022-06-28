@@ -22,7 +22,7 @@ import { Keyboard } from 'react-native'
 import styles from "./styles"
 import { apiFetch, GET_SHELF_INFO ,CHECKOUT_SHELF } from "../../api"
 import { View } from 'react-native'
-import {normalize_shelf_barcode} from '../../common'
+import {normalize_shelf_barcode ,ShelfInput} from '../../common'
 
 
 class WarehouseCheckout extends Component {
@@ -100,7 +100,7 @@ class WarehouseCheckout extends Component {
             </Button>
           </Left>
           <Item>
-            <Input placeholder="Search" placeholder="請輸入或者掃描條碼"
+            <ShelfInput placeholder="請輸入或者掃描條碼"
               keyboardType='numeric'
               returnKeyType="done"
               value={this.state.barcode}

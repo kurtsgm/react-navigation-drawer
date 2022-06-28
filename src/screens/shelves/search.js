@@ -23,7 +23,9 @@ import styles from "./styles"
 import { apiFetch, GET_SHELF_INFO } from "../../api"
 
 import ShelfShow from './show'
-import { normalize_shelf_barcode } from '../../common'
+
+import { normalize_shelf_barcode , ShelfInput} from '../../common'
+
 
 class ShelfSearch extends Component {
   constructor() {
@@ -66,9 +68,7 @@ class ShelfSearch extends Component {
             </Button>
           </Left>
           <Item>
-            <Input placeholder="Search" placeholder="請輸入或者掃描條碼"
-              keyboardType='numeric'
-              returnKeyType="done"
+            <ShelfInput placeholder="請輸入或者掃描條碼"
               value={this.state.barcode}
               onChangeText={(text) => this.setState({ barcode: normalize_shelf_barcode(text.toUpperCase()) })}
               onFocus={()=>this.setState({ barcode:null})}

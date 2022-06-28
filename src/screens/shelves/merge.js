@@ -26,7 +26,7 @@ import {
 
 import styles from "./styles"
 import { apiFetch, GET_SHELVES, GET_SHELF_INFO, MERGE_SHELVES } from "../../api"
-import { normalize_shelf_barcode, boxText, getShelfLayer } from '../../common'
+import { normalize_shelf_barcode, boxText, getShelfLayer,ShelfInput } from '../../common'
 import { Grid, Row, Col } from "react-native-easy-grid";
 import Dialog from "react-native-dialog";
 
@@ -327,7 +327,7 @@ class ShelfMerge extends Component {
                       high_layer ?
                         <Input editable={false} value={high_layer.shelf_token} />
                         :
-                        <Input keyboardType='numeric' value={this.state.source_shelf}
+                        <ShelfInput keyboardType='numeric' value={this.state.source_shelf}
                           placeholder='請輸入或掃描'
                           onFocus={() => this.setState({ source_shelf: "", shelves: [], products: [] })
                           }
@@ -362,7 +362,7 @@ class ShelfMerge extends Component {
                     </Label>
                   </Col>
                   <Col size={4}>
-                    <Input keyboardType='numeric' value={this.state.destination_shelf}
+                    <ShelfInput keyboardType='numeric' value={this.state.destination_shelf}
                       placeholder='請輸入或掃描'
                       onFocus={() => this.setState({ destination_shelf: "" })}
                       onChangeText={

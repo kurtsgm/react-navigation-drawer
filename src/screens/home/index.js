@@ -8,7 +8,7 @@ import styles from "./styles";
 import "react-native-gesture-handler";
 
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, API_OAUTH } from "../../api"
+import { apiFetch, API_OAUTH,GET_ME } from "../../api"
 import { Keyboard } from 'react-native'
 const launchscreenBg = require("../../../assets/launchscreen-bg.png");
 const launchscreenLogo = require("../../../assets/logo-wms.png");
@@ -27,18 +27,33 @@ class Home extends Component {
     if (__DEV__) {
       this.fast_login = this.fast_login.bind(this)
     }
+    this.validateOperator = this.validateOperator.bind(this)
   }
   componentDidMount(){
-    // if logined, go to welcome page
     AsyncStorage.getItem('@authToken').then((value)=>{
       if(value){
-        const { navigate } = this.props.navigation;
-        data = JSON.parse(value)
-        this.props.setToken(data.access_token, data.role,this.state.username)
-        navigate('Welcome')
+        AsyncStorage.getItem('@username').then((username)=>{
+          this.setState({username:username})
+        })
       }
     })
   }
+  
+  validateOperator(access_token) {
+    this.props.setToken(access_token,null,null)
+    apiFetch(GET_ME, {}, (data) => {
+      if (data.username) {
+        this.props.setToken(access_token, data.role,data.username)
+        this.props.setWarehouse(data.warehouse)
+        const { navigate } = this.props.navigation;
+        AsyncStorage.setItem('@username', data.username)
+        navigate('Welcome',data)
+      }
+    }
+    )
+  }
+
+
 
   login() {
     const { navigate } = this.props.navigation;
@@ -50,16 +65,9 @@ class Home extends Component {
         grant_type: 'password'
       }, (data) => {
         if (data.access_token) {
-          // this.props.setToken(data.access_token, data.role,this.state.username)
           // set auth token and roles
-          AsyncStorage.setItem('@authToken',
-            JSON.stringify({
-              access_token: data.access_token, 
-              role: data.role,
-              username: this.state.username 
-          })).then(()=>{
-            this.props.setToken(data.access_token, data.role,this.state.username)
-            navigate('Welcome')
+          AsyncStorage.setItem('@authToken',data.access_token).then(()=>{
+            this.validateOperator(data.access_token)
           })
         } else {
           this.setState({ login_failed: true })
@@ -78,14 +86,8 @@ class Home extends Component {
           grant_type: 'password'
         }, (data) => {
           if (data.access_token) {
-            AsyncStorage.setItem('@authToken',
-              JSON.stringify({
-                access_token: data.access_token, 
-                role: data.role,
-                username: this.state.username 
-            })).then(()=>{
-              this.props.setToken(data.access_token, data.role,this.state.username)
-              navigate('Welcome')
+            AsyncStorage.setItem('@authToken',data.access_token).then(()=>{
+              this.validateOperator(data.access_token)
             })
           } else {
             this.setState({ login_failed: true })
@@ -107,7 +109,7 @@ class Home extends Component {
                 倉儲管理系統
               </H1>
             </View>
-            <View>
+            <View >
               <Form>
                 <Item fixedLabel >
                   <Label style={styles.text}>帳號</Label>
@@ -129,22 +131,30 @@ class Home extends Component {
                   </Text>
                 </Label>
 
-              </Form>
-              <Button
-                    style={{ backgroundColor: "#6FAF98", alignSelf: "center" }}
+              </Form> 
+              <Button round success
+                    style={{ marginBottom: 20, alignSelf: "center" }}
                     onPress={this.login}
                   >
                     <Text>登入</Text>
                   </Button>
               {
                 __DEV__ ?
-                  <Button
-                    style={{ backgroundColor: "#6FAF98", alignSelf: "center" }}
+                  <Button round success
+                    style={{ marginBottom: 20, alignSelf: "center" }}
                     onPress={this.fast_login}
                   >
                     <Text>快速Login(測試用)</Text>
-                  </Button> : nil
+                  </Button> : null
 
+              }
+              { this.state.username ? 
+              <Button round info
+              style={{ marginBottom: 20, alignSelf: "center" }}
+              onPress={this.fast_login}
+            >
+              <Text>{`登入為 ${this.state.username}`}</Text>
+            </Button> : null
               }
 
             </View>

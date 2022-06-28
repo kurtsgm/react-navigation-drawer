@@ -3,7 +3,8 @@ import {
   SET_SHELVES,
   LOADING_START,
   LOADING_END,
-  CABLE_CONSUMER
+  CABLE_CONSUMER,
+  SET_WAREHOUSE
 } from './action_types'
 
 
@@ -13,6 +14,13 @@ export const setToken = (token,role,username) => {
     username: username,
     role: role,
     auth_token: token
+  }
+}
+
+export const setWarehouse = (warehouse) => {
+  return {
+    type: SET_WAREHOUSE,
+    warehouse: warehouse
   }
 }
 

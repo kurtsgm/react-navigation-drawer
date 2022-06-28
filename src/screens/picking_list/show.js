@@ -354,7 +354,7 @@ class ShowPickingList extends Component {
                   onEndEditing={(event) => {
                     let value = this.changeQuantity(data.storage_shelf_id, event.nativeEvent.text)
                     event.nativeEvent.text = value
-                  }} value={`${data.ready_to_pick}`} returnKeyType="done" />
+                  }} returnKeyType="done" />
 
               }
               {
@@ -677,7 +677,7 @@ class ShowPickingList extends Component {
                       }
                       onEndEditing={(event) => {
                         this.changeShelfItem(shelf_item.storage_shelf_id, event.nativeEvent.text)
-                      }} value={`${shelf_item.to_pick}`} returnKeyType="done" />
+                      }} returnKeyType="done" />
                 }
               </Col>
               <Col size={2} style={styles.vertical_center}>

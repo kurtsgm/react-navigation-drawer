@@ -7,3 +7,5 @@ export const LOADING_START = 'LOADING_START'
 export const LOADING_END = 'LOADING_END'
 
 export const CABLE_CONSUMER = 'CABLE_CONSUMER'
+
+export const SET_WAREHOUSE = 'SET_WAREHOUSE'

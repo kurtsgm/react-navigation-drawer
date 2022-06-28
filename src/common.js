@@ -1,7 +1,23 @@
 
 
 const SDJ_SHELF_PREFIX = "SDJ-1-"
+
+import {store} from './redux/stores/store'
+import {Input} from 'native-base'
+
 export const MIN_SHELF_TOKEN_LENGTH = 8
+
+export function getMinShelfLenghth(){
+  return store.warehouse.row_digits + 2 + store.warehouse.delimiter.length * 2
+}
+
+export class ShelfInput extends Input{
+  render(){
+    return <Input 
+    returnKeyType="done"
+    keyboardType={store.getState().warehouse.all_number ? 'numeric' : 'default'} {...this.props} />
+  }
+}
 
 export function normalize_date(text){
   let tokens =[]
@@ -28,42 +44,55 @@ export function normalize_date(text){
 
 export function normalize_shelf_barcode(barcode){
   let tokens =[]
-  if(barcode.includes('-')){
+  let warehouse = store.getState().warehouse
+  let delimiter = warehouse.delimiter
+  let row_digits = warehouse.row_digits
+  if(barcode.includes(delimiter)){
     if(barcode.includes(SDJ_SHELF_PREFIX)){
       barcode = barcode.replace(SDJ_SHELF_PREFIX,"")
     }
-    tokens = barcode.split('-').filter(e=> {
+    tokens = barcode.split(delimiter).filter(e=> {
       return e
-    }).map(e=> e.replace(/\D/g,''))
-    if(tokens[0].length == 1){
-      tokens[0] = `00${tokens[0]}`
-    }else if(tokens[0].length == 2){
-      tokens[0] = `0${tokens[0]}`
-    }
+    })
+
+    tokens[0] = String(tokens[0]).padStart(row_digits, '0')
   
     barcode = tokens.join('')
   }
 
-  tokens[0] = barcode.substring(0,3)
-  tokens[1] = barcode.substring(3,5)
-  tokens[2] = barcode.substring(5,6)
-  if(barcode.length>6){
-    tokens[3] = barcode.substring(6,9)
+  tokens[0] = barcode.substring(0,row_digits)
+  tokens[1] = barcode.substring(row_digits,row_digits+2)
+  tokens[2] = barcode.substring(row_digits+2,row_digits+3)
+  if(barcode.length> row_digits+3){
+    tokens[3] = barcode.substring(row_digits+3,row_digits+6)
   }
-  return tokens.filter(t=>t).join('-').toUpperCase()
+  return tokens.filter(t=>t).join(delimiter).toUpperCase()
 }
 
 export function getShelfLayer(token){
-  tokens = token.split('-').filter(e=>e)
-  return parseInt(tokens[2])
+  let warehouse = store.getState().warehouse
+  let delimiter = warehouse.delimiter
+  let row_digits = warehouse.row_digits
+  if(delimiter){
+    tokens = token.split(delimiter).filter(e=>e)
+    return parseInt(tokens[2])  
+  }else{
+    return parseInt(token.substring(row_digits+2,row_digits+3))
+  }
 }
 export function shelfSorter(shelf_a,shelf_b){
   try {
-    let shelf_a_tokens = shelf_a.split('-')
-    let shelf_b_tokens = shelf_b.split('-')
-    let result = parseInt(`${shelf_a_tokens[0]}${shelf_a_tokens[1]}${shelf_a_tokens[2]}`) - parseInt(`${shelf_b_tokens[0]}${shelf_b_tokens[1]}${shelf_b_tokens[2]}`)
+    let warehouse = store.getState().warehouse
+    let delimiter = warehouse.delimiter
+    let row_digits = warehouse.row_digits
+    // replace all delimiter
+    shelf_a = shelf_a.replace(/\D/g,'').replace(delimiter, '')
+    shelf_b = shelf_b.replace(/\D/g,'').replace(delimiter, '')
+  
+    let result = shelf_a.substring(0,row_digits+3).localeCompare(shelf_b.substring(0,row_digits+3))
     return result
   } catch (e) {
+    console.log(e)
     return 1
   }
 }

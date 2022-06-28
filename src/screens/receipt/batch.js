@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {normalize_shelf_barcode,MIN_SHELF_TOKEN_LENGTH} from '../../common'
+import {normalize_shelf_barcode,getMinShelfLenghth,ShelfInput} from '../../common'
 import { View } from 'react-native';
 import {
   Container,
@@ -100,7 +100,7 @@ class BatchReceipt extends Component {
       return false
     }
     for(let shelf of this.state.shelves){
-      if(!shelf.token || shelf.token.length < MIN_SHELF_TOKEN_LENGTH){
+      if(!shelf.token || shelf.token.length < getMinShelfLenghth()){
         return false
       }
     }
@@ -235,8 +235,8 @@ class BatchReceipt extends Component {
                   <Text>{shelf.pcs} / {shelf.boxes}</Text>
                 </Col>
                 <Col size={4} style={styles.vertical_center} >
-                <Input style={styles.vertical_center} placeholder="請輸入儲位" autoFocus={false}
-                style={shelf.warning ? {color: 'orange'}: {}}
+                <ShelfInput style={styles.vertical_center} placeholder="請輸入儲位" autoFocus={false}
+                styles={shelf.warning ? {color: 'orange'}: {}}
               value={shelf.token}
               keyboardType='numeric'
               returnKeyType="done"

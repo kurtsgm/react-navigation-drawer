@@ -23,7 +23,7 @@ import Dialog from "react-native-dialog";
 import { Grid, Col } from "react-native-easy-grid";
 import { apiFetch, RECEIVE_RECEIPT,GET_SHELF_INFO } from "../../api"
 import styles from "./styles";
-import { normalize_shelf_barcode } from '../../common'
+import { normalize_shelf_barcode ,ShelfInput} from '../../common'
 
 
 class RecommendShelf extends Component {
@@ -110,7 +110,7 @@ class RecommendShelf extends Component {
                   儲位
               </Text>
               </Left>
-              <Input placeholder='請指定儲位' style={this.state.warn_shelf ? {color: 'orange'}: {}}
+              <ShelfInput placeholder='請指定儲位' style={this.state.warn_shelf ? {color: 'orange'}: {}}
                 keyboardType='numeric'
                 returnKeyType="done"
                 value={this.state.shelf_token}
