@@ -46,10 +46,7 @@ class Home extends Component {
   
   validateOperator(access_token) {
     this.props.setToken(access_token,null,null)
-    console.log(access_token)
     apiFetch(GET_ME, {}, (data) => {
-      console.log('data!!!')
-      console.log(data)
       if (data.username) {
         this.props.setToken(access_token, data.role,data.username)
         this.props.setWarehouse(data.warehouse)
@@ -95,7 +92,6 @@ class Home extends Component {
         }, (data) => {
           if (data.access_token) {
             AsyncStorage.setItem('@authToken',data.access_token).then(()=>{
-              console.log("Validate!!")
               this.validateOperator(data.access_token)
             })
           } else {
@@ -118,7 +114,6 @@ class Home extends Component {
   
 
   render() {
-    console.log(store.getState())
     return <Container>
         <StatusBar barStyle="light-content" />
         <ImageBackground source={launchscreenBg} style={styles.imageContainer}>
