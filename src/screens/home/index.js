@@ -31,7 +31,7 @@ class Home extends Component {
   }
   componentDidMount(){
     AsyncStorage.getItem('@authToken').then((value)=>{
-      if(value){
+      if(!!value){
         AsyncStorage.getItem('@username').then((username)=>{
           this.setState({username:username})
         })
@@ -121,7 +121,7 @@ class Home extends Component {
                 </Item>
                 <Item fixedLabel>
                   <Label style={styles.text}>登入網址</Label>
-                  <Input style={styles.text} autoCapitalize="none" secureTextEntry onChangeText={(text) => 
+                  <Input style={styles.text} autoCapitalize="none" onChangeText={(text) => 
                     AsyncStorage.setItem('@domain',text)
                   } />
                 </Item>

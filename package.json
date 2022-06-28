@@ -1,9 +1,8 @@
 {
-  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "eject": "expo eject",
     "postinstall": "patch-package"
   },
@@ -20,12 +19,15 @@
     "expo-font": "~10.1.0",
     "expo-keep-awake": "~10.1.1",
     "expo-permissions": "~13.2.0",
+    "expo-splash-screen": "~0.15.1",
+    "expo-status-bar": "~1.3.0",
     "expo-updates": "~0.13.2",
     "graceful-fs": "^4.2.4",
     "native-base": "^2.15.2",
     "patch-package": "^6.2.2",
     "postinstall-postinstall": "^2.1.0",
     "react": "17.0.2",
+    "react-dom": "17.0.2",
     "react-native": "0.68.2",
     "react-native-actionsheet": "^2.4.2",
     "react-native-barcode-expo": "^1.1.1",
@@ -38,18 +40,23 @@
     "react-native-svg": "12.3.0",
     "react-native-swipe-list-view": "^2.5.0",
     "react-native-vector-icons": "^6.7.0",
+    "react-native-web": "0.17.7",
     "react-native-websocket": "^1.0.2",
     "react-navigation": "^4.4.3",
     "react-navigation-drawer": "^2.5.0",
+    
     "react-navigation-stack": "^1.10.3",
     "react-redux": "^6.0.1",
     "redux": "^4.0.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.12.9",
     "babel-preset-expo": "~9.1.0"
   },
   "resolutions": {
     "native-base/@codler/react-native-keyboard-aware-scroll-view": "2.0.0"
   },
-  "private": true
+  "private": true,
+  "name": "WmsIbiza",
+  "version": "1.0.0"
 }
