@@ -22,6 +22,7 @@ class Home extends Component {
       username: '',
       password: '',
       login_failed: false,
+      logged_in_username: null
     }
     this.login = this.login.bind(this)
     if (__DEV__) {
@@ -33,7 +34,7 @@ class Home extends Component {
     AsyncStorage.getItem('@authToken').then((value)=>{
       if(!!value){
         AsyncStorage.getItem('@username').then((username)=>{
-          this.setState({username:username})
+          this.setState({logged_in_username:username})
         })
       }
     })
@@ -148,19 +149,19 @@ class Home extends Component {
                   </Button> : null
 
               }
-              { this.state.username ? 
+              { this.state.logged_in_username ? 
               <Button round info
               style={{ marginBottom: 20, alignSelf: "center" }}
               onPress={this.fast_login}
             >
-              <Text>{`登入為 ${this.state.username}`}</Text>
+              <Text>{`以${this.state.logged_in_username}身份登入`}</Text>
             </Button> : null
               }
 
             </View>
           </Content>
           <Text style={{ backgroundColor: 'transparent',bottom: 0 ,textAlign:'right'}} >
-            版本: 1.1.50 (2022/06/28)
+            版本: 1.1.51 (2022/06/29)
           </Text>
         </ImageBackground>
       </Container>    
