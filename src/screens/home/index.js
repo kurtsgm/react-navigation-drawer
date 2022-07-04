@@ -125,7 +125,7 @@ class Home extends Component {
             </View>
             <View >
             { store.getState().username ? 
-              <Button round info
+              <><Button round info
               style={{ marginBottom: 20, alignSelf: "center" }}
               onPress={()=>{
                 // login with existing token
@@ -138,7 +138,16 @@ class Home extends Component {
               }}
             >
               <Text>{`以${store.getState().username}身份登入`}</Text>
-            </Button> :
+            </Button>
+            <Button round warning
+              style={{ marginBottom: 20, alignSelf: "center" }}
+              onPress={()=>{
+                this.logout()          
+              }}
+            >
+              <Text>{`切換帳號`}</Text>
+              </Button>
+            </> :
             <>
               <Form>
                 <Item fixedLabel >
@@ -183,7 +192,7 @@ class Home extends Component {
             </View>
           </Content>
           <Text style={{ backgroundColor: 'transparent',bottom: 0 ,textAlign:'right'}} >
-            版本: 1.1.51 (2022/06/29)
+            版本: 1.1.52 (2022/07/04)
           </Text>
         </ImageBackground>
       </Container>    

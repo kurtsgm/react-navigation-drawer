@@ -620,13 +620,6 @@ class ShowPickingList extends Component {
     } else {
       list_items = this.state.shelf_items.sort((a, b) => {
         return shelfSorter(a.token,b.token)
-      }).sort((a, b) => {
-        // SDJ SORTING RULE
-        // SORT are now stable
-        let PICK_LAYER = 1
-        let layer_a = getShelfLayer(a.token)
-        let layer_b = getShelfLayer(b.token)
-        return layer_a <= PICK_LAYER && layer_b != PICK_LAYER ? -1 : 0
       }).filter(item => {
         return this.state.show_picked || !item.picked
       }).map(shelf_item => {
@@ -749,7 +742,7 @@ class ShowPickingList extends Component {
           </Body>
           <Right>
             <Button transparent>
-              <Icon name={this.state.sorting_mode == PRODUCT_MODE ? "cube" : "filing"} onPress={() => this.switchSorting()} />
+              <Icon name={this.state.sorting_mode == PRODUCT_MODE ? "cube" : "file-tray-stacked"} onPress={() => this.switchSorting()} />
             </Button>
             <Button transparent>
               <Icon name="refresh" onPress={() => this.reload()} />
