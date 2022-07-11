@@ -656,6 +656,11 @@ class ShowPickingList extends Component {
                     {boxText(shelf_item.product_box_pcs, shelf_item.picked ? shelf_item.picked_quantity : shelf_item.to_pick) }
                   </Text>
                 }
+                {
+                  <Text>
+                    [ {shelf_item.product_box_pcs, shelf_item.picked ? shelf_item.picked_quantity : shelf_item.to_pick} PCS ]
+                  </Text>
+                }
               </Col>
               <Col size={2}>
                 {
