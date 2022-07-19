@@ -181,21 +181,17 @@ class ShowVerifyReceipt extends Component {
           {
             this.state.items.length > 0 ?
               <List>
-                {
-                  ["manager"].includes(store.getState().role) ?
-                    <ListItem>
-                      <Grid>
-                        <Col size={4} style={styles.vertical_center} >
-                        </Col>
-                        <Col size={2} style={styles.vertical_center} >
-                          <Button onPress={() => { this.verifyAll() }}>
-                            <Text>自動全部驗收</Text>
-                          </Button>
-                        </Col>
-                      </Grid>
-                    </ListItem> : null
-                }
-
+                <ListItem>
+                  <Grid>
+                    <Col size={4} style={styles.vertical_center} >
+                    </Col>
+                    <Col size={2} style={styles.vertical_center} >
+                      <Button onPress={() => { this.verifyAll() }}>
+                        <Text>全部驗收</Text>
+                      </Button>
+                    </Col>
+                  </Grid>
+                </ListItem> 
                 <ListItem>
                   <Input placeholder="請輸入或者掃描條碼" 
                     value={this.state.barcode}
