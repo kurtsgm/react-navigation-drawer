@@ -83,8 +83,8 @@ class Home extends Component {
 
   fast_login() {
     if (__DEV__) {
-      const { navigate } = this.props.navigation;
       AsyncStorage.setItem('@domain',Constants.manifest.debuggerHost.split(":").shift().concat(":3000")).then(()=>{
+        
         apiFetch(API_OAUTH, {
           username: 'a',
           password: 'qwertyui',
