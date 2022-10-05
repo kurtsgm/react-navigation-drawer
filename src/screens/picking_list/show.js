@@ -525,7 +525,9 @@ class ShowPickingList extends Component {
                 <Text>訂單序號 - 商品數</Text>
               </CardItem>
               {
-                this.state.storage_orders[sector.product_storage_id].map((order) => {
+                this.state.storage_orders[sector.product_storage_id].sort((a,b)=>{
+                  return a.picking_index - b.picking_index
+                }).map((order) => {
                   return <CardItem key={`${sector.product_storage_id}-orders-${order.picking_index}`}>
                     <Badge
                       style={{
@@ -675,7 +677,7 @@ class ShowPickingList extends Component {
                       }
                       onEndEditing={(event) => {
                         this.changeShelfItem(shelf_item.storage_shelf_id, event.nativeEvent.text)
-                      }} returnKeyType="done" />
+                      }} value={`${shelf_item.to_pick}`} returnKeyType="done" />
                 }
               </Col>
               <Col size={2} style={styles.vertical_center}>
