@@ -44,6 +44,10 @@ export const GET_SHOPS = "GET_SHOPS"
 export const SET_SHOPS = "SET_SHOPS"
 export const GET_ME = "GET_ME"
 
+export const GET_STOCK_TAKINGS = "GET_STOCK_TAKINGS"
+export const CREATE_STOCK_TAKING = "CREATE_STOCK_TAKING"
+
+
 import {Toast} from 'native-base'
 
 const API_PATH = __DEV__ ? "/api" : ''
@@ -77,6 +81,8 @@ const Actions = {
   GET_WAREHOUSES: {path:`${API_PATH}/v1/warehouses`, method: "GET"},
   GET_TRANSFER_SHELVES: {path:`${API_PATH}/v1/transfer_receipts/today`, method: "GET"},
   GET_REPLENISHMENTS: {path:`${API_PATH}/v1/replenishments`, method: "GET"},
+  GET_STOCK_TAKINGS: {path:`${API_PATH}/v1/stock_takings`, method: "GET"},
+  CREATE_STOCK_TAKING: {path:`${API_PATH}/v1/stock_takings`, method: "POST"},
   GET_ME: {path:`${API_PATH}/v1/me`, method: "GET"}
 }
 

@@ -19,9 +19,14 @@ import ReceiptVerifyItem from './screens/receipt_verify/item'
 
 // PickingLists
 import PickingLists from './screens/picking_list'
-import PickingListShops from './screens/picking_list/shops'
+import PickingListShops from './screens/stock_taking/shops'
 import ShowPickingList from './screens/picking_list/show'
 import PickingListQC from './screens/picking_list/qc'
+
+// StockTaking
+import StockTakingShops from './screens/stock_taking/shops'
+import StockTakingIndex from './screens/stock_taking/index'
+import StockTakingShow from './screens/stock_taking/show'
 
 
 // Replenishments
@@ -65,6 +70,7 @@ const Drawer = createDrawerNavigator(
     ShelfSearch: {screen: ShelfSearch},
     ShelfMerge: {screen: ShelfMerge},
     HighLayerShopIndex: {screen: HighLayerShopIndex},
+    StockTakingShops: {screen: StockTakingShops},
     WarehouseCheckout: {screen: WarehouseCheckout},
     WarehouseShelfMerge: {screen: WarehouseShelfMerge},
     SettingShops: {screen: SettingShops},
@@ -109,6 +115,10 @@ const AppNavigator = createStackNavigator(
     ShelfShow: {screen: ShelfShow},
     ShelfIndex: {screen: ShelfIndex},
     ShelfProduct: {screen: ShelfProduct},
+
+    StockTakingIndex: {screen: StockTakingIndex},
+    StockTakingShow: {screen: StockTakingShow},
+    
 
   },
   {
