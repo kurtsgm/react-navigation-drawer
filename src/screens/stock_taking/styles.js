@@ -21,7 +21,6 @@ export default {
   },
   orange: {
     color: "orange",
-    fontSize: 24
   },
   footer: {
     bottom: 0
@@ -35,4 +34,7 @@ export default {
   red:{
     color: 'red'
   },
+  green:{
+    color: 'limegreen'
+  }
 };

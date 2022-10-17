@@ -11,13 +11,18 @@ import {
   Body,
   Right,
   List,
-  ListItem
+  ListItem,
+  Footer,
+  FooterTab,
+
 } from "native-base";
 import styles from "./styles";
 import Dialog from "react-native-dialog";
 
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_STOCK_TAKINGS, CREATE_STOCK_TAKING } from "../../api"
+import { apiFetch, GET_SHELF_INFO, GET_STOCK_TAKING } from "../../api"
+import { normalize_shelf_barcode, getMinShelfLenghth, ShelfInput } from '../../common'
+import { Grid, Col, Row } from "react-native-easy-grid";
 
 class StockTakingShow extends Component {
   constructor(props) {
@@ -27,25 +32,168 @@ class StockTakingShow extends Component {
 
     this.state = {
       stock_taking: params.stock_taking,
+      isModalVisible: false,
+      isQuantityModalVisible: false,
+      currentItemKey: null,
+      barcode: null,
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
+    this.onShelfTokenChanged = this.onShelfTokenChanged.bind(this)
     this.reload()
   }
 
-  reload() {
 
+  reload() {
+    let { stock_taking } = this.state
+    apiFetch(GET_STOCK_TAKING, { id: stock_taking.id }, (data) => {
+      console.log("RESULT!")
+      console.log(data)
+      this.setState({ stock_taking: data })
+    })
+  }
+  onShelfTokenChanged(token) {
+    let shelf = this.state.stock_taking.stock_taking_items.find((item) => {
+      return item.shelf.token == token
+    })
+    if (!shelf) {
+      apiFetch(GET_SHELF_INFO, { token: token, shop_id: this.state.stock_taking.shop_id }, (shelf_data) => {
+        console.log("RESULT!")
+        console.log(shelf_data)
+        if (shelf_data) {
+          let shelf
+          for (let item of this.state.stock_taking.stock_taking_items) {
+            if (item.shelf.id == shelf_data.id) {
+              shelf = item
+              break
+            }
+          }
+          if (!shelf) {
+            shelf = {
+              shelf: shelf_data,
+              stock_taking_id: this.state.stock_taking.id,
+            }
+            this.state.stock_taking.stock_taking_items.push(shelf)
+          }
+        }
+      })
+    }
   }
 
   onBack() {
     this.reload()
   }
-  render() {
+
+  organizeStockTakingItems(stock_taking_items) {
     let rows = []
+    let previous_shelf_token = null
+    let keyIndex = 0
+    for (let item of stock_taking_items) {
+      item.key = keyIndex++
+      if (previous_shelf_token != item.shelf.token) {
+        rows.push(<ListItem itemDivider>
+          <Body>
+          <Text>{item.shelf.token}</Text>
+
+          </Body>
+          <Right>
+            <Button transparent>
+              <Icon name="add" onPress={() => {
+              
+              }} />
+            </Button>
+          </Right>
+        </ListItem>)
+      }
+      console.log(item)
+      rows.push(
+        <ListItem
+          key={item.key}
+          onPress={() => {
+            this.setState({ isQuantityModalVisible: true, currentItemKey: item.key })
+          }}
+        >
+          <Grid>
+            <Col size={1}>
+              <Text>{`${item.product_storage.product.uid}\n${item.product_storage.product.name}`}</Text>
+            </Col>
+            <Col size={1}>
+              <Text>
+                {[
+                  item.product_storage.storage_type_name,
+                  item.product_storage.expiration_date,
+                  item.product_storage.batch
+                ].filter(e => e).join("\n")}
+              </Text>
+            </Col>
+            <Col size={1}>
+              {
+                item.after_adjustment_pcs == null ? <Text>{`${item.before_adjustment_pcs}\n未盤`}</Text> :
+                  <Text style={item.after_adjustment_pcs == item.before_adjustment_pcs ? styles.green : styles.orange}>{item.after_adjustment_pcs}</Text>
+              }
+            </Col>
+
+          </Grid>
+        </ListItem>
+      )
+      previous_shelf_token = item.shelf.token
+    }
+    return rows
+  }
+
+
+  render() {
     let { stock_taking } = this.state
+    let rows = this.organizeStockTakingItems((stock_taking.stock_taking_items || []).sort((a, b) => {
+      return a.shelf.token.localeCompare(b.shelf.token)
+    }))
 
     return (
       <Container style={styles.container}>
+        {/* 儲位Dialog */}
+        <Dialog.Container visible={this.state.isModalVisible}>
+          <Dialog.Title>請輸入儲位</Dialog.Title>
+          <Dialog.Input keyboardType='numeric'
+            placeholder='請輸入儲位'
+            value={this.state.barcode}
+            autoFocus={true}
+            onChangeText={(text) => this.setState({ barcode: normalize_shelf_barcode(text.toUpperCase()) })}
+            onFocus={() => this.setState({ barcode: null })}
+            onEndEditing={
+              (event) => {
+                let barcode = normalize_shelf_barcode(event.nativeEvent.text.trim())
+                this.setState({ isModalVisible: false })
+                this.onShelfTokenChanged(barcode)
+
+              }
+            }
+            returnKeyType="done" />
+          <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+        </Dialog.Container>
+
+        {/* 盤點Dialog */}
+        <Dialog.Container visible={this.state.isQuantityModalVisible}>
+          <Dialog.Title>請輸入盤點數量</Dialog.Title>
+          <Dialog.Input keyboardType='numeric'
+            placeholder='請輸入盤點數量'
+            autoFocus={true}
+            onEndEditing={
+              (event) => {
+                this.setState({ isQuantityModalVisible: false })
+                let quantity = parseInt(event.nativeEvent.text.trim())
+                let item = this.state.stock_taking.stock_taking_items.find((item) => {
+                  return item.key == this.state.currentItemKey
+                })
+                if (item) {
+                  item.after_adjustment_pcs = quantity
+                }
+                this.setState({ currentItemKey: null, stock_taking: this.state.stock_taking })
+
+              }
+            }
+            returnKeyType="done" />
+          <Dialog.Button label="取消" onPress={() => this.setState({ isQuantityModalVisible: false })} />
+        </Dialog.Container>
         <Header>
           <Left>
             <Button
@@ -70,22 +218,27 @@ class StockTakingShow extends Component {
         </Header>
         <Content>
           <List>
-            <ListItem itemDivider>
-              <Body>
-                <Text>
-                  盤點單號
-                </Text>
-              </Body>
-              <Right>
-              </Right>
-            </ListItem>
             {rows}
           </List>
-          <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
-          }}>
-            <Text>掃描儲位</Text>
-          </Button>
         </Content>
+        <Footer>
+          <FooterTab>
+            <Button active full bordered onPress={() => {
+              this.props.navigation.navigate("BarcodeScanner", {
+                onBarcodeScanned: (barcode) => {
+                  this.onShelfTokenChanged(barcode)
+                }
+              })
+            }}>
+              <Icon name="camera" /><Text>掃描儲位</Text>
+            </Button>
+            <Button full active bordered onPress={() => {
+              this.setState({ isModalVisible: true })
+            }}>
+              <Text>輸入儲位</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }
