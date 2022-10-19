@@ -127,12 +127,21 @@ export function apiFetch(action,data={},callback_function){
     }
     let _action = Actions[action]
     let path = _action.path
-    Object.keys(data).forEach(key=>{
+    for(let key of Object.keys(data)){
       if(path.match(`{${key}}`)){
         path=path.replace(`{${key}}`,encodeURIComponent(data[key]))
+        if(!data[key]){
+          Toast.show({
+            text: '參數錯誤',
+            duration: 2500,
+            type: 'danger',
+            textStyle: {textAlign: "center"}
+          })
+          return
+        }
         delete data[key]
       }
-    })
+    }
     let url = host + path
     let options = {
       method:  _action.method,

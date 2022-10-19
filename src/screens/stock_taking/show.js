@@ -20,7 +20,7 @@ import styles from "./styles";
 import Dialog from "react-native-dialog";
 
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_SHELF_INFO, GET_STOCK_TAKING } from "../../api"
+import { apiFetch, GET_SHELF_INFO, GET_STOCK_TAKING,GET_PRODUCTS } from "../../api"
 import { normalize_shelf_barcode, getMinShelfLenghth, ShelfInput } from '../../common'
 import { Grid, Col, Row } from "react-native-easy-grid";
 
@@ -34,12 +34,16 @@ class StockTakingShow extends Component {
       stock_taking: params.stock_taking,
       isModalVisible: false,
       isQuantityModalVisible: false,
+      isProductModalVisible: false,
+      isProductSelectModalVisible: false,
       currentItemKey: null,
       barcode: null,
+      candidateProducts: []
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
     this.onShelfTokenChanged = this.onShelfTokenChanged.bind(this)
+    this.fetchProduct = this.fetchProduct.bind(this)
     this.reload()
   }
 
@@ -47,19 +51,28 @@ class StockTakingShow extends Component {
   reload() {
     let { stock_taking } = this.state
     apiFetch(GET_STOCK_TAKING, { id: stock_taking.id }, (data) => {
-      console.log("RESULT!")
-      console.log(data)
       this.setState({ stock_taking: data })
     })
   }
+
+
+  fetchProduct( barcode) {
+    let { stock_taking } = this.state
+    apiFetch(GET_PRODUCTS, { barcode: barcode, shop_id: stock_taking.shop_id }, (product_data) => {
+      if (product_data.length > 1) {
+        this.setState({ candidateProducts: product_data })
+        this.setState({ isProductModalVisible: true })
+
+      }
+    })
+  }
+
   onShelfTokenChanged(token) {
     let shelf = this.state.stock_taking.stock_taking_items.find((item) => {
       return item.shelf.token == token
     })
     if (!shelf) {
       apiFetch(GET_SHELF_INFO, { token: token, shop_id: this.state.stock_taking.shop_id }, (shelf_data) => {
-        console.log("RESULT!")
-        console.log(shelf_data)
         if (shelf_data) {
           let shelf
           for (let item of this.state.stock_taking.stock_taking_items) {
@@ -93,19 +106,18 @@ class StockTakingShow extends Component {
       if (previous_shelf_token != item.shelf.token) {
         rows.push(<ListItem itemDivider>
           <Body>
-          <Text>{item.shelf.token}</Text>
+            <Text>{item.shelf.token}</Text>
 
           </Body>
           <Right>
             <Button transparent>
               <Icon name="add" onPress={() => {
-              
+                this.setState({isProductModalVisible:true})
               }} />
             </Button>
           </Right>
         </ListItem>)
       }
-      console.log(item)
       rows.push(
         <ListItem
           key={item.key}
@@ -169,6 +181,46 @@ class StockTakingShow extends Component {
             }
             returnKeyType="done" />
           <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+        </Dialog.Container>
+
+        {/* 商品選擇Dialog */}
+        <Dialog.Container visible={this.state.isProductSelectModalVisible}>
+          <Dialog.Title>請選擇商品</Dialog.Title>
+          <Dialog.List>
+            {
+              this.state.candidateProducts.map((product) => {
+                <Dialog.ListItem>
+                  <Text>{product.name}</Text>
+                </Dialog.ListItem>
+              })
+            }
+          </Dialog.List>
+        </Dialog.Container>
+
+        {/* 儲位Dialog */}
+        <Dialog.Container visible={this.state.isProductModalVisible}>
+          <Dialog.Title>請輸入或掃描品號</Dialog.Title>
+          <Dialog.Input placeholder='請輸入品號或條碼'
+            autoFocus={true}
+            onEndEditing={
+              (event) => {
+                let barcode = event.nativeEvent.text.trim()
+                if(barcode){
+                  this.setState({ isProductModalVisible: false })
+                  this.fetchProduct(barcode)  
+                }
+              }
+            }
+            returnKeyType="done" />
+          <Dialog.Button label={<Icon name="camera" />} onPress={() => {
+            this.setState({ isProductModalVisible: false })
+            this.props.navigation.navigate("BarcodeScanner", {
+              onBarcodeScanned: (barcode) => {
+                this.fetchProduct(barcode)
+              }
+            })
+          }} />
+          <Dialog.Button label="取消" onPress={() => this.setState({ isProductModalVisible: false })} />
         </Dialog.Container>
 
         {/* 盤點Dialog */}
