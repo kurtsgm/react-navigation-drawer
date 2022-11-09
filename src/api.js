@@ -119,9 +119,8 @@ export function apiFetch(action,data={},callback_function){
   let host
   AsyncStorage.getItem('@domain').then(domain=>{
     if(__DEV__ ){
-      host = "http://192.168.1.116:3000"
-      // host = "http://"+domain
-  
+      // host = "http://192.168.1.116:3000"
+      host = "http://"+domain  
     }else{
       host = "https://"+domain
     }
@@ -152,7 +151,7 @@ export function apiFetch(action,data={},callback_function){
       }
     }
     if (_action.method == "GET" && data){
-      params= "?"+Object.entries(data).map(item=>{
+      let params= "?"+Object.entries(data).map(item=>{
         if(Array.isArray(item[1])){
           return item[1].map(subitem=>item[0]+"[]="+subitem)
         }else{

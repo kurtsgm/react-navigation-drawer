@@ -19,7 +19,7 @@ import ReceiptVerifyItem from './screens/receipt_verify/item'
 
 // PickingLists
 import PickingLists from './screens/picking_list'
-import PickingListShops from './screens/stock_taking/shops'
+import PickingListShops from './screens/picking_list/shops'
 import ShowPickingList from './screens/picking_list/show'
 import PickingListQC from './screens/picking_list/qc'
 
