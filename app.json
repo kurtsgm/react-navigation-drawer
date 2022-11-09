@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "智慧倉儲系統APP",
-    "version": "1.1.41",
+    "name": "Go倉儲",
+    "version": "1.1.42",
     "android": {
       "package": "com.ibiza.wms",
       "versionCode": 23,

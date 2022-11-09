@@ -120,7 +120,7 @@ class Home extends Component {
           <Content>
             <View style={styles.logoContainer}>
               <H1 style={styles.text}>
-                倉儲管理系統
+                GoWarehouse
               </H1>
             </View>
             <View >
@@ -192,7 +192,7 @@ class Home extends Component {
             </View>
           </Content>
           <Text style={{ backgroundColor: 'transparent',bottom: 0 ,textAlign:'right'}} >
-            版本: 1.1.54 (2022/07/19)
+            版本: 1.1.55 (2022/11/09)
           </Text>
         </ImageBackground>
       </Container>    
