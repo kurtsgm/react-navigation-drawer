@@ -119,8 +119,8 @@ export function apiFetch(action,data={},callback_function){
   let host
   AsyncStorage.getItem('@domain').then(domain=>{
     if(__DEV__ ){
-      // host = "http://192.168.1.108:8088"
-      host = "http://"+domain
+      host = "http://192.168.1.116:3000"
+      // host = "http://"+domain
   
     }else{
       host = "https://"+domain
