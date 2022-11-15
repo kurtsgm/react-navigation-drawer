@@ -337,7 +337,7 @@ class ShowPickingList extends Component {
             <Col size={4} style={styles.vertical_center} >
               {data.done ? <Text style={{ "color": "green" }}>{data.ready_to_pick}</Text> :
                 <Input keyboardType='numeric'
-                  value={data.ready_to_pick}
+                  value={`${data.ready_to_pick}`}
                   textAlign={'center'}
                   onChangeText={
                     (text) => {
@@ -669,7 +669,7 @@ class ShowPickingList extends Component {
                   shelf_item.picked ?
                     <Text>{shelf_item.picked_quantity}</Text> :
                     <Input keyboardType='numeric'
-                      value={shelf_item.to_pick}
+                      value={`${shelf_item.to_pick}`}
                       textAlign={'center'}
                       onChangeText={(text) => {
                         this.changeShelfItem(shelf_item.storage_shelf_id, text)
