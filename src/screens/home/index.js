@@ -160,8 +160,13 @@ class Home extends Component {
                 </Item>
                 <Item fixedLabel>
                   <Label style={styles.text}>登入網址</Label>
-                  <Input style={styles.text} autoCapitalize="none" onChangeText={(text) => 
-                    AsyncStorage.setItem('@domain',text)
+                  <Input style={styles.text} autoCapitalize="none" onChangeText={(text) => {
+                    if(text.contains(".")){
+                      AsyncStorage.setItem('@domain',text)
+                    }else{
+                      AsyncStorage.setItem('@domain',`${text}.ibiza.com.tw`)
+                    }
+                  }
                   } />
                 </Item>
                 <Label style={styles.center_container}>
