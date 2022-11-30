@@ -56,60 +56,60 @@ class PickingListQC extends Component {
   }
 
   connect() {
-    let consumer = actionCableCumsumer()
-    let self = this
-    console.log('cable')
-    console.log(global.cable_connected)
-    if(!global.cable_connected){
-      global.cable_connected = consumer.subscriptions.create({ channel: 'AppQcChannel' }, {
-        connected() {
-          console.log("CONNECTED!")
-        },
-        disconnected() {
-          global.subscription = null
-          console.log('disconnected')
-        },
-        appear() {
-          console.log('appear')
-        },
-        away() {
-          console.log('away')
-        },
-        received(_data) {
-          let data = JSON.parse(_data)
-          console.log(data)
-          if(self){
-            if(data.username == store.getState().username){
-              console.log(data.username)
-              self.setState({
-                orders: self.state.orders.map(order=>{
-                  if(order.id == data.processing_id){
-                    order.processing = true
-                  }else{
-                    order.processing = false
-                  }
-                  return order
+    actionCableCumsumer().then(consumer=>{
+      let self = this
+      console.log('cable')
+      console.log(global.cable_connected)
+      if(!global.cable_connected){
+        global.cable_connected = consumer.subscriptions.create({ channel: 'AppQcChannel' }, {
+          connected() {
+            console.log("CONNECTED!")
+          },
+          disconnected() {
+            global.subscription = null
+            console.log('disconnected')
+          },
+          appear() {
+            console.log('appear')
+          },
+          away() {
+            console.log('away')
+          },
+          received(_data) {
+            let data = JSON.parse(_data)
+            console.log(data)
+            if(self){
+              if(data.username == store.getState().username){
+                console.log(data.username)
+                self.setState({
+                  orders: self.state.orders.map(order=>{
+                    if(order.id == data.processing_id){
+                      order.processing = true
+                    }else{
+                      order.processing = false
+                    }
+                    return order
+                  })
                 })
-              })
-            }
-            if(data.picking_list_id == self.state.picking_list.id){
-              let orders = self.state.orders
-              for(let order of orders){
-                for(let data_order of data.orders){
-                  if(data_order.id ==order.id){
-                    order.status = data_order.status
-                    break
+              }
+              if(data.picking_list_id == self.state.picking_list.id){
+                let orders = self.state.orders
+                for(let order of orders){
+                  for(let data_order of data.orders){
+                    if(data_order.id ==order.id){
+                      order.status = data_order.status
+                      break
+                    }
                   }
                 }
+                self.setState({orders: orders})
               }
-              self.setState({orders: orders})
+    
             }
-  
           }
-        }
-  
-    })}
-
+    
+      })}  
+    })
   }
 
   onBack() {

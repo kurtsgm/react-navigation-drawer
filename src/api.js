@@ -95,23 +95,25 @@ global.removeEventListener = () => {};
 
 export function actionCableCumsumer(){
   let host
-  AsyncStorage.getItem('@domain').then(domain=>{
-    if(store.getState().consumer){
-      console.log('GET CONSUMER')
-      return store.getState().consumer    
-    }else{
-      console.log('NO CONSUMER')
-      let consumer
-      if(__DEV__ ){
-        // host = "http://192.168.1.108:8088"
-        host = "ws://"+domain  
+  return new Promise((resolve,reject) =>{
+    AsyncStorage.getItem('@domain').then(domain=>{
+      if(store.getState().consumer){
+        console.log('GET CONSUMER')
+        resolve(store.getState().consumer)
       }else{
-        host = "wss://"+ domain
+        console.log('NO CONSUMER')
+        let consumer
+        if(__DEV__ ){
+          // host = "http://192.168.1.108:8088"
+          host = "ws://"+domain  
+        }else{
+          host = "wss://"+ domain
+        }
+        consumer =  createConsumer(`${host}/cable?token=${store.getState().auth_token}`)
+        store.dispatch(AppActions.setConsumer(consumer))  
+        resolve(consumer)
       }
-      consumer =  createConsumer(`${host}/cable?token=${store.getState().auth_token}`)
-      store.dispatch(AppActions.setConsumer(consumer))  
-      return consumer
-    }
+    })
   })
 }
 
