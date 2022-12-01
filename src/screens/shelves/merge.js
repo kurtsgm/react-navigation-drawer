@@ -327,7 +327,7 @@ class ShelfMerge extends Component {
                       high_layer ?
                         <Input editable={false} value={high_layer.shelf_token} />
                         :
-                        <ShelfInput keyboardType='numeric' value={this.state.source_shelf}
+                        <ShelfInput value={this.state.source_shelf}
                           placeholder='請輸入或掃描'
                           onFocus={() => this.setState({ source_shelf: "", shelves: [], products: [] })
                           }
@@ -362,7 +362,7 @@ class ShelfMerge extends Component {
                     </Label>
                   </Col>
                   <Col size={4}>
-                    <ShelfInput keyboardType='numeric' value={this.state.destination_shelf}
+                    <ShelfInput value={this.state.destination_shelf}
                       placeholder='請輸入或掃描'
                       onFocus={() => this.setState({ destination_shelf: "" })}
                       onChangeText={

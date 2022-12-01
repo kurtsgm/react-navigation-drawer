@@ -101,7 +101,6 @@ class WarehouseCheckout extends Component {
           </Left>
           <Item>
             <ShelfInput placeholder="請輸入或者掃描條碼"
-              keyboardType='numeric'
               returnKeyType="done"
               value={this.state.barcode}
               onChangeText={(text) => this.setState({ barcode: normalize_shelf_barcode(text.toUpperCase()) })}
