@@ -46,27 +46,31 @@ export function normalize_shelf_barcode(barcode){
   let tokens =[]
   let warehouse = store.getState().warehouse
   let delimiter = warehouse.delimiter
-  let row_digits = warehouse.row_digits
-  if(barcode.includes(delimiter)){
-    if(barcode.includes(SDJ_SHELF_PREFIX)){
-      barcode = barcode.replace(SDJ_SHELF_PREFIX,"")
+  if(delimiter){
+    let row_digits = warehouse.row_digits
+    if(barcode.includes(delimiter)){
+      if(barcode.includes(SDJ_SHELF_PREFIX)){
+        barcode = barcode.replace(SDJ_SHELF_PREFIX,"")
+      }
+      tokens = barcode.split(delimiter).filter(e=> {
+        return e
+      })
+
+      tokens[0] = String(tokens[0]).padStart(row_digits, '0')
+    
+      barcode = tokens.join('')
     }
-    tokens = barcode.split(delimiter).filter(e=> {
-      return e
-    })
 
-    tokens[0] = String(tokens[0]).padStart(row_digits, '0')
-  
-    barcode = tokens.join('')
+    tokens[0] = barcode.substring(0,row_digits)
+    tokens[1] = barcode.substring(row_digits,row_digits+2)
+    tokens[2] = barcode.substring(row_digits+2,row_digits+3)
+    if(barcode.length> row_digits+3){
+      tokens[3] = barcode.substring(row_digits+3,row_digits+6)
+    }
+    return tokens.filter(t=>t).join(delimiter).toUpperCase()
+  }else{
+    return barcode.toUpperCase()
   }
-
-  tokens[0] = barcode.substring(0,row_digits)
-  tokens[1] = barcode.substring(row_digits,row_digits+2)
-  tokens[2] = barcode.substring(row_digits+2,row_digits+3)
-  if(barcode.length> row_digits+3){
-    tokens[3] = barcode.substring(row_digits+3,row_digits+6)
-  }
-  return tokens.filter(t=>t).join(delimiter).toUpperCase()
 }
 
 export function getShelfLayer(token){

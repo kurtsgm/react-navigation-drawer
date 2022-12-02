@@ -120,7 +120,7 @@ export function actionCableCumsumer(){
 export function apiFetch(action,data={},callback_function){
   let host
   AsyncStorage.getItem('@domain').then(domain=>{
-    if(__DEV__ ){
+    if(__DEV__ && domain.match(/\d+.\d+.\d+.\d+.:\d+/)){
       // host = "http://192.168.1.116:3000"
       host = "http://"+domain  
     }else{

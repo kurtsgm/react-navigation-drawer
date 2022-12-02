@@ -4,7 +4,7 @@
     "version": "1.1.44",
     "android": {
       "package": "com.ibiza.wms",
-      "versionCode": 25,
+      "versionCode": 24,
       "permissions": [
         "CAMERA"
       ]
