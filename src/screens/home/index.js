@@ -161,7 +161,7 @@ class Home extends Component {
                 <Item fixedLabel>
                   <Label style={styles.text}>登入網址</Label>
                   <Input style={styles.text} autoCapitalize="none" onChangeText={(text) => {
-                    if(text.contains(".")){
+                    if(text.includes(".")){
                       AsyncStorage.setItem('@domain',text)
                     }else{
                       AsyncStorage.setItem('@domain',`${text}.ibiza.com.tw`)
