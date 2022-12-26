@@ -38,7 +38,6 @@ class StockTakingIndex extends Component {
       shop_id: this.state.shop.id,
       reporter: true
     }, (data) => {
-      console.log(data)
       this.setState({
         stock_takings: data
       })
@@ -113,7 +112,7 @@ class StockTakingIndex extends Component {
                apiFetch(CREATE_STOCK_TAKING, {
                 shop_id: this.state.shop.id,
               }, (data) => {
-                console.log(data)
+                
               })
             }}>
             <Text>新增盤點單</Text>

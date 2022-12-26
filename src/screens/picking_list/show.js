@@ -31,6 +31,7 @@ import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST, ACTIVATE_PICKING } from ".
 import { boxText,getShelfLayer,shelfSorter } from '../../common'
 import Barcode from 'react-native-barcode-expo';
 import styles from "./styles";
+import { ScrollView } from "react-native-gesture-handler";
 
 const PRODUCT_MODE = "product_mode"
 const SHELF_MODE = "shelf_mode"
@@ -757,7 +758,7 @@ class ShowPickingList extends Component {
 
           </Right>
         </Header>
-        <Content disableKBDismissScroll={true}>
+        <ScrollView disableKBDismissScroll={true}>
           <List key="picking-list">
             {
               [ "manager"].includes(store.getState().role) ?
@@ -777,7 +778,7 @@ class ShowPickingList extends Component {
               list_items
             }
           </List>
-        </Content>
+        </ScrollView>
         <Footer>
           <FooterTab>
             <Button active={this.state.show_picked} onPress={this.togglePicked}>

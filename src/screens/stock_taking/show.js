@@ -14,15 +14,20 @@ import {
   ListItem,
   Footer,
   FooterTab,
-
 } from "native-base";
 import styles from "./styles";
 import Dialog from "react-native-dialog";
+import { Alert, Modal, StyleSheet, Pressable, View,ScrollView } from 'react-native';
 
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_SHELF_INFO, GET_STOCK_TAKING,GET_PRODUCTS } from "../../api"
+import { apiFetch, GET_SHELF_INFO, GET_STOCK_TAKING, GET_PRODUCTS } from "../../api"
 import { normalize_shelf_barcode, getMinShelfLenghth, ShelfInput } from '../../common'
 import { Grid, Col, Row } from "react-native-easy-grid";
+
+const QuantityModal = 'QuantityModal'
+const ProductModal = 'ProductModal'
+const ProductSelectModal = 'ProductSelectModal'
+const ShelfModal = 'ShelfModal'
 
 class StockTakingShow extends Component {
   constructor(props) {
@@ -30,15 +35,14 @@ class StockTakingShow extends Component {
     const { params } = this.props.navigation.state;
     const { shop } = params
 
+    console.log(params)
     this.state = {
       stock_taking: params.stock_taking,
-      isModalVisible: false,
-      isQuantityModalVisible: false,
-      isProductModalVisible: false,
-      isProductSelectModalVisible: false,
+      visibleModal: null,
       currentItemKey: null,
       barcode: null,
-      candidateProducts: []
+      candidateProducts: [],
+      shelves: new Set()
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
@@ -51,18 +55,23 @@ class StockTakingShow extends Component {
   reload() {
     let { stock_taking } = this.state
     apiFetch(GET_STOCK_TAKING, { id: stock_taking.id }, (data) => {
-      this.setState({ stock_taking: data })
+      this.setState({ stock_taking: data , shelves: new Set(
+        data.stock_taking_items.map((item) => {
+          return item.shelf.token
+        })
+      )})
     })
   }
 
 
-  fetchProduct( barcode) {
+  fetchProduct(barcode) {
     let { stock_taking } = this.state
     apiFetch(GET_PRODUCTS, { barcode: barcode, shop_id: stock_taking.shop_id }, (product_data) => {
       if (product_data.length > 1) {
         this.setState({ candidateProducts: product_data })
-        this.setState({ isProductModalVisible: true })
-
+        setTimeout(() => {
+          this.setState({ visibleModal: ProductSelectModal })
+        }, 300)
       }
     })
   }
@@ -73,21 +82,24 @@ class StockTakingShow extends Component {
     })
     if (!shelf) {
       apiFetch(GET_SHELF_INFO, { token: token, shop_id: this.state.stock_taking.shop_id }, (shelf_data) => {
+        this.setState({ shelves: this.state.shelves.add(token)})
         if (shelf_data) {
-          let shelf
-          for (let item of this.state.stock_taking.stock_taking_items) {
-            if (item.shelf.id == shelf_data.id) {
-              shelf = item
-              break
-            }
-          }
-          if (!shelf) {
-            shelf = {
-              shelf: shelf_data,
+          for(let shelf_item of shelf_data.storages){
+            this.state.stock_taking.stock_taking_items.push({
+              shelf_id: shelf_data.id,
+              shelf: {
+                token: shelf_data.token
+              },
               stock_taking_id: this.state.stock_taking.id,
-            }
-            this.state.stock_taking.stock_taking_items.push(shelf)
+              before_adjustment_pcs: shelf_item.pcs,
+              after_adjustment_pcs: shelf_item.pcs,
+              product_storage_id: shelf_item.product_storage.id,
+              product_storage: shelf_item.product_storage
+            })
           }
+          this.setState({...this.state.stock_taking})
+        }else{
+          Alert.alert("找不到儲位")
         }
       })
     }
@@ -99,30 +111,32 @@ class StockTakingShow extends Component {
 
   organizeStockTakingItems(stock_taking_items) {
     let rows = []
-    let previous_shelf_token = null
     let keyIndex = 0
+    const shelves  = new Set(this.state.shelves)
+    stock_taking_items.sort((a, b) => { return a.shelf.token.localeCompare(b.shelf.token) })
+
     for (let item of stock_taking_items) {
       item.key = keyIndex++
-      if (previous_shelf_token != item.shelf.token) {
-        rows.push(<ListItem itemDivider>
+      if (shelves.has(item.shelf.token)) {
+        rows.push(<ListItem itemDivider key={`${item.key}-divider`}>
           <Body>
             <Text>{item.shelf.token}</Text>
-
           </Body>
           <Right>
             <Button transparent>
               <Icon name="add" onPress={() => {
-                this.setState({isProductModalVisible:true})
+                this.setState({ visibleModal: ProductModal,currentShelfToken: item.shelf.token })
               }} />
             </Button>
           </Right>
         </ListItem>)
+        shelves.delete(item.shelf.token)
       }
       rows.push(
         <ListItem
           key={item.key}
           onPress={() => {
-            this.setState({ isQuantityModalVisible: true, currentItemKey: item.key })
+            this.setState({ visibleModal: QuantityModal, currentItemKey: item.key })
           }}
         >
           <Grid>
@@ -141,29 +155,40 @@ class StockTakingShow extends Component {
             <Col size={1}>
               {
                 item.after_adjustment_pcs == null ? <Text>{`${item.before_adjustment_pcs}\n未盤`}</Text> :
-                  <Text style={item.after_adjustment_pcs == item.before_adjustment_pcs ? styles.green : styles.orange}>{item.after_adjustment_pcs}</Text>
+                  <Text style={item.after_adjustment_pcs == item.before_adjustment_pcs ? styles.green : styles.orange}>{`${item.after_adjustment_pcs} / ${item.before_adjustment_pcs}`}</Text>
               }
             </Col>
 
           </Grid>
         </ListItem>
       )
-      previous_shelf_token = item.shelf.token
     }
+    shelves.forEach((shelf) => {
+      rows.push(<ListItem itemDivider key={`${keyIndex++}-divider`}>
+        <Body>
+          <Text>{shelf}</Text>
+        </Body>
+        <Right>
+          <Button transparent>
+            <Icon name="add" onPress={() => {
+              this.setState({ visibleModal: ProductModal,currentShelfToken: shelf })
+            }} />
+          </Button>
+        </Right>
+      </ListItem>)
+    })
     return rows
   }
 
 
   render() {
     let { stock_taking } = this.state
-    let rows = this.organizeStockTakingItems((stock_taking.stock_taking_items || []).sort((a, b) => {
-      return a.shelf.token.localeCompare(b.shelf.token)
-    }))
-
+    console.log(stock_taking)
+    let rows = this.organizeStockTakingItems((stock_taking.stock_taking_items || []))
     return (
       <Container style={styles.container}>
         {/* 儲位Dialog */}
-        <Dialog.Container visible={this.state.isModalVisible}>
+        <Dialog.Container visible={this.state.visibleModal == ShelfModal}>
           <Dialog.Title>請輸入儲位</Dialog.Title>
           <Dialog.Input keyboardType='numeric'
             placeholder='請輸入儲位'
@@ -174,64 +199,71 @@ class StockTakingShow extends Component {
             onEndEditing={
               (event) => {
                 let barcode = normalize_shelf_barcode(event.nativeEvent.text.trim())
-                this.setState({ isModalVisible: false })
+                this.setState({ visibleModal: null })
                 this.onShelfTokenChanged(barcode)
 
               }
             }
             returnKeyType="done" />
-          <Dialog.Button label="取消" onPress={() => this.setState({ isModalVisible: false })} />
+          <Dialog.Button label="取消" onPress={() => this.setState({ visibleModal: null })} />
         </Dialog.Container>
 
         {/* 商品選擇Dialog */}
-        <Dialog.Container visible={this.state.isProductSelectModalVisible}>
-          <Dialog.Title>請選擇商品</Dialog.Title>
-          <Dialog.List>
-            {
-              this.state.candidateProducts.map((product) => {
-                <Dialog.ListItem>
-                  <Text>{product.name}</Text>
-                </Dialog.ListItem>
-              })
-            }
-          </Dialog.List>
-        </Dialog.Container>
-
+        {
+          this.state.candidateProducts.length > 0 ? <Modal
+            visible={this.state.visibleModal == ProductSelectModal}
+            animationType="slide"
+            transparent={true}
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Hello World!</Text>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => this.setState({ visibleModal: null })}
+                >
+                  <Text style={styles.textStyle}>Hide Modal</Text>
+                </Pressable>
+              </View>
+            </View>
+          </Modal> : null
+        }
         {/* 儲位Dialog */}
-        <Dialog.Container visible={this.state.isProductModalVisible}>
+        <Dialog.Container visible={this.state.visibleModal == ProductModal} >
           <Dialog.Title>請輸入或掃描品號</Dialog.Title>
           <Dialog.Input placeholder='請輸入品號或條碼'
             autoFocus={true}
             onEndEditing={
               (event) => {
                 let barcode = event.nativeEvent.text.trim()
-                if(barcode){
-                  this.setState({ isProductModalVisible: false })
-                  this.fetchProduct(barcode)  
+                if (barcode) {
+                  this.setState({ visibleModal: null })
+                  this.fetchProduct(barcode)
                 }
               }
             }
             returnKeyType="done" />
           <Dialog.Button label={<Icon name="camera" />} onPress={() => {
-            this.setState({ isProductModalVisible: false })
+            this.setState({ visibleModal: null })
             this.props.navigation.navigate("BarcodeScanner", {
               onBarcodeScanned: (barcode) => {
+                this.setState({ visibleModal: null })
                 this.fetchProduct(barcode)
               }
             })
           }} />
-          <Dialog.Button label="取消" onPress={() => this.setState({ isProductModalVisible: false })} />
+          <Dialog.Button label="取消" onPress={() => this.setState({ visibleModal: null })} />
         </Dialog.Container>
 
         {/* 盤點Dialog */}
-        <Dialog.Container visible={this.state.isQuantityModalVisible}>
+        <Dialog.Container visible={this.state.visibleModal == QuantityModal}>
           <Dialog.Title>請輸入盤點數量</Dialog.Title>
           <Dialog.Input keyboardType='numeric'
             placeholder='請輸入盤點數量'
             autoFocus={true}
             onEndEditing={
               (event) => {
-                this.setState({ isQuantityModalVisible: false })
+                this.setState({ visibleModal: null })
                 let quantity = parseInt(event.nativeEvent.text.trim())
                 let item = this.state.stock_taking.stock_taking_items.find((item) => {
                   return item.key == this.state.currentItemKey
@@ -244,7 +276,7 @@ class StockTakingShow extends Component {
               }
             }
             returnKeyType="done" />
-          <Dialog.Button label="取消" onPress={() => this.setState({ isQuantityModalVisible: false })} />
+          <Dialog.Button label="取消" onPress={() => this.setState({ visibleModal: null })} />
         </Dialog.Container>
         <Header>
           <Left>
@@ -268,11 +300,11 @@ class StockTakingShow extends Component {
             </Button>
           </Right>
         </Header>
-        <Content>
+        <ScrollView>
           <List>
             {rows}
           </List>
-        </Content>
+        </ScrollView>
         <Footer>
           <FooterTab>
             <Button active full bordered onPress={() => {
@@ -285,7 +317,7 @@ class StockTakingShow extends Component {
               <Icon name="camera" /><Text>掃描儲位</Text>
             </Button>
             <Button full active bordered onPress={() => {
-              this.setState({ isModalVisible: true })
+              this.setState({ visibleModal: ShelfModal })
             }}>
               <Text>輸入儲位</Text>
             </Button>

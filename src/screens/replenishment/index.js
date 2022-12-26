@@ -65,16 +65,6 @@ class ReplenishmentProductStorages extends Component {
 
       storage.current_shelves.sort((a, b) => b.total_pcs - a.total_pcs)
 
-      // if (storage.id == 1) {
-      //   console.log("replenishment_shelves")
-      //   console.log(storage.replenishment_shelves)
-      //   console.log("current_shelves")
-      //   console.log(storage.current_shelves)
-      //   console.log('=============')
-      //   console.log(need > 0)
-      //   console.log(storage.replenishment_shelves.length > 0)
-      //   console.log(storage.current_shelves.total_pcs > 0)
-      // }
       while(need > 0 && storage.replenishment_shelves.length > 0 && storage.current_shelves.length > 0) {
         result_shelves.push({
           product: storage.product,
@@ -82,16 +72,12 @@ class ReplenishmentProductStorages extends Component {
           source_shelf: Object.assign({}, storage.current_shelves[0]),
           target_shelf: Object.assign({}, storage.replenishment_shelves[0]),
         })
-        // console.log(storage.current_shelves[0])
-        // console.log(storage.replenishment_shelves[0])
 
         need -= storage.current_shelves[0].total_pcs
         storage.replenishment_shelves = storage.replenishment_shelves.filter(shelf => shelf.id != storage.replenishment_shelves[0].id)
         storage.current_shelves = storage.current_shelves.filter(shelf => shelf.id != storage.current_shelves[0].id)
       }
     }
-    // console.log("result_shelves")
-    // console.log(result_shelves)
     let sorted_shelves = result_shelves.sort((a, b) => {
       try {
         return a.source_shelf.token.localeCompare(b.source_shelf.token);
