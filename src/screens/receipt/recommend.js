@@ -23,7 +23,7 @@ import Dialog from "react-native-dialog";
 import { Grid, Col } from "react-native-easy-grid";
 import { apiFetch, RECEIVE_RECEIPT,GET_SHELF_INFO } from "../../api"
 import styles from "./styles";
-import { normalize_shelf_barcode ,ShelfInput} from '../../common'
+import { normalize_shelf_barcode ,ShelfInput,shelfKeyboardType} from '../../common'
 
 
 class RecommendShelf extends Component {
@@ -111,7 +111,6 @@ class RecommendShelf extends Component {
               </Text>
               </Left>
               <ShelfInput placeholder='請指定儲位' style={this.state.warn_shelf ? {color: 'orange'}: {}}
-                keyboardType='numeric'
                 returnKeyType="done"
                 value={this.state.shelf_token}
                 onChangeText={(text) => this.setState({ shelf_token: normalize_shelf_barcode(text.toUpperCase()) })}
@@ -162,8 +161,7 @@ class RecommendShelf extends Component {
                 </Body>
                 <Right>
                   <Item success >
-                    <Input keyboardType='numeric'
-                      style={this.checkItemValid(data) ? {} : styles.text_red}
+                    <ShelfInput style={this.checkItemValid(data) ? {} : styles.text_red}
                       value={`${data.total_quantity}`}
                       onEndEditing={
                         (event) => {
@@ -203,7 +201,7 @@ class RecommendShelf extends Component {
           </List>
           <Dialog.Container visible={this.state.isModalVisible}>
             <Dialog.Title>請掃描儲位</Dialog.Title>
-            <Dialog.Input keyboardType='numeric' value={this.state.confirm_shelf}
+            <Dialog.Input keyboardType={shelfKeyboardType()} value={this.state.confirm_shelf}
               placeholder='請掃描儲位'
               autoFocus={true}
               onFocus={() => this.setState({ confirm_shelf: null })}

@@ -18,7 +18,9 @@ export class ShelfInput extends Input{
     keyboardType={store.getState().warehouse.all_number ? 'numeric' : 'default'} {...this.props} />
   }
 }
-
+export function shelfKeyboardType(){
+  return store.getState().warehouse.all_number ? 'numeric' : 'default'
+}
 export function normalize_date(text){
   let tokens =[]
 
@@ -90,10 +92,11 @@ export function shelfSorter(shelf_a,shelf_b){
     let delimiter = warehouse.delimiter
     let row_digits = warehouse.row_digits
     // replace all delimiter
-    shelf_a = shelf_a.replace(/\D/g,'').replace(delimiter, '')
-    shelf_b = shelf_b.replace(/\D/g,'').replace(delimiter, '')
+    shelf_a = shelf_a.replace(delimiter, '')
+    shelf_b = shelf_b.replace(delimiter, '')
   
     let result = shelf_a.substring(0,row_digits+3).localeCompare(shelf_b.substring(0,row_digits+3))
+
     return result
   } catch (e) {
     console.log(e)

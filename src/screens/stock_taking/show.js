@@ -21,7 +21,7 @@ import Dialog from "react-native-dialog";
 
 import * as AppActions from '../../redux/actions/AppAction'
 import { apiFetch, GET_SHELF_INFO, GET_STOCK_TAKING,GET_PRODUCTS } from "../../api"
-import { normalize_shelf_barcode, getMinShelfLenghth, ShelfInput } from '../../common'
+import { normalize_shelf_barcode, getMinShelfLenghth, ShelfInput, shelfKeyboardType } from '../../common'
 import { Grid, Col, Row } from "react-native-easy-grid";
 
 class StockTakingShow extends Component {
@@ -165,7 +165,7 @@ class StockTakingShow extends Component {
         {/* 儲位Dialog */}
         <Dialog.Container visible={this.state.isModalVisible}>
           <Dialog.Title>請輸入儲位</Dialog.Title>
-          <Dialog.Input keyboardType='numeric'
+          <Dialog.Input keyboardType={shelfKeyboardType()}
             placeholder='請輸入儲位'
             value={this.state.barcode}
             autoFocus={true}
@@ -226,7 +226,7 @@ class StockTakingShow extends Component {
         {/* 盤點Dialog */}
         <Dialog.Container visible={this.state.isQuantityModalVisible}>
           <Dialog.Title>請輸入盤點數量</Dialog.Title>
-          <Dialog.Input keyboardType='numeric'
+          <Dialog.Input keyboardType={shelfKeyboardType()}
             placeholder='請輸入盤點數量'
             autoFocus={true}
             onEndEditing={
