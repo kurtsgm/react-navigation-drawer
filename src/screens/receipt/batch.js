@@ -238,7 +238,6 @@ class BatchReceipt extends Component {
                 <ShelfInput style={styles.vertical_center} placeholder="請輸入儲位" autoFocus={false}
                 styles={shelf.warning ? {color: 'orange'}: {}}
               value={shelf.token}
-              keyboardType='numeric'
               returnKeyType="done"
               onChangeText={
                 (text) => {

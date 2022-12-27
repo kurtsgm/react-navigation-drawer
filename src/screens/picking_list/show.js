@@ -28,7 +28,7 @@ import { store } from '../../redux/stores/store'
 
 import { Grid, Col, Row } from "react-native-easy-grid";
 import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST, ACTIVATE_PICKING } from "../../api"
-import { boxText,getShelfLayer,shelfSorter } from '../../common'
+import { boxText,getShelfLayer,shelfSorter,ShelfInput,shelfKeyboardType } from '../../common'
 import Barcode from 'react-native-barcode-expo';
 import styles from "./styles";
 import { ScrollView } from "react-native-gesture-handler";
@@ -669,7 +669,7 @@ class ShowPickingList extends Component {
                 {
                   shelf_item.picked ?
                     <Text>{shelf_item.picked_quantity}</Text> :
-                    <Input keyboardType='numeric'
+                    <ShelfInput 
                       value={`${shelf_item.to_pick}`}
                       textAlign={'center'}
                       onChangeText={(text) => {
@@ -678,7 +678,7 @@ class ShowPickingList extends Component {
                       }
                       onEndEditing={(event) => {
                         this.changeShelfItem(shelf_item.storage_shelf_id, event.nativeEvent.text)
-                      }} value={`${shelf_item.to_pick}`} returnKeyType="done" />
+                      }} returnKeyType="done" />
                 }
               </Col>
               <Col size={2} style={styles.vertical_center}>

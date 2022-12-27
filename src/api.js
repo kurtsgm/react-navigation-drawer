@@ -47,6 +47,7 @@ export const GET_ME = "GET_ME"
 export const GET_STOCK_TAKINGS = "GET_STOCK_TAKINGS"
 export const CREATE_STOCK_TAKING = "CREATE_STOCK_TAKING"
 export const GET_STOCK_TAKING = "GET_STOCK_TAKING"
+export const UPDATE_STOCK_TAKING = "UPDATE_STOCK_TAKING"
 
 
 import {Toast} from 'native-base'
@@ -85,6 +86,7 @@ const Actions = {
   GET_STOCK_TAKINGS: {path:`${API_PATH}/v1/stock_takings`, method: "GET"},
   GET_STOCK_TAKING: {path:`${API_PATH}/v1/stock_takings/{id}`, method: "GET"},
   CREATE_STOCK_TAKING: {path:`${API_PATH}/v1/stock_takings`, method: "POST"},
+  UPDATE_STOCK_TAKING: {path:`${API_PATH}/v1/stock_takings/{id}`, method: "PUT"},
   GET_ME: {path:`${API_PATH}/v1/me`, method: "GET"}
 }
 
@@ -184,7 +186,7 @@ export function apiFetch(action,data={},callback_function){
           text = '登入(狀態)失敗，請重新嘗試登入'
           break
         case '500':
-          text = '發生錯誤，請通報工程人員處理'
+          text = '發生錯誤(500)，請通報工程人員處理'
           break
         default:
           text = `連線異常，請檢查網路狀態 (狀態${error})`

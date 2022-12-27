@@ -17,11 +17,11 @@ import {
 } from "native-base";
 import styles from "./styles";
 import Dialog from "react-native-dialog";
-import { Alert, Modal, StyleSheet, Pressable, View,ScrollView } from 'react-native';
+import { Alert, Modal, StyleSheet, Pressable, View, ScrollView } from 'react-native';
 
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_SHELF_INFO, GET_STOCK_TAKING, GET_PRODUCTS } from "../../api"
-import { normalize_shelf_barcode, getMinShelfLenghth, ShelfInput } from '../../common'
+import { apiFetch, GET_SHELF_INFO, GET_STOCK_TAKING, GET_PRODUCTS, UPDATE_STOCK_TAKING } from "../../api"
+import { normalize_shelf_barcode, getMinShelfLenghth, ShelfInput, shelfKeyboardType } from '../../common'
 import { Grid, Col, Row } from "react-native-easy-grid";
 
 const QuantityModal = 'QuantityModal'
@@ -42,12 +42,13 @@ class StockTakingShow extends Component {
       currentItemKey: null,
       barcode: null,
       candidateProducts: [],
-      shelves: new Set()
+      shelves: new Set(),
+      expand_shelves: new Set(),
     }
     this.reload = this.reload.bind(this)
-    this.onBack = this.onBack.bind(this)
     this.onShelfTokenChanged = this.onShelfTokenChanged.bind(this)
     this.fetchProduct = this.fetchProduct.bind(this)
+    this.onConfirmPressed = this.onConfirmPressed.bind(this)
     this.reload()
   }
 
@@ -55,11 +56,13 @@ class StockTakingShow extends Component {
   reload() {
     let { stock_taking } = this.state
     apiFetch(GET_STOCK_TAKING, { id: stock_taking.id }, (data) => {
-      this.setState({ stock_taking: data , shelves: new Set(
-        data.stock_taking_items.map((item) => {
-          return item.shelf.token
-        })
-      )})
+      this.setState({
+        stock_taking: data, shelves: new Set(
+          data.stock_taking_items.map((item) => {
+            return item.shelf.token
+          })
+        )
+      })
     })
   }
 
@@ -82,9 +85,9 @@ class StockTakingShow extends Component {
     })
     if (!shelf) {
       apiFetch(GET_SHELF_INFO, { token: token, shop_id: this.state.stock_taking.shop_id }, (shelf_data) => {
-        this.setState({ shelves: this.state.shelves.add(token)})
+        this.setState({ shelves: this.state.shelves.add(token) })
         if (shelf_data) {
-          for(let shelf_item of shelf_data.storages){
+          for (let shelf_item of shelf_data.storages) {
             this.state.stock_taking.stock_taking_items.push({
               shelf_id: shelf_data.id,
               shelf: {
@@ -97,22 +100,47 @@ class StockTakingShow extends Component {
               product_storage: shelf_item.product_storage
             })
           }
-          this.setState({...this.state.stock_taking})
-        }else{
+          this.setState({ ...this.state.stock_taking })
+        } else {
           Alert.alert("找不到儲位")
         }
       })
     }
   }
 
-  onBack() {
-    this.reload()
+  onConfirmPressed() {
+    Alert.alert(
+      "確認送出",
+      "",
+      [
+        {
+          text: "確認",
+          onPress: () => {
+            console.log("Confirm Pressed");
+            let { stock_taking } = this.state
+            apiFetch(UPDATE_STOCK_TAKING, { id: stock_taking.id, stock_taking: stock_taking }, (data) => {
+              console.log(data)
+              // this.props.navigation.goBack()
+            })
+          },
+        },
+        {
+          text: "取消",
+          onPress: () => {
+          },
+        },
+      ],
+      {
+        cancelable: true
+      }
+    );
   }
+
 
   organizeStockTakingItems(stock_taking_items) {
     let rows = []
     let keyIndex = 0
-    const shelves  = new Set(this.state.shelves)
+    const shelves = new Set(this.state.shelves)
     stock_taking_items.sort((a, b) => { return a.shelf.token.localeCompare(b.shelf.token) })
 
     for (let item of stock_taking_items) {
@@ -124,13 +152,30 @@ class StockTakingShow extends Component {
           </Body>
           <Right>
             <Button transparent>
-              <Icon name="add" onPress={() => {
+              {
+                this.state.expand_shelves.has(item.shelf.token) ?
+                  <Icon name="remove" onPress={() => {
+                    this.state.expand_shelves.delete(item.shelf.token)
+                    this.setState({ ...this.state })
+                  }
+                  } /> :
+                  <Icon name="add" onPress={() => {
+                    this.state.expand_shelves.add(item.shelf.token)
+                    this.setState({ ...this.state })
+                  }
+                  } />
+
+              }
+              {/* <Icon name="add" onPress={() => {
                 this.setState({ visibleModal: ProductModal,currentShelfToken: item.shelf.token })
-              }} />
+              }} /> */}
             </Button>
           </Right>
         </ListItem>)
         shelves.delete(item.shelf.token)
+      }
+      if (!this.state.expand_shelves.has(item.shelf.token)) {
+        continue
       }
       rows.push(
         <ListItem
@@ -163,6 +208,7 @@ class StockTakingShow extends Component {
         </ListItem>
       )
     }
+
     shelves.forEach((shelf) => {
       rows.push(<ListItem itemDivider key={`${keyIndex++}-divider`}>
         <Body>
@@ -170,9 +216,20 @@ class StockTakingShow extends Component {
         </Body>
         <Right>
           <Button transparent>
-            <Icon name="add" onPress={() => {
-              this.setState({ visibleModal: ProductModal,currentShelfToken: shelf })
-            }} />
+            {
+              this.state.expand_shelves.has(shelf) ?
+                <Icon name="remove" onPress={() => {
+                  this.state.expand_shelves.delete(shelf)
+                  this.setState({ ...this.state })
+                }
+                } /> :
+                <Icon name="add" onPress={() => {
+                  this.state.expand_shelves.add(shelf)
+                  this.setState({ ...this.state })
+                }
+                } />
+
+            }
           </Button>
         </Right>
       </ListItem>)
@@ -190,7 +247,7 @@ class StockTakingShow extends Component {
         {/* 儲位Dialog */}
         <Dialog.Container visible={this.state.visibleModal == ShelfModal}>
           <Dialog.Title>請輸入儲位</Dialog.Title>
-          <Dialog.Input keyboardType='numeric'
+          <Dialog.Input keyboardType={shelfKeyboardType()}
             placeholder='請輸入儲位'
             value={this.state.barcode}
             autoFocus={true}
@@ -258,7 +315,7 @@ class StockTakingShow extends Component {
         {/* 盤點Dialog */}
         <Dialog.Container visible={this.state.visibleModal == QuantityModal}>
           <Dialog.Title>請輸入盤點數量</Dialog.Title>
-          <Dialog.Input keyboardType='numeric'
+          <Dialog.Input keyboardType={shelfKeyboardType()}
             placeholder='請輸入盤點數量'
             autoFocus={true}
             onEndEditing={
@@ -296,7 +353,7 @@ class StockTakingShow extends Component {
           </Body>
           <Right>
             <Button transparent>
-              <Icon name="refresh" onPress={() => this.reload()} />
+              <Icon name="checkmark" onPress={this.onConfirmPressed} />
             </Button>
           </Right>
         </Header>
