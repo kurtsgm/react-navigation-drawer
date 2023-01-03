@@ -8,7 +8,7 @@ import {Input} from 'native-base'
 export const MIN_SHELF_TOKEN_LENGTH = 8
 
 export function getMinShelfLenghth(){
-  return store.warehouse.row_digits + 2 + store.warehouse.delimiter.length * 2
+  return store.getState().warehouse.row_digits + 2 + store.getState().warehouse.delimiter.length * 2
 }
 
 export class ShelfInput extends Input{
