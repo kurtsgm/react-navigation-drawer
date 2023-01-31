@@ -187,7 +187,7 @@ class ShowVerifyReceipt extends Component {
                     </Col>
                     <Col size={2} style={styles.vertical_center} >
                       <Button onPress={() => { this.verifyAll() }}>
-                        <Text>全部驗收</Text>
+                        <Text>一鍵驗收</Text>
                       </Button>
                     </Col>
                   </Grid>

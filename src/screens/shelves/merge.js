@@ -58,6 +58,7 @@ class ShelfMerge extends Component {
     this.toggleShop = this.toggleShop.bind(this)
     this.isLayerOne = this.isLayerOne.bind(this)
     this.mergeOptions = this.mergeOptions.bind(this)
+    this.checkShelf = this.checkShelf.bind(this)
     this.title = '合併／移動儲位'
   }
 
@@ -97,6 +98,31 @@ class ShelfMerge extends Component {
         } else {
           Toast.show({
             text: "查無資料",
+            duration: 2500,
+            textStyle: { textAlign: "center" }
+          })
+
+        }
+      })
+    }
+  }
+
+  checkShelf(token){
+    token = token.trim()
+    if (token) {
+      apiFetch(GET_SHELF_INFO, { token: token }, data => {
+        if (data) {
+          if(data.storages && data.storages.length>0){
+            Toast.show({
+              text: "儲位不為空",
+              duration: 2500,
+              type: "warning",
+              textStyle: { textAlign: "center" }
+            })
+          }
+        } else {
+          Toast.show({
+            text: "查無儲位",
             duration: 2500,
             textStyle: { textAlign: "center" }
           })
@@ -370,6 +396,9 @@ class ShelfMerge extends Component {
                           this.setState({ destination_shelf: normalize_shelf_barcode(text) })
                         }
                       }
+                      onEndEditing={(event) => { 
+                        this.checkShelf(normalize_shelf_barcode(event.nativeEvent.text))
+                      }}
                       returnKeyType="done" />
                     <Button
                       transparent
