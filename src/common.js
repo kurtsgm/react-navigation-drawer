@@ -48,26 +48,23 @@ export function normalize_shelf_barcode(barcode){
   let tokens =[]
   let warehouse = store.getState().warehouse
   let delimiter = warehouse.delimiter
+  let layer_digits = warehouse.layer_digits
+  let column_digits = warehouse.column_digits
   if(delimiter){
     let row_digits = warehouse.row_digits
     if(barcode.includes(delimiter)){
-      if(barcode.includes(SDJ_SHELF_PREFIX)){
-        barcode = barcode.replace(SDJ_SHELF_PREFIX,"")
-      }
       tokens = barcode.split(delimiter).filter(e=> {
         return e
       })
-
       tokens[0] = String(tokens[0]).padStart(row_digits, '0')
-    
       barcode = tokens.join('')
     }
 
     tokens[0] = barcode.substring(0,row_digits)
-    tokens[1] = barcode.substring(row_digits,row_digits+2)
-    tokens[2] = barcode.substring(row_digits+2,row_digits+3)
-    if(barcode.length> row_digits+3){
-      tokens[3] = barcode.substring(row_digits+3,row_digits+6)
+    tokens[1] = barcode.substring(row_digits,row_digits+column_digits)
+    tokens[2] = barcode.substring(row_digits+column_digits,row_digits+column_digits+layer_digits)
+    if(barcode.length> row_digits+column_digits+layer_digits){
+      tokens[3] = barcode.substring(row_digits+column_digits+layer_digits,row_digits+column_digits+layer_digits+3)
     }
     return tokens.filter(t=>t).join(delimiter).toUpperCase()
   }else{
@@ -79,11 +76,13 @@ export function getShelfLayer(token){
   let warehouse = store.getState().warehouse
   let delimiter = warehouse.delimiter
   let row_digits = warehouse.row_digits
+  let layer_digits = warehouse.layer_digits
+  let column_digits = warehouse.column_digits
   if(delimiter){
     tokens = token.split(delimiter).filter(e=>e)
     return parseInt(tokens[2])  
   }else{
-    return parseInt(token.substring(row_digits+2,row_digits+3))
+    return parseInt(token.substring(row_digits+column_digits,row_digits+column_digits+layer_digits))
   }
 }
 export function shelfSorter(shelf_a,shelf_b){
@@ -91,11 +90,13 @@ export function shelfSorter(shelf_a,shelf_b){
     let warehouse = store.getState().warehouse
     let delimiter = warehouse.delimiter
     let row_digits = warehouse.row_digits
+    let layer_digits = warehouse.layer_digits
+    let column_digits = warehouse.column_digits
     // replace all delimiter
     shelf_a = shelf_a.replace(delimiter, '')
     shelf_b = shelf_b.replace(delimiter, '')
   
-    let result = shelf_a.substring(0,row_digits+3).localeCompare(shelf_b.substring(0,row_digits+3))
+    let result = shelf_a.substring(0,row_digits+column_digits+layer_digits).localeCompare(shelf_b.substring(0,row_digits+column_digits+layer_digits))
 
     return result
   } catch (e) {

@@ -18,6 +18,15 @@ export const setToken = (token,role,username) => {
 }
 
 export const setWarehouse = (warehouse) => {
+  if(!warehouse.layer_digits){
+    warehouse.layer_digits = 1
+  }
+  if(!warehouse.column_digits){
+    warehouse.column_digits = 2
+  }
+  if(!warehouse.row_digits){
+    warehouse.row_digits = 2
+  }
   return {
     type: SET_WAREHOUSE,
     warehouse: warehouse
