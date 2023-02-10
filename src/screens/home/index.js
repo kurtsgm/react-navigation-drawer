@@ -164,7 +164,11 @@ class Home extends Component {
                     if(text.includes(".")){
                       AsyncStorage.setItem('@domain',text)
                     }else{
-                      AsyncStorage.setItem('@domain',`${text}.ibiza.com.tw`)
+                      if(text.includes("-api")){
+                        AsyncStorage.setItem('@domain',`${text}.ibiza.com.tw`)
+                      }else{
+                        AsyncStorage.setItem('@domain',`${text}-api.ibiza.com.tw`)
+                      }
                     }
                   }
                   } />
