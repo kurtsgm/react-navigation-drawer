@@ -242,9 +242,10 @@ class ShowPickingList extends Component {
         })
       }
     }
-    results = results.sort((a, b) => {
+    results = results.sort((a, b) => {      
       return shelfSorter(a.shelves[0].token, b.shelves[0].token)
     })
+
     return {
       items: results,
       shortage: shortage
@@ -467,26 +468,31 @@ class ShowPickingList extends Component {
           return 1
         }
       })
+      if(this.state.searchKeyword){
+        sectors = sectors.filter(s => s.items.length > 0)
+      }
       for (let sector of sectors) {
-        for (let shortage of this.state.shortage) {
-          if (shortage.product_storage_id === sector.product_storage_id) {
-            sector.shortage =
-              <ListItem key={`shortage-${shortage.product_storage_id}`}>
-                <Col size={4} style={styles.vertical_center} >
-                  <Text style={styles.red}>
+        if(!this.state.searchKeyword){
+          for (let shortage of this.state.shortage) {
+            if (shortage.product_storage_id === sector.product_storage_id) {
+              sector.shortage =
+                <ListItem key={`shortage-${shortage.product_storage_id}`}>
+                  <Col size={4} style={styles.vertical_center} >
+                    <Text style={styles.red}>
 
-                    {shortage.quantity > 0 ? '欠缺' : '過多'}
-                  </Text>
-                </Col>
-                <Col size={4} style={styles.vertical_center} >
-                  <Text style={styles.red}>
-                    {shortage.quantity}
-                  </Text>
-                </Col>
-                <Col size={2} style={styles.vertical_center} >
-                </Col>
-              </ListItem>
-            break
+                      {shortage.quantity > 0 ? '欠缺' : '過多'}
+                    </Text>
+                  </Col>
+                  <Col size={4} style={styles.vertical_center} >
+                    <Text style={styles.red}>
+                      {shortage.quantity}
+                    </Text>
+                  </Col>
+                  <Col size={2} style={styles.vertical_center} >
+                  </Col>
+                </ListItem>
+              break
+            }
           }
         }
         if (this.state.show_picked && sector.picked.length > 0) {
