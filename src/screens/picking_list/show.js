@@ -195,7 +195,7 @@ class ShowPickingList extends Component {
       let quantity = element.quantity - element.picked_quantity
       for (let shelf of element.shelves.filter(shelf => {
         if(searchKeyword != '' && searchKeyword ) {
-          return shelf.token.toUpperCase().includes(searchKeyword).toUpperCase()
+          return shelf.token.toUpperCase().includes(searchKeyword.toUpperCase())
         }
         return true
         // return !element.picked || !element.picked.map(e => e.token).includes(shelf.token)
