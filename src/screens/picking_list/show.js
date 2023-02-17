@@ -103,7 +103,7 @@ class ShowPickingList extends Component {
       let quantity_remain = item.quantity - item.picked_quantity
       for (let shelf of item.shelves.filter(shelf => {
         if(this.state.searchKeyword != '') {
-          return shelf.token.includes(this.state.searchKeyword)
+          return shelf.token.toUpperCase().includes(this.state.searchKeyword.toUpperCase())
         }
         return true
       })) {
@@ -195,7 +195,7 @@ class ShowPickingList extends Component {
       let quantity = element.quantity - element.picked_quantity
       for (let shelf of element.shelves.filter(shelf => {
         if(searchKeyword != '' && searchKeyword ) {
-          return shelf.token.includes(searchKeyword)
+          return shelf.token.toUpperCase().includes(searchKeyword).toUpperCase()
         }
         return true
         // return !element.picked || !element.picked.map(e => e.token).includes(shelf.token)
@@ -628,7 +628,7 @@ class ShowPickingList extends Component {
         return this.state.show_picked || !item.picked
       }).filter(item=>{
         if(this.state.searchKeyword && this.state.searchKeyword.length > 0){
-          return item.token.includes(this.state.searchKeyword)
+          return item.token.toUpperCase().includes(this.state.searchKeyword.toUpperCase())
         }
         return true
       }).map(shelf_item => {
