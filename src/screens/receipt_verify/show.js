@@ -267,7 +267,7 @@ class ShowVerifyReceipt extends Component {
               {
                 this.state.new_item_candidate.map(candidate=>{
                   return <Button bordered light block primary style={styles.dialog_inside_button} onPress={() => {
-                    this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: this.state.receipt_id, new_item: candidate, onBack: ()=>this.reload() })
+                    this.props.navigation.navigate("ReceiptVerifyItem", { receipt_id: this.state.new_item_receipt.id, new_item: candidate, onBack: ()=>this.reload() })
                     this.setState({ isModalVisible: false })
             
                   }}>
