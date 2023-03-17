@@ -73,7 +73,7 @@ class PickingListShops extends Component {
       if(a.done_count == a.count){
         return 1
       }else{
-        return 0
+        return -1
       }
     })
     for (let shop of shops) {
