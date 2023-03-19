@@ -178,7 +178,7 @@ class ShowPickingList extends Component {
   reload() {
     return new Promise((resolve, reject) => {
       apiFetch(GET_PICKING_LIST, { id: this.state.picking_list.id }, (_data) => {
-        this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items.sort((a, b) => a.is_done ? 1 : -1),this.state.searchKeyword), {
+        this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items.sort((a, b) => a.is_done ? 0 : -1),this.state.searchKeyword), {
           picking_list: _data,
           storage_orders: this.normalize_order(_data.orders),
         }))
@@ -460,6 +460,9 @@ class ShowPickingList extends Component {
           }
         }
       }
+      console.log('before sort')
+
+      console.log(sectors.map(s=>s.picked_quantity == s.quantity))
 
       sectors = sectors.sort((a, b) => {
         try {
@@ -467,7 +470,16 @@ class ShowPickingList extends Component {
         } catch (e) {
           return 1
         }
+      }).sort((a,b)=>{
+        if( a.picked_quantity != a.quantity && b.picked_quantity != b.quantity){
+          return 0
+        }else{
+          return a.picked_quantity == a.quantity ? 1 : -1
+        }
       })
+      console.log('after sort')
+
+      console.log(sectors.map(s=>s.picked_quantity == s.quantity))
       if(this.state.searchKeyword){
         sectors = sectors.filter(s => s.items.length > 0)
       }
