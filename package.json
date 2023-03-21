@@ -33,7 +33,7 @@
     "react-dom": "18.2.0",
     "react-native": "0.71.3",
     "react-native-actionsheet": "^2.4.2",
-    "react-native-barcode-expo": "^1.2.0",
+    "react-native-barcode-expo": "kurtsgm/react-native-barcode-builder",
     "react-native-dialog": "^9.3.0",
     "react-native-gesture-handler": "~2.9.0",
     "react-native-input-scroll-view": "^1.10.1",

@@ -123,7 +123,7 @@ class Home extends Component {
                 GoWarehouse
               </H1>
             </View>
-            <View >
+            <View>  
             { store.getState().username ? 
               <><Button round info
               style={{ marginBottom: 20, alignSelf: "center" }}
@@ -201,7 +201,7 @@ class Home extends Component {
             </View>
           </Content>
           <Text style={{ backgroundColor: 'transparent',bottom: 0 ,textAlign:'center',paddingBottom: '10%'}} >
-            版本: 1.1.63 (2023/03/20)
+            版本: 1.1.63 (2023/03/21)
           </Text>
         </ImageBackground>
       </Container>    
