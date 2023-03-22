@@ -101,7 +101,7 @@ export function shelfSorter(shelf_a,shelf_b){
     return result
   } catch (e) {
     console.log(e)
-    return 1
+    return 0
   }
 }
 

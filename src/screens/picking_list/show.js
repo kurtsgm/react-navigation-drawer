@@ -468,7 +468,7 @@ class ShowPickingList extends Component {
         try {
           return shelfSorter(a.items[0].props.shelf, b.items[0].props.shelf)
         } catch (e) {
-          return 1
+          return 0
         }
       }).sort((a,b)=>{
         if( a.picked_quantity != a.quantity && b.picked_quantity != b.quantity){
