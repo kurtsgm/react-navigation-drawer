@@ -460,10 +460,6 @@ class ShowPickingList extends Component {
           }
         }
       }
-      console.log('before sort')
-
-      console.log(sectors.map(s=>s.picked_quantity == s.quantity))
-
       sectors = sectors.sort((a, b) => {
         try {
           return shelfSorter(a.items[0].props.shelf, b.items[0].props.shelf)
