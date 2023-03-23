@@ -462,6 +462,12 @@ class ShowPickingList extends Component {
       }
       sectors = sectors.sort((a, b) => {
         try {
+          if(a.items.length == 0){
+            return 1
+          }
+          if(b.items.length == 0){
+            return -1
+          }
           return shelfSorter(a.items[0].props.shelf, b.items[0].props.shelf)
         } catch (e) {
           return 0
