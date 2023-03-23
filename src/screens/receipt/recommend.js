@@ -204,6 +204,7 @@ class RecommendShelf extends Component {
             <Dialog.Input keyboardType={shelfKeyboardType()} value={this.state.confirm_shelf}
               placeholder='請掃描儲位'
               autoFocus={true}
+              style={{ color: 'black' }} //bug fix for android dark mode
               onFocus={() => this.setState({ confirm_shelf: null })}
               ref={(input) => { this.confirm_input = input; }}
               onChangeText={

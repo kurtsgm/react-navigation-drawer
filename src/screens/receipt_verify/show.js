@@ -252,6 +252,7 @@ class ShowVerifyReceipt extends Component {
             <Dialog.Input value={this.state.new_item_uid}
               placeholder='請輸入品號或條碼'
               autoFocus={true}
+              style={{ color: 'black' }} //bug fix for android dark mode
               onFocus={() => this.setState({ new_item_uid: null })}
               onChangeText={
                 (text) => {

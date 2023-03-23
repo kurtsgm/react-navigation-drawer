@@ -132,6 +132,7 @@ class PickingListShops extends Component {
             <Dialog.Input
               keyboardType='numeric'
               placeholder='請輸入揀貨批次'
+              style={{ color: 'black' }} //bug fix for android dark mode
               autoFocus={true}
               onFocus={() => this.setState({ target_picking_list_id: null })}
               onChangeText={

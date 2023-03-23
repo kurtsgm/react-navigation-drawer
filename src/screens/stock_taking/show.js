@@ -169,6 +169,7 @@ class StockTakingShow extends Component {
             placeholder='請輸入儲位'
             value={this.state.barcode}
             autoFocus={true}
+            style={{ color: 'black' }} //bug fix for android dark mode
             onChangeText={(text) => this.setState({ barcode: normalize_shelf_barcode(text.toUpperCase()) })}
             onFocus={() => this.setState({ barcode: null })}
             onEndEditing={
@@ -202,6 +203,7 @@ class StockTakingShow extends Component {
           <Dialog.Title>請輸入或掃描品號</Dialog.Title>
           <Dialog.Input placeholder='請輸入品號或條碼'
             autoFocus={true}
+            style={{ color: 'black' }} //bug fix for android dark mode
             onEndEditing={
               (event) => {
                 let barcode = event.nativeEvent.text.trim()
@@ -229,6 +231,7 @@ class StockTakingShow extends Component {
           <Dialog.Input keyboardType={shelfKeyboardType()}
             placeholder='請輸入盤點數量'
             autoFocus={true}
+            style={{ color: 'black' }} //bug fix for android dark mode
             onEndEditing={
               (event) => {
                 this.setState({ isQuantityModalVisible: false })

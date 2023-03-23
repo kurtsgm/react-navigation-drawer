@@ -218,6 +218,7 @@ class ShowReceipt extends Component {
         <Dialog.Input keyboardType='numeric'
           placeholder='請輸入數量'
           autoFocus={true}
+          style={{ color: 'black' }} //bug fix for android dark mode
           onEndEditing={(event) => {
             this.setState({ isModalVisible: false })
             let items = this.state.items
@@ -483,6 +484,7 @@ class ShowReceipt extends Component {
               <Dialog.Input value={this.state.new_item_uid}
                 placeholder='請輸入品號或條碼'
                 autoFocus={true}
+                style={{ color: 'black' }} //bug fix for android dark mode
                 onFocus={() => this.setState({ new_item_uid: null })}
                 onChangeText={
                   (text) => {
