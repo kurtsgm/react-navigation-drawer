@@ -473,15 +473,14 @@ class ShowPickingList extends Component {
           return 0
         }
       }).sort((a,b)=>{
-        if( a.picked_quantity != a.quantity && b.picked_quantity != b.quantity){
-          return 0
-        }else{
-          return a.picked_quantity == a.quantity ? 1 : -1
+        if(a.picked_quantity == a.quantity){
+          return 1
         }
+        if(b.picked_quantity == b.quantity){
+          return -1
+        }
+        return 0
       })
-      console.log('after sort')
-
-      console.log(sectors.map(s=>s.picked_quantity == s.quantity))
       if(this.state.searchKeyword){
         sectors = sectors.filter(s => s.items.length > 0)
       }
