@@ -40,6 +40,7 @@ import ProductStorages from './screens/products/storages'
 import ProductShelf from './screens/products/shelf'
 // Barcode
 import BarcodeScanner from './screens/barcode/scanner'
+import BatchBarcodeScanner from './screens/barcode/batch_scanner'
 
 // Shelfs
 
@@ -102,6 +103,7 @@ const AppNavigator = createStackNavigator(
     PickingListQC: {screen: PickingListQC},
 
     BarcodeScanner: {screen: BarcodeScanner},
+    BatchBarcodeScanner: {screen: BatchBarcodeScanner},
 
     ReplenishmentProductStorages: {screen: ReplenishmentProductStorages},
     ReplenishmentMerge: {screen: ReplenishmentMerge},
