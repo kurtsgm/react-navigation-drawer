@@ -32,15 +32,16 @@ class ReceiptVerifyItem extends Component {
     this.reload = this.reload.bind(this)
     this.verify = this.verify.bind(this)
     this.valid = this.valid.bind(this)
-    this.state = { dirty: false, previous_set: false, product_storage_types: [] }
+    this.state = { dirty: false, previous_set: false, product_storage_types: [] ,serial_numbers: []}
   }
-  componentDidMount(){
+  componentDidMount() {
     this.reload()
   }
   reload() {
     const { item_id, receipt_id, new_item } = this.props.navigation.state.params;
     if (item_id) {
       apiFetch(GET_RECEIPT_ITEM, { receipt_id: receipt_id, id: item_id }, (_data) => {
+        console.log(_data)
         this.setState(_data)
         if (_data.verified_pcs) {
           this.setState({
@@ -94,7 +95,8 @@ class ReceiptVerifyItem extends Component {
       product_id: this.state.product_id,
       product_barcode: this.state.product_barcode,
       product_default_pcs: this.state.product_default_pcs,
-      product_storage_type_id: this.state.product_storage_type_id
+      product_storage_type_id: this.state.product_storage_type_id,
+      serial_numbers: this.state.serial_numbers
     }, (_data) => {
       this.props.navigation.state.params.onBack()
       this.props.navigation.goBack()
@@ -195,23 +197,23 @@ class ReceiptVerifyItem extends Component {
                   </Col></Row>
               </CardItem>
               {
-                this.state.scheduled_pcs ? 
-                <CardItem>
-                <Row><Col size={1}>
-                  <Text>應收PCS</Text>
-                </Col>
-                  <Col size={2}>
-                    <Text>
-                      {this.state.scheduled_pcs}
-                    </Text>
-                    {
-                      parseInt(this.state.product_default_pcs) > 0 ? 
-                      <Text>
-                        {`(${Math.ceil(this.state.scheduled_pcs/parseInt(this.state.product_default_pcs))} 箱)`}
-                      </Text> : null
-                    }
-                  </Col></Row>
-              </CardItem> : null
+                this.state.scheduled_pcs ?
+                  <CardItem>
+                    <Row><Col size={1}>
+                      <Text>應收PCS</Text>
+                    </Col>
+                      <Col size={2}>
+                        <Text>
+                          {this.state.scheduled_pcs}
+                        </Text>
+                        {
+                          parseInt(this.state.product_default_pcs) > 0 ?
+                            <Text>
+                              {`(${Math.ceil(this.state.scheduled_pcs / parseInt(this.state.product_default_pcs))} 箱)`}
+                            </Text> : null
+                        }
+                      </Col></Row>
+                  </CardItem> : null
               }
 
               <CardItem>
@@ -242,19 +244,19 @@ class ReceiptVerifyItem extends Component {
                   <Col size={2}>
                     {
                       this.state.preset_product_default_pcs ? <Text>{this.state.preset_product_default_pcs}</Text> :
-                    <Item success >
+                        <Item success >
                           <Input keyboardType='numeric' textAlign={'right'}
-                          value={`${this.state.product_default_pcs ? this.state.product_default_pcs : ''}`}
-                          onChangeText={
-                            (text) => {
-                              this.setState({ product_default_pcs: text })
+                            value={`${this.state.product_default_pcs ? this.state.product_default_pcs : ''}`}
+                            onChangeText={
+                              (text) => {
+                                this.setState({ product_default_pcs: text })
+                              }
                             }
-                          }
-                          onEndEditing={(event) => { this.setState({ dirty: true }) }}
-                          returnKeyType="done" />
-                      
-                    </Item>
-                      }
+                            onEndEditing={(event) => { this.setState({ dirty: true }) }}
+                            returnKeyType="done" />
+
+                        </Item>
+                    }
 
 
                   </Col></Row>
@@ -331,6 +333,37 @@ class ReceiptVerifyItem extends Component {
                         returnKeyType="done" />
                     </Item>
                   </Col></Row>
+              </CardItem>
+              <CardItem>
+                <Row>
+                  <Col size={1}>
+                    <Text>驗收序號</Text>
+                  </Col>
+                  <Col size={2}>
+                    <Item success >
+                      {
+                        this.state.serial_numbers.length > 0  ?
+                          <Text>{`已驗${this.state.serial_numbers.length}筆`}</Text> :
+                          null
+                      }
+                      <Button
+                        transparent
+                        onPress={() =>
+                          this.props.navigation.navigate("BatchBarcodeScanner", {
+                            scannedBarcodes: this.state.serial_numbers,
+                            onBarcodeScanned: (serial_numbers) => {
+                              this.setState({ serial_numbers: serial_numbers })
+                            }
+                          }
+                          )
+                        }
+                      >
+                        <Icon name="camera" />
+                      </Button>
+
+                    </Item>
+                  </Col>
+                </Row>
               </CardItem>
               <CardItem>
                 <Row><Col size={1}>
