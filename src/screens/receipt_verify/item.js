@@ -41,7 +41,6 @@ class ReceiptVerifyItem extends Component {
     const { item_id, receipt_id, new_item } = this.props.navigation.state.params;
     if (item_id) {
       apiFetch(GET_RECEIPT_ITEM, { receipt_id: receipt_id, id: item_id }, (_data) => {
-        console.log(_data)
         this.setState(_data)
         if (_data.verified_pcs) {
           this.setState({
