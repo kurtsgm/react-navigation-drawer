@@ -262,6 +262,7 @@ class ShowReceipt extends Component {
             item.product_barcode && item.product_barcode.toUpperCase().includes(this.state.barcode.toUpperCase())
             || item.product_uid && item.product_uid.toUpperCase().includes(this.state.barcode.toUpperCase())
             || item.product_name && item.product_name.toUpperCase().includes(this.state.barcode.toUpperCase())
+            || item.batch && item.batch.toUpperCase().includes(this.state.barcode.toUpperCase())
             : true
         }).filter(item=>item.verified_pcs != 0).sort((a,b)=> a.received_count == a.verified_box_count ? 0 : -1).map(data => {
           return <ListItem key={data.id}>
