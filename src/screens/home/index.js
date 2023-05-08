@@ -201,7 +201,7 @@ class Home extends Component {
             </View>
           </Content>
           <Text style={{ backgroundColor: 'transparent',bottom: 0 ,textAlign:'center',paddingBottom: '10%'}} >
-            版本: 1.1.65 (2023/04/26)
+            版本: 1.1.66 (2023/05/08)
           </Text>
         </ImageBackground>
       </Container>    

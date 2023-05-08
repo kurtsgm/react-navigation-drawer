@@ -74,6 +74,17 @@ class ReceiptVerifyItem extends Component {
 
   valid() {
     const { item_id } = this.props.navigation.state.params;
+    if(this.state.valid_period){
+
+      if(!this.state.expiration_date){
+        return false
+      }
+      let _date = new Date(this.state.expiration_date)
+      if(isNaN(_date.valueOf())){
+        return false
+      }
+    }
+  
     return this.state.dirty && this.state.verified_pcs && (item_id || (this.state.product_storage_type_id))
   }
   verify() {
@@ -222,7 +233,7 @@ class ReceiptVerifyItem extends Component {
                   </Col>
                   <Col size={2}>
                     <Item success >
-                      <Input keyboardType='numeric' textAlign={'right'}
+                      <Input keyboardType='numeric' textAlign={'right'} required
                         value={`${this.state.verified_pcs ? this.state.verified_pcs : ''}`}
                         onChangeText={
                           (text) => {
@@ -333,37 +344,39 @@ class ReceiptVerifyItem extends Component {
                     </Item>
                   </Col></Row>
               </CardItem>
-              <CardItem>
-                <Row>
-                  <Col size={1}>
-                    <Text>驗收序號</Text>
-                  </Col>
-                  <Col size={2}>
-                    <Item success >
-                      {
-                        this.state.serial_numbers.length > 0  ?
-                          <Text>{`已驗${this.state.serial_numbers.length}筆`}</Text> :
-                          null
-                      }
-                      <Button
-                        transparent
-                        onPress={() =>
-                          this.props.navigation.navigate("BatchBarcodeScanner", {
-                            scannedBarcodes: this.state.serial_numbers,
-                            onBarcodeScanned: (serial_numbers) => {
-                              this.setState({ serial_numbers: serial_numbers })
-                            }
-                          }
-                          )
+              { this.state.need_serial_number &&
+                <CardItem>
+                  <Row>
+                    <Col size={1}>
+                      <Text>驗收序號</Text>
+                    </Col>
+                    <Col size={2}>
+                      <Item success >
+                        {
+                          this.state.serial_numbers.length > 0  ?
+                            <Text>{`已驗${this.state.serial_numbers.length}筆`}</Text> :
+                            null
                         }
-                      >
-                        <Icon name="camera" />
-                      </Button>
+                        <Button
+                          transparent
+                          onPress={() =>
+                            this.props.navigation.navigate("BatchBarcodeScanner", {
+                              scannedBarcodes: this.state.serial_numbers,
+                              onBarcodeScanned: (serial_numbers) => {
+                                this.setState({ serial_numbers: serial_numbers })
+                              }
+                            }
+                            )
+                          }
+                        >
+                          <Icon name="camera" />
+                        </Button>
 
-                    </Item>
-                  </Col>
-                </Row>
-              </CardItem>
+                      </Item>
+                    </Col>
+                  </Row>
+                </CardItem>
+              }
               <CardItem>
                 <Row><Col size={1}>
                   <Text>材積</Text>
