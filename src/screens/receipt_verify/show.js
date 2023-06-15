@@ -115,12 +115,14 @@ class ShowVerifyReceipt extends Component {
                   <Icon name="checkmark-circle" style={{ color: "#3ADF00" }} /> : null}
                 {item.verified_pcs || item.verified_pcs == 0 ?
                   <Text>
+                    {`${item.product_uid}\n`}
                     {`${[item.product_name, item.storage_type_name].filter(e => e).join(" ")} [${item.pcs_per_box}入]`}
                     {item.expiration_date ? item.expiration_date : ''}
                     {`\n應收:${item.scheduled_pcs} 實收:${item.verified_pcs} `}
                   </Text>
                   :
                   <Text>
+                    {`${item.product_uid}\n`}
                     {`${[item.product_name, item.storage_type_name].filter(e => e).join(" ")} [${item.pcs_per_box}入]`}
                     {item.expiration_date ? item.expiration_date : ''}
                     {`\n應收:${item.scheduled_pcs}`}
