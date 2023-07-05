@@ -44,6 +44,19 @@ class ShelfShow extends Component {
       if (previous_shop != storage.product_storage.shop_id) {
         rows.push(<ListItem itemDivider key={`divider-${storage.product_storage.shop_id}`}>
           <Text>{storage.product_storage.shop_name}</Text>
+          <Text>{`
+            總PCS: ${
+              this.state.shelf.storages.filter(e => e.product_storage.shop_id == storage.product_storage.shop_id).reduce((a, b) => a + b.pcs, 0)
+            }
+          `}</Text>
+          <Text>{`
+            總箱數: ${
+              this.state.shelf.storages.filter(e => e.product_storage.shop_id == storage.product_storage.shop_id).reduce((a, b) => 
+                a + (b.product_storage.product.default_pcs && b.product_storage.product.default_pcs > 0 ? Math.floor(b.pcs / b.product_storage.product.default_pcs) : 0)
+              , 0)
+            }
+          `}</Text>
+
         </ListItem>)
         previous_shop = storage.product_storage.shop_id
       }      

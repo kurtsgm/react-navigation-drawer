@@ -27,7 +27,7 @@ import {
 import { store } from '../../redux/stores/store'
 
 import { Grid, Col, Row } from "react-native-easy-grid";
-import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST, ACTIVATE_PICKING } from "../../api"
+import { apiFetch, CONFIRM_PICKING, GET_PICKING_LIST, ACTIVATE_PICKING, GET_SHELF_INFO } from "../../api"
 import { boxText, getShelfLayer, shelfSorter, ShelfInput, shelfKeyboardType } from '../../common'
 import Barcode from 'react-native-barcode-expo';
 import styles from "./styles";
@@ -102,7 +102,7 @@ class ShowPickingList extends Component {
     for (let item of items) {
       let quantity_remain = item.quantity - item.picked_quantity
       for (let shelf of item.shelves.filter(shelf => {
-        if(this.state.searchKeyword != '') {
+        if (this.state.searchKeyword != '') {
           return shelf.token.toUpperCase().includes(this.state.searchKeyword.toUpperCase())
         }
         return true
@@ -178,7 +178,7 @@ class ShowPickingList extends Component {
   reload() {
     return new Promise((resolve, reject) => {
       apiFetch(GET_PICKING_LIST, { id: this.state.picking_list.id }, (_data) => {
-        this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items.sort((a, b) => a.is_done ? 0 : -1),this.state.searchKeyword), {
+        this.setState(Object.assign(ShowPickingList.arrange_items([], _data.items.sort((a, b) => a.is_done ? 0 : -1), this.state.searchKeyword), {
           picking_list: _data,
           storage_orders: this.normalize_order(_data.orders),
         }))
@@ -188,13 +188,13 @@ class ShowPickingList extends Component {
     })
   }
 
-  static arrange_items(items, original_items,searchKeyword) {
+  static arrange_items(items, original_items, searchKeyword) {
     let results = []
     let shortage = []
     for (let element of original_items) {
       let quantity = element.quantity - element.picked_quantity
       for (let shelf of element.shelves.filter(shelf => {
-        if(searchKeyword != '' && searchKeyword ) {
+        if (searchKeyword != '' && searchKeyword) {
           return shelf.token.toUpperCase().includes(searchKeyword.toUpperCase())
         }
         return true
@@ -242,7 +242,7 @@ class ShowPickingList extends Component {
         })
       }
     }
-    results = results.sort((a, b) => {      
+    results = results.sort((a, b) => {
       return shelfSorter(a.shelves[0].token, b.shelves[0].token)
     })
 
@@ -310,7 +310,7 @@ class ShowPickingList extends Component {
     target.ready_to_pick = Math.min(quantity, total_quantity - others_quantity, target.pcs)
     target.manual_set = true
 
-    this.setState(ShowPickingList.arrange_items(this.state.items, this.state.picking_list.items,this.state.searchKeyword))
+    this.setState(ShowPickingList.arrange_items(this.state.items, this.state.picking_list.items, this.state.searchKeyword))
     return target.ready_to_pick
   }
 
@@ -328,9 +328,25 @@ class ShowPickingList extends Component {
         <ListItem key={data.storage_shelf_id} shelf={data.shelf_token} product_storage_id={data.product_storage_id}>
           <Grid>
             <Col size={4} style={styles.vertical_center} >
-              <Text style={high_layer ? { "color": "orange" } : {}} >
-                {data.shelf_token}
-              </Text>
+              <Button transparent
+                onPress={() => {
+                  apiFetch(GET_SHELF_INFO, { token: data.shelf_token }, data => {
+                    if (data) {
+                      this.props.navigation.navigate("ShelfShow", data)
+                    } else {
+                      Toast.show({
+                        text: "查無此儲位或已鎖定",
+                        buttonText: "OK"
+                      })
+                    }
+                  })
+                }}
+              >
+                <Text style={high_layer ? { "color": "orange" } : {}} >
+                  {data.shelf_token}
+                </Text>
+              </Button>
+
               <Text style={high_layer ? { "color": "orange" } : {}} >
                 [
                 {data.pcs} PCS
@@ -462,30 +478,30 @@ class ShowPickingList extends Component {
       }
       sectors = sectors.sort((a, b) => {
         try {
-          if(a.items.length == 0){
+          if (a.items.length == 0) {
             return 1
           }
-          if(b.items.length == 0){
+          if (b.items.length == 0) {
             return -1
           }
           return shelfSorter(a.items[0].props.shelf, b.items[0].props.shelf)
         } catch (e) {
           return 0
         }
-      }).sort((a,b)=>{
-        if(a.picked_quantity == a.quantity){
+      }).sort((a, b) => {
+        if (a.picked_quantity == a.quantity) {
           return 1
         }
-        if(b.picked_quantity == b.quantity){
+        if (b.picked_quantity == b.quantity) {
           return -1
         }
         return 0
       })
-      if(this.state.searchKeyword){
+      if (this.state.searchKeyword) {
         sectors = sectors.filter(s => s.items.length > 0)
       }
       for (let sector of sectors) {
-        if(!this.state.searchKeyword){
+        if (!this.state.searchKeyword) {
           for (let shortage of this.state.shortage) {
             if (shortage.product_storage_id === sector.product_storage_id) {
               sector.shortage =
@@ -645,8 +661,8 @@ class ShowPickingList extends Component {
         return shelfSorter(a.token, b.token)
       }).filter(item => {
         return this.state.show_picked || !item.picked
-      }).filter(item=>{
-        if(this.state.searchKeyword && this.state.searchKeyword.length > 0){
+      }).filter(item => {
+        if (this.state.searchKeyword && this.state.searchKeyword.length > 0) {
           return item.token.toUpperCase().includes(this.state.searchKeyword.toUpperCase())
         }
         return true
@@ -655,19 +671,31 @@ class ShowPickingList extends Component {
           <Grid>
             <Row>
               <Col size={3}>
-                <Badge
+                <Button
                   style={{
                     borderRadius: 3,
-                    height: 25,
                     width: 100,
                     backgroundColor: "green"
+                  }}
+                  small
+                  onPress={() => {
+                    apiFetch(GET_SHELF_INFO, { token: shelf_item.token }, data => {
+                      if (data) {
+                        this.props.navigation.navigate("ShelfShow", data)
+                      } else {
+                        Toast.show({
+                          text: "查無此儲位或已鎖定",
+                          buttonText: "OK"
+                        })
+                      }
+                    })
                   }}
                   textStyle={{ color: "white" }}
                 >
                   <Text>{shelf_item.token}
                   </Text>
 
-                </Badge>
+                </Button>
                 <Text>{shelf_item.product_name}
                 </Text>
               </Col>
@@ -686,7 +714,7 @@ class ShowPickingList extends Component {
                 }
                 {
                   <Text>
-                    [ {shelf_item.product_box_pcs, shelf_item.picked ? shelf_item.picked_quantity : shelf_item.to_pick} PCS ]
+                    [ {shelf_item.product_box_pcs == shelf_item.picked ? shelf_item.picked_quantity : shelf_item.to_pick} PCS ]
                   </Text>
                 }
               </Col>
@@ -788,29 +816,29 @@ class ShowPickingList extends Component {
             <ListItem>
               <Grid>
                 <Col size={4} style={styles.vertical_center} >
-                <Input placeholder="請輸入或者掃描儲位" search
-                  value={`${this.state.searchKeyword}`}
-                  onChangeText={(text) => {
-                    this.setState({searchKeyword: text})
-                  }}
-                  textAlign={'center'}
-                  onEndEditing={(event) => {
-                    if(this.state.sorting_mode == PRODUCT_MODE){
-                      this.setState(ShowPickingList.arrange_items(this.state.items, this.state.picking_list.items,event.nativeEvent.text))                    
+                  <Input placeholder="請輸入或者掃描儲位" search
+                    value={`${this.state.searchKeyword}`}
+                    onChangeText={(text) => {
+                      this.setState({ searchKeyword: text })
+                    }}
+                    textAlign={'center'}
+                    onEndEditing={(event) => {
+                      if (this.state.sorting_mode == PRODUCT_MODE) {
+                        this.setState(ShowPickingList.arrange_items(this.state.items, this.state.picking_list.items, event.nativeEvent.text))
 
-                    }
-                  }} returnKeyType="done" />
+                      }
+                    }} returnKeyType="done" />
                 </Col>
                 <Col size={1} style={styles.vertical_center} >
                   <Icon name="search" />
                 </Col>
 
                 <Col size={2} style={styles.vertical_center} >
-                    {
-                      ["manager"].includes(store.getState().role) ?                         <Button disabled={this.auto_confirming} onPress={() => { this.setState({ auto_confirming: true }); this.autoConfirm() }}>
+                  {
+                    ["manager"].includes(store.getState().role) ? <Button disabled={this.auto_confirming} onPress={() => { this.setState({ auto_confirming: true }); this.autoConfirm() }}>
                       <Text>自動確認</Text>
-                      </Button> : null
-                    }
+                    </Button> : null
+                  }
                 </Col>
               </Grid>
             </ListItem>
