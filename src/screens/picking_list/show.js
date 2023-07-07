@@ -786,21 +786,17 @@ class ShowPickingList extends Component {
     return (
       <Container style={styles.container} >
         <Header>
-          <Left>
-            <Button
-              transparent
-              onPress={() => {
-                this.onBack()
-                this.props.navigation.goBack()
-              }
-              }
-            >
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>{picking_list.shop_name} {picking_list.id}</Title>
-          </Body>
+          <Button
+            transparent
+            onPress={() => {
+              this.onBack()
+              this.props.navigation.goBack()
+            }
+            }
+          >
+            <Icon name="arrow-back" />
+          </Button>
+          <Title style={{marginTop:14}}>{picking_list.shop_name.substring(0, 4) } {picking_list.id}</Title>
           <Right>
             <Button transparent>
               <Icon name={this.state.sorting_mode == PRODUCT_MODE ? "cube" : "file-tray-stacked"} onPress={() => this.switchSorting()} />
