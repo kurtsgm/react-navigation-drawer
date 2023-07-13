@@ -19,7 +19,7 @@ import {
 } from "native-base";
 import styles from "./styles";
 import Dialog from "react-native-dialog";
-import { apiFetch, GET_SHELF_INFO, GET_STOCK_TAKING,GET_PRODUCTS,CREATE_STOCK_TAKING_ITEM } from "../../api"
+import { apiFetch, GET_STOCK_TAKING,GET_PRODUCTS,CREATE_STOCK_TAKING_ITEM } from "../../api"
 import { normalize_shelf_barcode, shelfKeyboardType } from '../../common'
 import { Grid, Col, Row } from "react-native-easy-grid";
 // import {Text} from 'react-native';
@@ -162,7 +162,8 @@ class StockTakingShow extends Component {
                       </Col>
                       <Col size={1}>
                       <Button transparent onPress={() => {
-                        this.setState({isProductModalVisible:true})
+                        console.log(stock_taking_shelf)
+                        this.props.navigation.navigate("StockTakingShelf", { stock_taking: stock_taking,stock_taking_shelf: stock_taking_shelf, onBack: this.onBack })
                       }}>
                       <Icon name="arrow-forward"  />
                     </Button>

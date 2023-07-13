@@ -19,7 +19,7 @@ import {
 } from "native-base";
 import styles from "./styles";
 import Dialog from "react-native-dialog";
-import { apiFetch, GET_STOCK_TAKING_SHELF,CREATE_STOCK_TAKING_ITEM } from "../../api"
+import { apiFetch, GET_STOCK_TAKING_SHELF, GET_SHELF_INFO } from "../../api"
 import { Grid, Col, Row } from "react-native-easy-grid";
 class StockTakingShelf extends Component {
   constructor(props) {
@@ -28,8 +28,7 @@ class StockTakingShelf extends Component {
     const { shop } = params
 
     this.state = {
-      stock_taking: params.stock_taking,
-
+      items: []
     }
     this.reload = this.reload.bind(this)
     this.reload()
@@ -37,47 +36,28 @@ class StockTakingShelf extends Component {
 
 
   reload() {
-    let { stock_taking } = this.state
-    apiFetch(GET_STOCK_TAKING, { id: stock_taking.id }, (data) => {
-      this.setState({ stock_taking: data })
+    const { stock_taking, stock_taking_shelf } = this.props.navigation.state.params
+
+    apiFetch(GET_SHELF_INFO, { token: stock_taking_shelf.shelf.token,shop_id: stock_taking.shop_id }, shelf_data => {
+      apiFetch(GET_STOCK_TAKING_SHELF, { stock_taking_id: stock_taking.id, id: stock_taking_shelf.id }, (data) => {
+        items = shelf_data.storages.map(shelf_storage => {
+          console.log(shelf_storage)
+          return {
+            
+          }
+        })
+      })
     })
-  }
 
-  test(){
-    <ListItem
-    key={item.key}
-    onPress={() => {
-      this.setState({ isQuantityModalVisible: true, currentItemKey: item.key })
-    }}
-  >
-    <Grid>
-      <Col size={1}>
-        <Text>{`${item.product_storage.product.uid}\n${item.product_storage.product.name}`}</Text>
-      </Col>
-      <Col size={1}>
-        <Text>
-          {[
-            item.product_storage.storage_type_name,
-            item.product_storage.expiration_date,
-            item.product_storage.batch
-          ].filter(e => e).join("\n")}
-        </Text>
-      </Col>
-      <Col size={1}>
-        {
-          item.after_adjustment_pcs == null ? <Text>{`${item.before_adjustment_pcs}\n未盤`}</Text> :
-            <Text style={item.after_adjustment_pcs == item.before_adjustment_pcs ? styles.green : styles.orange}>{item.after_adjustment_pcs}</Text>
-        }
-      </Col>
-
-    </Grid>
-  </ListItem>
 
   }
+
 
 
   render() {
-    let { stock_taking } = this.state
+    const { stock_taking } = this.props.navigation.state.params
+    const { items } = this.state
+
 
     return (
       <Container style={styles.container}>
@@ -105,7 +85,18 @@ class StockTakingShelf extends Component {
         </Header>
         <Content>
           <List>
-
+            {
+              items.map(item => {
+                return <ListItem>
+                  <Grid>
+                    <Row>
+                      <Col size={1}>
+                      </Col>
+                    </Row>
+                  </Grid>
+                </ListItem>
+              })
+            }
           </List>
         </Content>
         <Footer>
@@ -117,4 +108,4 @@ class StockTakingShelf extends Component {
   }
 }
 
-export default StockTakingShow;
+export default StockTakingShelf;
