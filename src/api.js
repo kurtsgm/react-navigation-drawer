@@ -49,6 +49,7 @@ export const CREATE_STOCK_TAKING = "CREATE_STOCK_TAKING"
 export const GET_STOCK_TAKING = "GET_STOCK_TAKING"
 export const CREATE_STOCK_TAKING_ITEM = "CREATE_STOCK_TAKING_ITEM"
 export const GET_STOCK_TAKING_SHELF = 'GET_STOCK_TAKING_SHELF'
+export const CONFIRM_STOCK_TAKING_SHELF = 'CONFIRM_STOCK_TAKING_SHELF'
 
 
 import {Toast} from 'native-base'
@@ -89,6 +90,7 @@ const Actions = {
   CREATE_STOCK_TAKING: {path:`${API_PATH}/v1/stock_takings`, method: "POST"},
   CREATE_STOCK_TAKING_ITEM: {path:`${API_PATH}/v1/stock_takings/{stock_taking_id}/items`, method: "POST"},
   GET_STOCK_TAKING_SHELF: {path:`${API_PATH}/v1/stock_takings/{stock_taking_id}/stock_taking_shelves/{id}`, method: "GET"},
+  CONFIRM_STOCK_TAKING_SHELF: {path:`${API_PATH}/v1/stock_takings/{stock_taking_id}/stock_taking_shelves/{id}`, method: "POST"},
   GET_ME: {path:`${API_PATH}/v1/me`, method: "GET"}
 }
 

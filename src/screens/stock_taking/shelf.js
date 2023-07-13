@@ -17,10 +17,16 @@ import {
   Input
 
 } from "native-base";
+import { View, Alert } from 'react-native';
 import styles from "./styles";
 import Dialog from "react-native-dialog";
-import { apiFetch, GET_STOCK_TAKING_SHELF, GET_SHELF_INFO } from "../../api"
+import { apiFetch, GET_STOCK_TAKING_SHELF, GET_SHELF_INFO, CONFIRM_STOCK_TAKING_SHELF } from "../../api"
 import { Grid, Col, Row } from "react-native-easy-grid";
+
+import { normalize_shelf_barcode, getMinShelfLenghth, ShelfInput, shelfKeyboardType } from '../../common'
+
+const QuantityModal = 'QuantityModal'
+const ProductModal = 'ProductModal'
 class StockTakingShelf extends Component {
   constructor(props) {
     super(props)
@@ -28,6 +34,7 @@ class StockTakingShelf extends Component {
     const { shop } = params
 
     this.state = {
+      visibleModal: null,
       items: []
     }
     this.reload = this.reload.bind(this)
@@ -41,13 +48,13 @@ class StockTakingShelf extends Component {
     apiFetch(GET_SHELF_INFO, { token: stock_taking_shelf.shelf.token, shop_id: stock_taking.shop_id }, shelf_data => {
       apiFetch(GET_STOCK_TAKING_SHELF, { stock_taking_id: stock_taking.id, id: stock_taking_shelf.id }, (stock_taking_items) => {
         items = shelf_data.storages
-        console.log(stock_taking_items)
-        for(let item of items){
-          let stock_taking_item = stock_taking_items.find(e => e.product_storage_id == item.product_storage_id)
-          if(stock_taking_item){
+        for (let item of items) {
+          item.key = item.product_storage.id
+          let stock_taking_item = stock_taking_items.find(e => e.product_storage_id == item.product_storage.id)
+          if (stock_taking_item) {
             item.before_adjustment_pcs = stock_taking_item.before_adjustment_pcs
             item.after_adjustment_pcs = stock_taking_item.after_adjustment_pcs
-          }else{
+          } else {
             item.before_adjustment_pcs = item.pcs
             item.after_adjustment_pcs = null
           }
@@ -68,33 +75,65 @@ class StockTakingShelf extends Component {
 
     return (
       <Container style={styles.container}>
+        {/* 盤點Dialog */}
+        <Dialog.Container visible={this.state.visibleModal == QuantityModal}>
+          <Dialog.Title>請輸入盤點數量</Dialog.Title>
+          <Dialog.Input keyboardType={'numeric'}
+            placeholder='請輸入盤點數量'
+            autoFocus={true}
+            onEndEditing={
+              (event) => {
+                this.setState({ visibleModal: null })
+                let quantity = parseInt(event.nativeEvent.text.trim())
+                let item = this.state.items.find((item) => {
+                  return item.key == this.state.currentItemKey
+                })
+                if (item) {
+                  item.after_adjustment_pcs = quantity
+                }
+                this.setState({ currentItemKey: null, items: items })
+
+              }
+            }
+            returnKeyType="done" />
+          <Dialog.Button label="取消" onPress={() => this.setState({ visibleModal: null })} />
+        </Dialog.Container>
         <Header>
-          <Left>
-            <Button
-              transparent
-              onPress={() => {
-                this.props.navigation.state.params.onBack()
-                this.props.navigation.goBack()
-              }
-              }
-            >
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>{stock_taking.name}</Title>
-          </Body>
-          <Right>
-            <Button transparent>
-              <Icon name="refresh" onPress={() => this.reload()} />
-            </Button>
-          </Right>
+          <Grid>
+            <Row>
+              <Col size={1}>
+                <Button
+                  transparent
+                  onPress={() => {
+                    this.props.navigation.state.params.onBack()
+                    this.props.navigation.goBack()
+                  }
+                  }
+                >
+                  <Icon name="arrow-back" />
+                </Button>
+              </Col>
+              <Col size={3}>
+                <Title style={{top: 13}}>{stock_taking.name}</Title>
+              </Col>
+              <Col size={1}>
+                <Button transparent>
+                  <Icon name="refresh" onPress={() => this.reload()} />
+                </Button>
+              </Col>
+
+            </Row>
+          </Grid>
         </Header>
-        <Content>
+        <Content enableResetScrollToCoords={false}>
           <List>
             {
               items.map(item => {
-                return <ListItem>
+                return <ListItem
+                  key={item.key}
+                  onPress={() => {
+                    this.setState({ visibleModal: QuantityModal, currentItemKey: item.key })
+                  }}>
                   <Grid>
                     <Row>
                       <Col size={1}>
@@ -123,10 +162,26 @@ class StockTakingShelf extends Component {
             }
           </List>
         </Content>
-        <Footer>
-          <FooterTab>
-          </FooterTab>
-        </Footer>
+        <View style={styles.footer}>
+          <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
+            apiFetch(CONFIRM_STOCK_TAKING_SHELF, {
+              stock_taking_id: stock_taking.id,
+              id: this.props.navigation.state.params.stock_taking_shelf.id,
+              items: items.map(_item => {
+                return {
+                  product_storage_id: _item.product_storage.id,
+                  before_adjustment_pcs: _item.before_adjustment_pcs,
+                  after_adjustment_pcs: _item.after_adjustment_pcs
+                }
+              })
+            }, (res) => {
+              // this.props.navigation.state.params.onBack()
+              // this.props.navigation.goBack()  
+            })
+          }}>
+            <Text>確認</Text>
+          </Button>
+        </View>
       </Container>
     );
   }
