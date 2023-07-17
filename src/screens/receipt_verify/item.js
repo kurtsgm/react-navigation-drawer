@@ -84,6 +84,9 @@ class ReceiptVerifyItem extends Component {
         return false
       }
     }
+    if(!this.state.product_default_pcs){
+      return false
+    }
   
     return this.state.dirty && this.state.verified_pcs && (item_id || (this.state.product_storage_type_id))
   }
@@ -177,7 +180,7 @@ class ReceiptVerifyItem extends Component {
               <CardItem>
                 <Row>
                   <Col size={1}>
-                    <Text>倉別</Text>
+                    <Text style={this.state.product_storage_type_id ? {} : { color: "red" }}>倉別</Text>
                   </Col>
                   <Col size={2}>
                     {
@@ -189,7 +192,6 @@ class ReceiptVerifyItem extends Component {
                         </Text> : <Picker mode="dropdown"
                           headerBackButtonText="返回"
                           style={{ width: 200 }}
-                          textStyle={this.state.product_storage_type_id ? {} : { color: "red" }}
                           iosHeader="選擇倉別"
                           placeholder="選擇倉別"
                           iosIcon={<Icon name="arrow-down" />}
@@ -229,7 +231,7 @@ class ReceiptVerifyItem extends Component {
               <CardItem>
                 <Row>
                   <Col size={1}>
-                    <Text>實收PCS</Text>
+                    <Text style={Object.assign({},{top: 20},(this.state.verified_pcs ? {} : { color: "red" }))}>實收PCS</Text>
                   </Col>
                   <Col size={2}>
                     <Item success >
@@ -249,7 +251,7 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Row><Col size={1}>
-                  <Text>標準箱入數</Text>
+                  <Text style={Object.assign({},{top: 20},(this.state.product_default_pcs ? {} : { color: "red" }))}>標準箱入數</Text>
                 </Col>
                   <Col size={2}>
                     {
@@ -273,7 +275,7 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Row><Col size={1}>
-                  <Text>條碼</Text>
+                  <Text style={{top:20}}>條碼</Text>
                 </Col>
                   <Col size={2}>
                     <Item success >
@@ -304,7 +306,7 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Row><Col size={1}>
-                  <Text>效期</Text>
+                  <Text style={{top:20}}>效期</Text>
                 </Col>
                   <Col size={2}>
                     <Item success >
@@ -328,7 +330,7 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Row><Col size={1}>
-                  <Text>批號</Text>
+                  <Text style={{top:20}}>批號</Text>
                 </Col>
                   <Col size={2}>
                     <Item success >
@@ -348,7 +350,7 @@ class ReceiptVerifyItem extends Component {
                 <CardItem>
                   <Row>
                     <Col size={1}>
-                      <Text>驗收序號</Text>
+                      <Text style={{top:20}}>驗收序號</Text>
                     </Col>
                     <Col size={2}>
                       <Item success >
@@ -379,7 +381,7 @@ class ReceiptVerifyItem extends Component {
               }
               <CardItem>
                 <Row><Col size={1}>
-                  <Text>材積</Text>
+                  <Text style={{top:20}}>材積</Text>
                 </Col>
                   <Col size={2}>
                     <Item inlineLabel>
@@ -434,7 +436,7 @@ class ReceiptVerifyItem extends Component {
               </CardItem>
               <CardItem>
                 <Row><Col size={1}>
-                  <Text>堆疊</Text>
+                  <Text style={{top:20}}>堆疊</Text>
                 </Col>
                   <Col size={2}>
                     <Item inlineLabel>
