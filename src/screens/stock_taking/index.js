@@ -16,7 +16,7 @@ import {
 import styles from "./styles";
 import Dialog from "react-native-dialog";
 
-import { apiFetch, GET_STOCK_TAKINGS, CREATE_STOCK_TAKING } from "../../api"
+import { apiFetch, GET_STOCK_TAKINGS } from "../../api"
 
 class StockTakingIndex extends Component {
   constructor(props) {
@@ -109,15 +109,6 @@ class StockTakingIndex extends Component {
                 {rows}
               </List> : null
           }
-            <Button primary full style={[styles.mb15, styles.footer]} onPress={() => {
-               apiFetch(CREATE_STOCK_TAKING, {
-                shop_id: this.state.shop.id,
-              }, (data) => {
-                console.log(data)
-              })
-            }}>
-            <Text>新增盤點單</Text>
-          </Button>
         </Content>
       </Container>
     );

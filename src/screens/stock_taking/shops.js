@@ -17,7 +17,7 @@ import styles from "./styles";
 import Dialog from "react-native-dialog";
 
 import * as AppActions from '../../redux/actions/AppAction'
-import { apiFetch, GET_PICKING_LISTS, GET_PICKING_LIST, GET_SHOPS } from "../../api"
+import { apiFetch, GET_SHOPS } from "../../api"
 import { Grid, Col, Row } from "react-native-easy-grid";
 
 class StockTakingShops extends Component {

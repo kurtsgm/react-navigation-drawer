@@ -19,7 +19,7 @@ import {
 } from "native-base";
 import styles from "./styles";
 import Dialog from "react-native-dialog";
-import { apiFetch, GET_STOCK_TAKING,GET_PRODUCTS,CREATE_STOCK_TAKING_ITEM } from "../../api"
+import { apiFetch, GET_STOCK_TAKING,GET_PRODUCTS } from "../../api"
 import { normalize_shelf_barcode, shelfKeyboardType } from '../../common'
 import { Grid, Col, Row } from "react-native-easy-grid";
 // import {Text} from 'react-native';
