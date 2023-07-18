@@ -525,7 +525,7 @@ class ShowPickingList extends Component {
           }
         }
         if (this.state.show_picked && sector.picked.length > 0) {
-          sector.picked_area = <Content disableKBDismissScroll={true} padder key={`card-${sector.product_storage_id}`} >
+          sector.picked_area = <Content disableKBDismissScroll={true} padder key={`card-${sector.product_storage_id}`} enableResetScrollToCoords={false} >
             <Card style={styles.mb}>
               <CardItem header bordered>
                 <Text>儲位 - 商品數</Text>
@@ -556,7 +556,7 @@ class ShowPickingList extends Component {
           </Content>
         }
         if (this.state.show_order) {
-          sector.orders = <Content padder disableKBDismissScroll={true} key={`card-${sector.product_storage_id}`} >
+          sector.orders = <Content padder disableKBDismissScroll={true} key={`card-${sector.product_storage_id}`} enableResetScrollToCoords={false}>
             <Card style={styles.mb}>
               <CardItem header bordered>
                 <Text>訂單序號 - 商品數</Text>
@@ -786,21 +786,17 @@ class ShowPickingList extends Component {
     return (
       <Container style={styles.container} >
         <Header>
-          <Left>
-            <Button
-              transparent
-              onPress={() => {
-                this.onBack()
-                this.props.navigation.goBack()
-              }
-              }
-            >
-              <Icon name="arrow-back" />
-            </Button>
-          </Left>
-          <Body>
-            <Title>{picking_list.shop_name} {picking_list.id}</Title>
-          </Body>
+          <Button
+            transparent
+            onPress={() => {
+              this.onBack()
+              this.props.navigation.goBack()
+            }
+            }
+          >
+            <Icon name="arrow-back" />
+          </Button>
+          <Title style={{marginTop:14}}>{picking_list.shop_name.substring(0, 4) } {picking_list.id}</Title>
           <Right>
             <Button transparent>
               <Icon name={this.state.sorting_mode == PRODUCT_MODE ? "cube" : "file-tray-stacked"} onPress={() => this.switchSorting()} />
@@ -811,7 +807,7 @@ class ShowPickingList extends Component {
 
           </Right>
         </Header>
-        <Content disableKBDismissScroll={true}>
+        <Content disableKBDismissScroll={true} enableResetScrollToCoords={false}>
           <List key="picking-list">
             <ListItem>
               <Grid>

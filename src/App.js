@@ -27,6 +27,7 @@ import PickingListQC from './screens/picking_list/qc'
 import StockTakingShops from './screens/stock_taking/shops'
 import StockTakingIndex from './screens/stock_taking/index'
 import StockTakingShow from './screens/stock_taking/show'
+import StockTakingShelf from './screens/stock_taking/shelf'
 
 
 // Replenishments
@@ -120,6 +121,7 @@ const AppNavigator = createStackNavigator(
 
     StockTakingIndex: {screen: StockTakingIndex},
     StockTakingShow: {screen: StockTakingShow},
+    StockTakingShelf: {screen: StockTakingShelf}
     
 
   },

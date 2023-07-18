@@ -81,13 +81,13 @@ const datas = [
     roles: ['admin','manager','staff','parttime']
 
   },
-  // {
-  //   name: '盤點作業',
-  //   route: 'StockTakingShops',
-  //   icon: 'check-square-o',
-  //   bg: "#C5F442",
-  //   roles: ['admin','manager','staff','parttime']
-  // },
+  {
+    name: '盤點作業',
+    route: 'StockTakingShops',
+    icon: 'check-square-o',
+    bg: "#C5F442",
+    roles: ['admin','manager','staff','parttime']
+  },
   { 
     name: '調撥出庫',
     route: 'WarehouseCheckout',
