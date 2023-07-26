@@ -123,6 +123,21 @@ class StockTakingShow extends Component {
                 <Col size={1} style={styles.vertical_center} >
                   <Icon name="search" />
                 </Col>
+                <Col size={1} style={styles.vertical_center} >
+                  <Button
+                    transparent
+                    onPress={() =>
+                      this.props.navigation.navigate("BarcodeScanner", {
+                        onBarcodeScanned: (barcode) => {
+                          this.setState({ searchKeyword: barcode })
+                        }
+                      }
+                      )
+                    }
+                  >
+                  <Icon name="camera" />
+                  </Button>
+                </Col>
               </Grid>
             </ListItem>
             {

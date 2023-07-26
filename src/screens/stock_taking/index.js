@@ -79,15 +79,11 @@ class StockTakingIndex extends Component {
       <Container style={styles.container}>
         <Header>
           <Left>
-          <Button
+            <Button
               transparent
-              onPress={() => {
-                this.props.navigation.state.params.onBack()
-                this.props.navigation.goBack()
-              }
-              }
+              onPress={() => this.props.navigation.openDrawer()}
             >
-              <Icon name="arrow-back" />
+              <Icon name="menu" />
             </Button>
           </Left>
           <Right>
