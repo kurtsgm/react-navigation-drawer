@@ -23,18 +23,15 @@ import Dialog from "react-native-dialog";
 import { apiFetch, GET_STOCK_TAKING_SHELF, GET_SHELF_INFO, CONFIRM_STOCK_TAKING_SHELF } from "../../api"
 import { Grid, Col, Row } from "react-native-easy-grid";
 
-import { normalize_shelf_barcode, getMinShelfLenghth, ShelfInput, shelfKeyboardType } from '../../common'
-
 const QuantityModal = 'QuantityModal'
-const ProductModal = 'ProductModal'
 class StockTakingShelf extends Component {
   constructor(props) {
     super(props)
     const { params } = this.props.navigation.state;
-    const { shop } = params
 
     this.state = {
       visibleModal: null,
+      searchKeyword: "",
       items: []
     }
     this.reload = this.reload.bind(this)
@@ -45,7 +42,7 @@ class StockTakingShelf extends Component {
   reload() {
     const { stock_taking, stock_taking_shelf } = this.props.navigation.state.params
 
-    apiFetch(GET_SHELF_INFO, { token: stock_taking_shelf.shelf.token, shop_id: stock_taking.shop_id }, shelf_data => {
+    apiFetch(GET_SHELF_INFO, { token: stock_taking_shelf.shelf.token }, shelf_data => {
       apiFetch(GET_STOCK_TAKING_SHELF, { stock_taking_id: stock_taking.id, id: stock_taking_shelf.id }, (stock_taking_items) => {
         items = shelf_data.storages
         for (let item of items) {
@@ -127,8 +124,32 @@ class StockTakingShelf extends Component {
         </Header>
         <Content enableResetScrollToCoords={false}>
           <List>
+            <ListItem>
+              <Grid>
+                <Col size={4} style={styles.vertical_center} >
+                  <Input placeholder="搜尋" search
+                    value={`${this.state.searchKeyword}`}
+                    onChangeText={(text) => this.setState({ searchKeyword: text })}
+                    textAlign={'center'}
+                    onEndEditing={(event) => {
+                    }} returnKeyType="done" />
+                </Col>
+                <Col size={1} style={styles.vertical_center} >
+                  <Icon name="search" />
+                </Col>
+              </Grid>
+            </ListItem>
             {
-              items.map(item => {
+              items.filter(_item=>{
+                if(this.state.searchKeyword){
+                  return _item.product_storage.product.name.toLowerCase().includes(this.state.searchKeyword.toLowerCase()) || 
+                   _item.product_storage.product.uid.toLowerCase().includes(this.state.searchKeyword.toLowerCase()) ||
+                   _item.product_storage.batch?.toLowerCase().includes(this.state.searchKeyword.toLowerCase()) ||
+                  _item.product_storage.expiration_date?.includes(this.state.searchKeyword)
+                }else{
+                  return true
+                }
+              }).map(item => {
                 return <ListItem
                   key={item.key}
                   onPress={() => {

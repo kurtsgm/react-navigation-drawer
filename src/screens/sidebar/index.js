@@ -83,7 +83,7 @@ const datas = [
   },
   {
     name: '盤點作業',
-    route: 'StockTakingShops',
+    route: 'StockTakingIndex',
     icon: 'check-square-o',
     bg: "#C5F442",
     roles: ['admin','manager','staff','parttime']

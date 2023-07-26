@@ -24,7 +24,6 @@ import ShowPickingList from './screens/picking_list/show'
 import PickingListQC from './screens/picking_list/qc'
 
 // StockTaking
-import StockTakingShops from './screens/stock_taking/shops'
 import StockTakingIndex from './screens/stock_taking/index'
 import StockTakingShow from './screens/stock_taking/show'
 import StockTakingShelf from './screens/stock_taking/shelf'
@@ -72,7 +71,7 @@ const Drawer = createDrawerNavigator(
     ShelfSearch: {screen: ShelfSearch},
     ShelfMerge: {screen: ShelfMerge},
     HighLayerShopIndex: {screen: HighLayerShopIndex},
-    StockTakingShops: {screen: StockTakingShops},
+    StockTakingIndex: {screen: StockTakingIndex},
     WarehouseCheckout: {screen: WarehouseCheckout},
     WarehouseShelfMerge: {screen: WarehouseShelfMerge},
     SettingShops: {screen: SettingShops},
@@ -118,8 +117,6 @@ const AppNavigator = createStackNavigator(
     ShelfShow: {screen: ShelfShow},
     ShelfIndex: {screen: ShelfIndex},
     ShelfProduct: {screen: ShelfProduct},
-
-    StockTakingIndex: {screen: StockTakingIndex},
     StockTakingShow: {screen: StockTakingShow},
     StockTakingShelf: {screen: StockTakingShelf}
     

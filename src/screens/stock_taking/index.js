@@ -14,7 +14,7 @@ import {
   ListItem
 } from "native-base";
 import styles from "./styles";
-import Dialog from "react-native-dialog";
+import { Grid, Col, Row } from "react-native-easy-grid";
 
 import { apiFetch, GET_STOCK_TAKINGS } from "../../api"
 
@@ -22,11 +22,9 @@ class StockTakingIndex extends Component {
   constructor(props) {
     super(props)
     const { params } = this.props.navigation.state;
-    const { shop } = params
 
     this.state = {
       stock_takings: [],
-      shop: shop
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
@@ -35,7 +33,6 @@ class StockTakingIndex extends Component {
 
   reload() {
     apiFetch(GET_STOCK_TAKINGS, {
-      shop_id: this.state.shop.id,
       reporter: true
     }, (data) => {
       console.log(data)
@@ -57,14 +54,23 @@ class StockTakingIndex extends Component {
           this.props.navigation.navigate("StockTakingShow", { stock_taking: stock_taking, onBack: this.onBack })
         }
         }>
-          <Body>
-            <Text>
-              {stock_taking.name}
-            </Text>
-          </Body>
-          <Right>
-            <Icon name="arrow-forward" style={{ color: "#999" }} />
-          </Right>
+          <Grid>
+            <Row>
+              <Col size={5}>
+                <Text>
+                  {stock_taking.name}
+                </Text>
+              </Col>
+              <Col size={5}>
+                <Text>
+                  {stock_taking.shops.map(e => e.name).join(',')}
+                </Text>
+              </Col>
+              <Col size={1}>
+              <Icon name="arrow-forward" style={{ color: "#999" }} />
+              </Col>
+            </Row>
+          </Grid>
 
         </ListItem>)
     }
@@ -84,9 +90,6 @@ class StockTakingIndex extends Component {
               <Icon name="arrow-back" />
             </Button>
           </Left>
-          <Body>
-            <Title>{this.state.shop.title}</Title>
-          </Body>
           <Right>
             <Button transparent>
               <Icon name="refresh" onPress={() => this.reload()} />
@@ -98,13 +101,22 @@ class StockTakingIndex extends Component {
             this.state.stock_takings.length > 0 ?
               <List>
                 <ListItem itemDivider>
-                  <Body>
-                    <Text>
-                      盤點單號
-                    </Text>
-                  </Body>
-                  <Right>
-                  </Right>
+                  <Grid>
+                    <Row>
+                      <Col size={5}>
+                        <Text>
+                          盤點單號
+                        </Text>
+                      </Col>
+                      <Col size={5}>
+                        <Text>
+                          客戶名稱
+                        </Text>
+                      </Col>
+                      <Col size={1}>
+                      </Col>
+                    </Row>
+                  </Grid>
                 </ListItem>
                 {rows}
               </List> : null

@@ -19,16 +19,15 @@ import {
 } from "native-base";
 import styles from "./styles";
 import Dialog from "react-native-dialog";
-import { apiFetch, GET_STOCK_TAKING,GET_PRODUCTS } from "../../api"
+import { apiFetch, GET_STOCK_TAKING, GET_PRODUCTS } from "../../api"
 import { normalize_shelf_barcode, shelfKeyboardType } from '../../common'
 import { Grid, Col, Row } from "react-native-easy-grid";
 // import {Text} from 'react-native';
-import {Text as ReactText} from 'react-native';
+import { Text as ReactText } from 'react-native';
 class StockTakingShow extends Component {
   constructor(props) {
     super(props)
     const { params } = this.props.navigation.state;
-    const { shop } = params
 
     this.state = {
       stock_taking: params.stock_taking,
@@ -43,7 +42,6 @@ class StockTakingShow extends Component {
     }
     this.reload = this.reload.bind(this)
     this.onBack = this.onBack.bind(this)
-    this.fetchProduct = this.fetchProduct.bind(this)
     this.reload()
   }
 
@@ -52,18 +50,6 @@ class StockTakingShow extends Component {
     let { stock_taking } = this.state
     apiFetch(GET_STOCK_TAKING, { id: stock_taking.id }, (data) => {
       this.setState({ stock_taking: data })
-    })
-  }
-
-
-  fetchProduct( barcode) {
-    let { stock_taking } = this.state
-    apiFetch(GET_PRODUCTS, { barcode: barcode, shop_id: stock_taking.shop_id }, (product_data) => {
-      if (product_data.length > 1) {
-        this.setState({ candidateProducts: product_data })
-        this.setState({ isProductModalVisible: true })
-
-      }
     })
   }
 
@@ -123,7 +109,7 @@ class StockTakingShow extends Component {
         </Header>
         <Content>
           <List>
-          <ListItem>
+            <ListItem>
               <Grid>
                 <Col size={4} style={styles.vertical_center} >
                   <Input placeholder="請輸入或者掃描儲位" search
@@ -140,33 +126,33 @@ class StockTakingShow extends Component {
               </Grid>
             </ListItem>
             {
-              ((stock_taking.stock_taking_shelves || []).filter(s=>{
-                if(this.state.searchKeyword){
+              ((stock_taking.stock_taking_shelves || []).filter(s => {
+                if (this.state.searchKeyword) {
                   return s.shelf.token.includes(this.state.searchKeyword)
-                }else{
+                } else {
                   return true
                 }
               })).map((stock_taking_shelf) => {
                 return <ListItem key={stock_taking_shelf.id}>
-                   <Grid>
+                  <Grid>
                     <Row>
                       <Col size={1}>
                         {
-                          stock_taking_shelf.checked ? 
-                          <Icon name="checkmark-circle" style={{color:'green',top:8}}/>:
-                          null
+                          stock_taking_shelf.checked ?
+                            <Icon name="checkmark-circle" style={{ color: 'green', top: 8 }} /> :
+                            null
                         }
                       </Col>
                       <Col size={4} >
-                        <ReactText style={{fontSize: 24,top: 8}}  >{stock_taking_shelf.shelf.token}</ReactText>
+                        <ReactText style={{ fontSize: 24, top: 8 }}  >{stock_taking_shelf.shelf.token}</ReactText>
                       </Col>
                       <Col size={1}>
-                      <Button transparent onPress={() => {
-                        console.log(stock_taking_shelf)
-                        this.props.navigation.navigate("StockTakingShelf", { stock_taking: stock_taking,stock_taking_shelf: stock_taking_shelf, onBack: this.onBack })
-                      }}>
-                      <Icon name="arrow-forward"  />
-                    </Button>
+                        <Button transparent onPress={() => {
+                          console.log(stock_taking_shelf)
+                          this.props.navigation.navigate("StockTakingShelf", { stock_taking: stock_taking, stock_taking_shelf: stock_taking_shelf, onBack: this.onBack })
+                        }}>
+                          <Icon name="arrow-forward" />
+                        </Button>
                       </Col>
                     </Row>
                   </Grid>
